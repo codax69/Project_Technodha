@@ -1,28 +1,108 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Poppins', sans-serif;
+
+  --color-theme-bg: #2C2C2C;
+  --color-theme-card: #222222;
+  --color-theme-light: #FBFBF8;
+  --color-theme-accent: #FB6557;
+  --color-theme-accent-hover: #e05345;
+  --color-theme-muted: #9e9e9e;
+  --color-theme-border: #3d3d3d;
+
+  --color-coral-50: #fff5f5;
+  --color-coral-100: #ffe3e0;
+  --color-coral-500: #FB6557;
+  --color-coral-600: #e05345;
+  --color-coral-700: #c54236;
+
+  --color-charcoal-700: #444444;
+  --color-charcoal-800: #383838;
+  --color-charcoal-900: #2C2C2C;
+  --color-charcoal-950: #1F1F1F;
+
+  --color-cream-100: #FBFBF8;
+  --color-cream-200: #e8e8e3;
+  --color-cream-300: #d5d5cd;
+}
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 font-sans;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: #FBFBF8;
+    color: #2C2C2C;
+    font-family: 'Poppins', sans-serif;
   }
 }
 
-.glass-card {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Lightwind UI Component Styles */
+.lightwind-card {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(44, 44, 44, 0.08);
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px -2px rgba(44, 44, 44, 0.04), 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease-in-out;
 }
 
-.glass-panel {
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.lightwind-card:hover {
+  box-shadow: 0 10px 25px -5px rgba(44, 44, 44, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+}
+
+.lightwind-input {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1rem;
+  color: #2C2C2C;
+  transition: all 0.15s ease-in-out;
+}
+
+.lightwind-input:focus {
+  border-color: #FB6557;
+  box-shadow: 0 0 0 3px rgba(251, 101, 87, 0.15);
+  outline: none;
+}
+
+.lightwind-btn-primary {
+  background-color: #FB6557;
+  color: #FBFBF8;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  box-shadow: 0 4px 14px 0 rgba(251, 101, 87, 0.35);
+  transition: all 0.2s ease-in-out;
+}
+
+.lightwind-btn-primary:hover {
+  background-color: #e05345;
+  box-shadow: 0 6px 20px 0 rgba(251, 101, 87, 0.45);
+  transform: translateY(-1px);
+}
+
+.lightwind-btn-secondary {
+  background-color: #F1F5F9;
+  color: #334155;
+  font-weight: 500;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.lightwind-btn-secondary:hover {
+  background-color: #E2E8F0;
+  color: #0F172A;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(44, 44, 44, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(44, 44, 44, 0.04);
 }
 
 .glow-accent {
-  box-shadow: 0 0 25px -5px rgba(14, 165, 233, 0.3);
+  box-shadow: 0 0 25px -5px rgba(251, 101, 87, 0.3);
 }
 
 /* Custom scrollbar */
@@ -31,12 +111,12 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #FBFBF8;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #FB6557;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #e05345;
 }

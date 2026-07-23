@@ -20,5 +20,10 @@ class User(AbstractUser):
     def is_customer(self) -> bool:
         return self.role == self.Role.CUSTOMER
 
+    def save(self, *args, **kwargs):
+        if self.is_superuser or self.is_staff:
+            self.role = self.Role.ADMIN
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.username} ({self.role})"

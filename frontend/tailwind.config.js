@@ -2,18 +2,40 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'],
+      },
       colors: {
-        brand: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          500: '#0284c7',
-          600: '#0284c7',
-          700: '#0369a1',
-          900: '#0c4a6e',
+        theme: {
+          bg: '#2C2C2C',
+          card: '#222222',
+          light: '#FBFBF8',
+          accent: '#FB6557',
+          'accent-hover': '#e05345',
+          muted: '#9e9e9e',
+          border: '#3d3d3d',
+        },
+        coral: {
+          50: '#fff5f5',
+          100: '#ffe3e0',
+          500: '#FB6557',
+          600: '#e05345',
+          700: '#c54236',
+        },
+        charcoal: {
+          700: '#444444',
+          800: '#383838',
+          900: '#2C2C2C',
+          950: '#1F1F1F',
+        },
+        cream: {
+          100: '#FBFBF8',
+          200: '#e8e8e3',
+          300: '#d5d5cd',
         }
       }
     },

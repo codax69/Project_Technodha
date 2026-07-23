@@ -5,7 +5,7 @@ import App from './App';
 describe('Frontend Integration Tests', () => {
   it('renders brand header correctly', () => {
     render(<App />);
-    expect(screen.getByText(/TECHNODHA/i)).toBeInTheDocument();
+    expect(screen.getByAltText(/TECHNODHA Logo/i)).toBeInTheDocument();
     expect(screen.getByText(/Product Catalogue/i)).toBeInTheDocument();
   });
 });

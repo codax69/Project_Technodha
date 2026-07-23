@@ -2,10 +2,15 @@ from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 
 from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer, StockUpdateSerializer
+from .serializers import (
+    CategorySerializer,
+    ProductSerializer,
+    StockUpdateSerializer,
+    ProductAvailabilityCheckSerializer,
+)
 from apps.authentication.permissions import IsAdminRole
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -55,3 +60,76 @@ class ProductViewSet(viewsets.ModelViewSet):
         product.stock_quantity = serializer.validated_data['stock_quantity']
         product.save()
         return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        summary="Check availability of a single product",
+        description=(
+            "Checks whether the requested quantity of this product is "
+            "currently active and in stock, without reserving/decrementing it."
+        ),
+        parameters=[
+            OpenApiParameter(
+                name='quantity',
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Quantity to check availability for (default: 1)."
+            )
+        ],
+    )
+    @action(detail=True, methods=['get'], url_path='check-availability')
+    def check_availability(self, request, pk=None):
+        product = self.get_object()
+        try:
+            quantity = int(request.query_params.get('quantity', 1))
+        except (TypeError, ValueError):
+            return Response(
+                {"quantity": "Quantity must be a positive integer."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if quantity < 1:
+            return Response(
+                {"quantity": "Quantity must be a positive integer."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(product.check_availability(quantity), status=status.HTTP_200_OK)
+
+    @extend_schema(
+        summary="Check availability for multiple products (bulk/cart check)",
+        description=(
+            "Validates a list of {product_id, quantity} pairs (e.g. a cart) "
+            "and reports per-item availability plus an overall flag, without "
+            "reserving/decrementing any stock. Useful for pre-checkout validation."
+        ),
+        request=ProductAvailabilityCheckSerializer,
+    )
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated], url_path='check-stock')
+    def check_stock(self, request):
+        serializer = ProductAvailabilityCheckSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        items = serializer.validated_data['items']
+        product_ids = {item['product_id'] for item in items}
+        products_map = {p.id: p for p in Product.objects.filter(id__in=product_ids)}
+
+        results = []
+        for item in items:
+            product = products_map.get(item['product_id'])
+            if product is None:
+                results.append({
+                    'product_id': item['product_id'],
+                    'product_name': None,
+                    'requested_quantity': item['quantity'],
+                    'available_stock': 0,
+                    'is_active': False,
+                    'is_available': False,
+                    'is_low_stock': False,
+                    'messages': [f"Product with ID {item['product_id']} does not exist."],
+                })
+            else:
+                results.append(product.check_availability(item['quantity']))
+
+        return Response({
+            'all_available': all(r['is_available'] for r in results),
+            'results': results,
+        }, status=status.HTTP_200_OK)

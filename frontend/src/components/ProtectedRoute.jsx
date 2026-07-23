@@ -8,12 +8,15 @@ export const ProtectedRoute = ({ requiredRole }) => {
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[#FB6557] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (!user) {
+    if (requiredRole === 'admin') {
+      return <Navigate to="/admin/login" replace />;
+    }
     return <Navigate to="/login" replace />;
   }
 

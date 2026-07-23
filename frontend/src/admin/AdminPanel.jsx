@@ -150,19 +150,19 @@ export const AdminPanel = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-            <Shield className="w-8 h-8 text-amber-400" />
+          <h1 className="text-3xl font-extrabold text-[#2C2C2C] tracking-tight flex items-center gap-3">
+            <Shield className="w-8 h-8 text-[#FB6557]" />
             Admin Operations Panel
           </h1>
-          <p className="text-slate-400 text-sm">Manage product catalogue, categories, stock, and orders</p>
+          <p className="text-slate-600 text-sm">Manage product catalogue, categories, stock, and orders</p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800 space-x-1">
+        <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 space-x-1 shadow-inner">
           <button
             onClick={() => setActiveTab('products')}
             className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-              activeTab === 'products' ? 'bg-sky-600 text-white shadow-lg shadow-sky-600/30' : 'text-slate-400 hover:text-white'
+              activeTab === 'products' ? 'bg-[#FB6557] text-[#FBFBF8] shadow-md' : 'text-slate-600 hover:text-[#2C2C2C]'
             }`}
           >
             Products
@@ -170,7 +170,7 @@ export const AdminPanel = () => {
           <button
             onClick={() => setActiveTab('categories')}
             className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-              activeTab === 'categories' ? 'bg-sky-600 text-white shadow-lg shadow-sky-600/30' : 'text-slate-400 hover:text-white'
+              activeTab === 'categories' ? 'bg-[#FB6557] text-[#FBFBF8] shadow-md' : 'text-slate-600 hover:text-[#2C2C2C]'
             }`}
           >
             Categories
@@ -178,7 +178,7 @@ export const AdminPanel = () => {
           <button
             onClick={() => setActiveTab('orders')}
             className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-              activeTab === 'orders' ? 'bg-sky-600 text-white shadow-lg shadow-sky-600/30' : 'text-slate-400 hover:text-white'
+              activeTab === 'orders' ? 'bg-[#FB6557] text-[#FBFBF8] shadow-md' : 'text-slate-600 hover:text-[#2C2C2C]'
             }`}
           >
             All Orders
@@ -190,20 +190,20 @@ export const AdminPanel = () => {
       {activeTab === 'products' && (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-white">Catalogue Products ({products?.length || 0})</h2>
+            <h2 className="text-xl font-bold text-[#2C2C2C]">Catalogue Products ({products?.length || 0})</h2>
             <button
               onClick={openAddProduct}
-              className="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 shadow-lg shadow-sky-600/25 transition-all"
+              className="px-4 py-2.5 bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] font-semibold text-xs rounded-xl flex items-center gap-2 shadow-md transition-all"
             >
               <Plus className="w-4 h-4" />
               Add Product
             </button>
           </div>
 
-          <div className="glass-card rounded-2xl border border-slate-800 overflow-hidden">
+          <div className="glass-card rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-sm">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-900/80 text-xs font-bold uppercase text-slate-400 border-b border-slate-800">
+                <tr className="bg-slate-50 text-xs font-bold uppercase text-slate-600 border-b border-slate-200">
                   <th className="p-4">Product</th>
                   <th className="p-4">Category</th>
                   <th className="p-4">Price</th>
@@ -212,15 +212,15 @@ export const AdminPanel = () => {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-sm">
+              <tbody className="divide-y divide-slate-100 text-sm">
                 {products?.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="p-4 font-semibold text-white flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center flex-shrink-0">
+                  <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="p-4 font-semibold text-[#2C2C2C] flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0">
                         {p.image_url ? (
                           <img src={p.image_url} alt={p.name} className="w-full h-full object-cover rounded-lg" />
                         ) : (
-                          <Package className="w-5 h-5 text-slate-600" />
+                          <Package className="w-5 h-5 text-slate-400" />
                         )}
                       </div>
                       <div>
@@ -228,22 +228,22 @@ export const AdminPanel = () => {
                         <span className="block text-[11px] text-slate-500 line-clamp-1">{p.description}</span>
                       </div>
                     </td>
-                    <td className="p-4 text-slate-300">{p.category_detail?.name || 'None'}</td>
-                    <td className="p-4 font-bold text-white">${p.price}</td>
+                    <td className="p-4 text-slate-600">{p.category_detail?.name || 'None'}</td>
+                    <td className="p-4 font-bold text-[#2C2C2C]">${p.price}</td>
                     <td className="p-4">
-                      <span className={`font-bold ${p.stock_quantity === 0 ? 'text-rose-400' : p.stock_quantity < 5 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                      <span className={`font-bold ${p.stock_quantity === 0 ? 'text-rose-600' : p.stock_quantity < 5 ? 'text-amber-600' : 'text-emerald-600'}`}>
                         {p.stock_quantity}
                       </span>
                     </td>
                     <td className="p-4">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${p.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${p.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
                         {p.is_active ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     <td className="p-4 text-right space-x-2">
                       <button
                         onClick={() => openEditProduct(p)}
-                        className="p-2 text-slate-400 hover:text-sky-400 hover:bg-slate-800 rounded-lg transition-colors"
+                        className="p-2 text-slate-500 hover:text-[#FB6557] hover:bg-slate-100 rounded-lg transition-colors"
                         title="Edit product"
                       >
                         <Edit className="w-4 h-4" />
@@ -254,7 +254,7 @@ export const AdminPanel = () => {
                           setNewStockVal(p.stock_quantity);
                           setIsStockModalOpen(true);
                         }}
-                        className="p-2 text-slate-400 hover:text-amber-400 hover:bg-slate-800 rounded-lg transition-colors"
+                        className="p-2 text-slate-500 hover:text-amber-600 hover:bg-slate-100 rounded-lg transition-colors"
                         title="Direct stock update"
                       >
                         <RefreshCw className="w-4 h-4" />
@@ -272,10 +272,10 @@ export const AdminPanel = () => {
       {activeTab === 'categories' && (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-white">Product Categories ({categories?.length || 0})</h2>
+            <h2 className="text-xl font-bold text-[#2C2C2C]">Product Categories ({categories?.length || 0})</h2>
             <button
               onClick={() => setIsCategoryModalOpen(true)}
-              className="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 shadow-lg shadow-sky-600/25 transition-all"
+              className="px-4 py-2.5 bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] font-semibold text-xs rounded-xl flex items-center gap-2 shadow-md transition-all"
             >
               <Plus className="w-4 h-4" />
               Add Category
@@ -284,12 +284,12 @@ export const AdminPanel = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {categories?.map((cat) => (
-              <div key={cat.id} className="glass-card p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+              <div key={cat.id} className="glass-card p-5 rounded-2xl border border-slate-200 bg-white flex items-center justify-between shadow-sm">
                 <div>
-                  <h3 className="font-bold text-white text-base">{cat.name}</h3>
+                  <h3 className="font-bold text-[#2C2C2C] text-base">{cat.name}</h3>
                   <span className="text-xs text-slate-500">{cat.slug}</span>
                 </div>
-                <Layers className="w-6 h-6 text-sky-400/50" />
+                <Layers className="w-6 h-6 text-[#FB6557]/60" />
               </div>
             ))}
           </div>
@@ -299,25 +299,25 @@ export const AdminPanel = () => {
       {/* ORDERS TAB */}
       {activeTab === 'orders' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-white">System Orders ({orders?.length || 0})</h2>
+          <h2 className="text-xl font-bold text-[#2C2C2C]">System Orders ({orders?.length || 0})</h2>
           <div className="space-y-4">
             {orders?.map((ord) => (
-              <div key={ord.id} className="glass-card p-5 rounded-2xl border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div key={ord.id} className="glass-card p-5 rounded-2xl border border-slate-200 bg-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-white text-base">Order #{ord.id}</span>
-                    <span className="text-xs text-slate-400">Customer: <strong className="text-sky-300">{ord.customer_username}</strong></span>
+                    <span className="font-bold text-[#2C2C2C] text-base">Order #{ord.id}</span>
+                    <span className="text-xs text-slate-600">Customer: <strong className="text-[#FB6557]">{ord.customer_username}</strong></span>
                   </div>
                   <span className="text-xs text-slate-500">Placed: {new Date(ord.created_at).toLocaleString()}</span>
                 </div>
 
                 <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
-                  <span className="font-black text-lg text-white">${ord.total_price}</span>
+                  <span className="font-black text-lg text-[#2C2C2C]">${ord.total_price}</span>
 
                   <select
                     value={ord.status}
                     onChange={(e) => orderStatusMutation.mutate({ id: ord.id, status: e.target.value })}
-                    className="bg-slate-950 border border-slate-700 text-xs font-bold rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500"
+                    className="bg-slate-50 border border-slate-300 text-xs font-bold rounded-xl px-3 py-2 text-[#2C2C2C] focus:outline-none focus:border-[#FB6557]"
                   >
                     <option value="pending">Pending</option>
                     <option value="processing">Processing</option>
@@ -334,41 +334,41 @@ export const AdminPanel = () => {
       {/* MODALS */}
       {/* Product Add/Edit Modal */}
       {isProductModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="glass-card max-w-lg w-full p-6 rounded-3xl border border-slate-800 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="glass-card max-w-lg w-full p-6 rounded-3xl border border-slate-200 bg-white space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 className="text-lg font-bold text-[#2C2C2C]">
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h3>
-              <button onClick={() => setIsProductModalOpen(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setIsProductModalOpen(false)} className="text-slate-400 hover:text-[#2C2C2C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleProductSubmit} className="space-y-4 text-sm">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Product Name</label>
+                <label className="block text-xs font-semibold text-[#2C2C2C] uppercase mb-1">Product Name</label>
                 <input
                   type="text"
                   required
                   value={prodName}
                   onChange={(e) => setProdName(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-[#2C2C2C] outline-none focus:border-[#FB6557]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Description</label>
+                <label className="block text-xs font-semibold text-[#2C2C2C] uppercase mb-1">Description</label>
                 <textarea
                   value={prodDesc}
                   onChange={(e) => setProdDesc(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-500 h-20"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-[#2C2C2C] outline-none focus:border-[#FB6557] h-20"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Price ($)</label>
+                  <label className="block text-xs font-semibold text-[#2C2C2C] uppercase mb-1">Price ($)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -376,30 +376,30 @@ export const AdminPanel = () => {
                     required
                     value={prodPrice}
                     onChange={(e) => setProdPrice(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-500"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-[#2C2C2C] outline-none focus:border-[#FB6557]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Stock Quantity</label>
+                  <label className="block text-xs font-semibold text-[#2C2C2C] uppercase mb-1">Stock Quantity</label>
                   <input
                     type="number"
                     min="0"
                     required
                     value={prodStock}
                     onChange={(e) => setProdStock(parseInt(e.target.value) || 0)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-500"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-[#2C2C2C] outline-none focus:border-[#FB6557]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Category</label>
+                <label className="block text-xs font-semibold text-[#2C2C2C] uppercase mb-1">Category</label>
                 <select
                   required
                   value={prodCategory}
                   onChange={(e) => setProdCategory(Number(e.target.value))}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-[#2C2C2C] outline-none focus:border-[#FB6557]"
                 >
                   <option value="">Select Category</option>
                   {categories?.map((cat) => (
@@ -411,13 +411,13 @@ export const AdminPanel = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Image URL (Optional)</label>
+                <label className="block text-xs font-semibold text-[#2C2C2C] uppercase mb-1">Image URL (Optional)</label>
                 <input
                   type="url"
                   value={prodImageUrl}
                   onChange={(e) => setProdImageUrl(e.target.value)}
                   placeholder="https://cloudinary.com/..."
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-[#2C2C2C] outline-none focus:border-[#FB6557]"
                 />
               </div>
 
@@ -427,14 +427,14 @@ export const AdminPanel = () => {
                   id="isActiveCheck"
                   checked={prodIsActive}
                   onChange={(e) => setProdIsActive(e.target.checked)}
-                  className="rounded text-sky-500 focus:ring-0"
+                  className="rounded text-[#FB6557] focus:ring-0"
                 />
-                <label htmlFor="isActiveCheck" className="text-slate-300 font-medium">Is Active (Soft Delete Toggle)</label>
+                <label htmlFor="isActiveCheck" className="text-[#2C2C2C] font-medium">Is Active (Soft Delete Toggle)</label>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl transition-all"
+                className="w-full py-3 bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] font-bold rounded-xl transition-all shadow-md"
               >
                 {editingProduct ? 'Save Product Changes' : 'Create Product'}
               </button>
@@ -445,27 +445,27 @@ export const AdminPanel = () => {
 
       {/* Direct Stock Update Modal */}
       {isStockModalOpen && selectedStockProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="glass-card max-w-sm w-full p-6 rounded-3xl border border-slate-800 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="glass-card max-w-sm w-full p-6 rounded-3xl border border-slate-200 bg-white space-y-4 shadow-2xl">
             <div className="flex justify-between items-center">
-              <h3 className="text-base font-bold text-white">Direct Stock Update</h3>
-              <button onClick={() => setIsStockModalOpen(false)} className="text-slate-400 hover:text-white">
+              <h3 className="text-base font-bold text-[#2C2C2C]">Direct Stock Update</h3>
+              <button onClick={() => setIsStockModalOpen(false)} className="text-slate-400 hover:text-[#2C2C2C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-400">
-              Updating stock for <strong className="text-white">{selectedStockProduct.name}</strong>
+            <p className="text-xs text-slate-600">
+              Updating stock for <strong className="text-[#2C2C2C]">{selectedStockProduct.name}</strong>
             </p>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">New Quantity</label>
+              <label className="block text-xs font-semibold text-[#2C2C2C] uppercase mb-1">New Quantity</label>
               <input
                 type="number"
                 min="0"
                 value={newStockVal}
                 onChange={(e) => setNewStockVal(parseInt(e.target.value) || 0)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white text-lg font-bold outline-none focus:border-sky-500"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-[#2C2C2C] text-lg font-bold outline-none focus:border-[#FB6557]"
               />
             </div>
 
@@ -473,7 +473,7 @@ export const AdminPanel = () => {
               onClick={() =>
                 stockMutation.mutate({ id: selectedStockProduct.id, stock_quantity: newStockVal })
               }
-              className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl transition-all"
+              className="w-full py-3 bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] font-bold rounded-xl transition-all shadow-md"
             >
               Update Stock
             </button>
@@ -483,23 +483,23 @@ export const AdminPanel = () => {
 
       {/* Category Create Modal */}
       {isCategoryModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="glass-card max-w-sm w-full p-6 rounded-3xl border border-slate-800 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="glass-card max-w-sm w-full p-6 rounded-3xl border border-slate-200 bg-white space-y-4 shadow-2xl">
             <div className="flex justify-between items-center">
-              <h3 className="text-base font-bold text-white">Add Category</h3>
-              <button onClick={() => setIsCategoryModalOpen(false)} className="text-slate-400 hover:text-white">
+              <h3 className="text-base font-bold text-[#2C2C2C]">Add Category</h3>
+              <button onClick={() => setIsCategoryModalOpen(false)} className="text-slate-400 hover:text-[#2C2C2C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Category Name</label>
+              <label className="block text-xs font-semibold text-[#2C2C2C] uppercase mb-1">Category Name</label>
               <input
                 type="text"
                 value={newCategoryName}
                 onChange={(e) => setNewCategoryName(e.target.value)}
                 placeholder="Electronics"
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-500"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-[#2C2C2C] outline-none focus:border-[#FB6557]"
               />
             </div>
 
@@ -507,7 +507,7 @@ export const AdminPanel = () => {
               onClick={() => {
                 if (newCategoryName) categoryMutation.mutate(newCategoryName);
               }}
-              className="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl transition-all"
+              className="w-full py-3 bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] font-bold rounded-xl transition-all shadow-md"
             >
               Create Category
             </button>

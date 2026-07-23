@@ -1,0 +1,23 @@
+# Version control
+.git
+.gitignore
+
+# Virtual environment & cache
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+
+# SQLite database & media
+db.sqlite3
+staticfiles/
+media/
+
+# Logs & IDE
+*.log
+.vscode/
+.idea/

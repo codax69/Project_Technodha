@@ -25,6 +25,10 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='products')
     image_url = models.URLField(max_length=500, blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    low_stock_threshold = models.PositiveIntegerField(
+        default=5,
+        help_text="Stock level at or below which this product is flagged as low stock."
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -44,6 +48,42 @@ class Product(models.Model):
     @property
     def is_orderable(self) -> bool:
         return self.is_active and self.stock_quantity > 0
+
+    @property
+    def is_low_stock(self) -> bool:
+        return self.is_active and 0 < self.stock_quantity <= self.low_stock_threshold
+
+    @property
+    def is_out_of_stock(self) -> bool:
+        return self.stock_quantity <= 0
+
+    def check_availability(self, requested_quantity: int) -> dict:
+        """
+        Checks whether `requested_quantity` units of this product can be
+        purchased right now, without mutating any state.
+
+        Returns a dict describing the availability outcome, suitable for
+        direct use in API responses.
+        """
+        errors = []
+        if not self.is_active:
+            errors.append(f"Product '{self.name}' is currently inactive.")
+        elif self.stock_quantity < requested_quantity:
+            errors.append(
+                f"Insufficient stock for '{self.name}'. "
+                f"Requested: {requested_quantity}, Available: {self.stock_quantity}."
+            )
+
+        return {
+            'product_id': self.id,
+            'product_name': self.name,
+            'requested_quantity': requested_quantity,
+            'available_stock': self.stock_quantity,
+            'is_active': self.is_active,
+            'is_available': not errors,
+            'is_low_stock': self.is_low_stock,
+            'messages': errors,
+        }
 
     def __str__(self):
         return f"{self.name} (${self.price}) [Stock: {self.stock_quantity}]"
