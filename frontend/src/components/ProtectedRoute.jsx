@@ -3,16 +3,17 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export const ProtectedRoute = ({ requiredRole }) => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isAdmin } = useAuth();
 
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#FB6557] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
+  // If unauthenticated
   if (!user) {
     if (requiredRole === 'admin') {
       return <Navigate to="/admin/login" replace />;
@@ -20,8 +21,14 @@ export const ProtectedRoute = ({ requiredRole }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/" replace />;
+  // If admin role is required but current user is not admin
+  if (requiredRole === 'admin' && !isAdmin) {
+    return <Navigate to="/products" replace />;
+  }
+
+  // Generic role requirement check
+  if (requiredRole && user.role !== requiredRole && !isAdmin) {
+    return <Navigate to="/products" replace />;
   }
 
   return <Outlet />;

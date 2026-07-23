@@ -105,6 +105,43 @@ class TestOrderBusinessLogic:
         assert order.status == Order.Status.CANCELLED
         assert self.product1.stock_quantity == 10 # Restocked!
 
+    def test_admin_can_progress_order_through_valid_transitions(self):
+        """pending -> processing -> completed is the only sanctioned forward path."""
+        order = OrderService.create_order(
+            customer=self.customer1,
+            items_data=[{'product_id': self.product1.id, 'quantity': 1}]
+        )
+        url = f'/api/orders/{order.id}/status/'
+
+        res1 = self.admin_client.patch(url, {'status': 'processing'})
+        assert res1.status_code == status.HTTP_200_OK
+        assert res1.data['status'] == 'processing'
+
+        res2 = self.admin_client.patch(url, {'status': 'completed'})
+        assert res2.status_code == status.HTTP_200_OK
+        assert res2.data['status'] == 'completed'
+
+    def test_admin_cannot_skip_or_reverse_order_status(self):
+        """Illegal transitions (skipping stages or reversing) must be rejected."""
+        order = OrderService.create_order(
+            customer=self.customer1,
+            items_data=[{'product_id': self.product1.id, 'quantity': 1}]
+        )
+        url = f'/api/orders/{order.id}/status/'
+
+        # Cannot jump straight from pending to completed, skipping processing.
+        res = self.admin_client.patch(url, {'status': 'completed'})
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+        # Progress legitimately, then attempt an illegal reversal.
+        self.admin_client.patch(url, {'status': 'processing'})
+        self.admin_client.patch(url, {'status': 'completed'})
+        reversal_res = self.admin_client.patch(url, {'status': 'pending'})
+        assert reversal_res.status_code == status.HTTP_400_BAD_REQUEST
+
+        order.refresh_from_db()
+        assert order.status == Order.Status.COMPLETED
+
     def test_customer_cannot_view_another_customers_order(self):
         """Test order history privacy: customer2 cannot read customer1's order."""
         order1 = OrderService.create_order(

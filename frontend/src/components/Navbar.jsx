@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { ShoppingCart, Package, LayoutDashboard, LogOut, Shield } from 'lucide-react';
@@ -8,7 +8,13 @@ export const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
   const { totalItems } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
   const [logoFailed, setLogoFailed] = useState(false);
+
+  // Remove top navbar on all admin routes
+  if (location.pathname.startsWith('/admin')) {
+    return null;
+  }
 
   const handleLogout = async () => {
     await logout();
@@ -16,36 +22,28 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FBFBF8]/90 border-b border-[#2C2C2C]/10 backdrop-blur-md shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div className="flex items-center space-x-8">
-          <Link to="/" className="flex items-center space-x-3 group">
+    <header className="sticky top-0 z-40 bg-background/95 border-b backdrop-blur-md shadow-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-2 group">
             {!logoFailed ? (
               <img
                 src="/technodha_logo.webp"
                 alt="TECHNODHA Logo"
                 onError={() => setLogoFailed(true)}
-                className="h-10 w-auto object-contain rounded-lg group-hover:scale-105 transition-transform"
+                className="h-7 w-auto object-contain rounded-md group-hover:scale-105 transition-transform"
               />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-[#FB6557] flex items-center justify-center shadow-lg shadow-[#FB6557]/20 group-hover:scale-105 transition-transform">
-                <Package className="w-6 h-6 text-[#FBFBF8]" />
+              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shadow-xs">
+                <Package className="w-4 h-4 text-primary-foreground" />
               </div>
             )}
-            {/* <div>
-              <span className="font-bold text-xl tracking-tight text-[#2C2C2C]">
-                TECHNODHA
-              </span>
-              <span className="block text-[10px] uppercase tracking-widest text-[#FB6557] font-semibold">
-                Inventory & Orders
-              </span>
-            </div> */}
           </Link>
 
           <nav className="hidden md:flex items-center space-x-1">
             <Link
               to="/products"
-              className="px-3 py-2 rounded-lg text-sm font-medium text-[#2C2C2C]/80 hover:text-[#2C2C2C] hover:bg-[#2C2C2C]/5 transition-colors"
+              className="px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
             >
               Catalogue
             </Link>
@@ -53,7 +51,7 @@ export const Navbar = () => {
             {user && (
               <Link
                 to="/orders"
-                className="px-3 py-2 rounded-lg text-sm font-medium text-[#2C2C2C]/80 hover:text-[#2C2C2C] hover:bg-[#2C2C2C]/5 transition-colors"
+                className="px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
               >
                 Orders
               </Link>
@@ -62,9 +60,9 @@ export const Navbar = () => {
             {user && (
               <Link
                 to="/dashboard"
-                className="px-3 py-2 rounded-lg text-sm font-medium text-[#2C2C2C]/80 hover:text-[#2C2C2C] hover:bg-[#2C2C2C]/5 transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors flex items-center gap-1"
               >
-                <LayoutDashboard className="w-4 h-4 text-[#FB6557]" />
+                <LayoutDashboard className="w-3.5 h-3.5 text-primary" />
                 Dashboard
               </Link>
             )}
@@ -72,24 +70,24 @@ export const Navbar = () => {
             {isAdmin && (
               <Link
                 to="/admin"
-                className="px-3 py-2 rounded-lg text-sm font-medium text-[#FB6557] hover:bg-[#FB6557]/10 border border-[#FB6557]/30 transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/10 border border-primary/30 rounded-md transition-colors flex items-center gap-1"
               >
-                <Shield className="w-4 h-4" />
+                <Shield className="w-3.5 h-3.5" />
                 Admin Panel
               </Link>
             )}
           </nav>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           {!isAdmin && (
             <Link
               to="/cart"
-              className="relative p-2 rounded-xl bg-[#2C2C2C]/5 hover:bg-[#2C2C2C]/10 text-[#2C2C2C] transition-all border border-[#2C2C2C]/10"
+              className="relative p-1.5 rounded-lg bg-accent hover:bg-accent/80 text-foreground transition-all border"
             >
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className="w-4 h-4" />
               {totalItems > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-[#FB6557] text-[#FBFBF8] text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg shadow-[#FB6557]/40">
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                   {totalItems}
                 </span>
               )}
@@ -97,34 +95,34 @@ export const Navbar = () => {
           )}
 
           {user ? (
-            <div className="flex items-center space-x-3 pl-2 border-l border-[#2C2C2C]/10">
+            <div className="flex items-center space-x-2 pl-2 border-l">
               <div className="text-right hidden sm:block">
-                <span className="block text-sm font-semibold text-[#2C2C2C]">{user.username}</span>
-                <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
-                  isAdmin ? 'bg-amber-500/20 text-amber-600 border border-amber-500/30' : 'bg-[#FB6557]/10 text-[#FB6557] border border-[#FB6557]/30'
+                <span className="block text-xs font-semibold text-foreground leading-none">{user.username}</span>
+                <span className={`text-[9px] uppercase font-bold px-1.5 py-0.2 rounded-full ${
+                  isAdmin ? 'bg-amber-500/20 text-amber-600 border border-amber-500/30' : 'bg-primary/10 text-primary border border-primary/30'
                 }`}>
                   {user.role}
                 </span>
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 text-[#2C2C2C]/60 hover:text-[#FB6557] hover:bg-[#FB6557]/10 rounded-xl transition-colors"
+                className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                 title="Logout"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-4 h-4" />
               </button>
             </div>
           ) : (
             <div className="flex items-center space-x-2">
               <Link
                 to="/login"
-                className="px-4 py-2 text-sm font-medium text-[#2C2C2C]/80 hover:text-[#2C2C2C] transition-colors"
+                className="px-3 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
-                className="px-4 py-2 text-sm font-medium bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] rounded-xl shadow-md shadow-[#FB6557]/30 transition-all hover:scale-[1.02]"
+                className="px-3 py-1 text-xs font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg shadow-xs transition-all"
               >
                 Register
               </Link>

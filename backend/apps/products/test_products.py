@@ -22,6 +22,12 @@ class TestProducts:
         self.customer_client = APIClient()
         self.customer_client.force_authenticate(user=self.customer)
 
+    def test_category_slug_collision_gets_unique_suffix(self):
+        cat1 = Category.objects.create(name='Cafe')
+        cat2 = Category.objects.create(name='Café')  # slugifies to the same base as 'Cafe'
+        assert cat1.slug != cat2.slug
+        assert cat2.slug.startswith(cat1.slug)
+
     def test_customer_cannot_create_product(self):
         url = '/api/products/'
         payload = {
@@ -50,6 +56,39 @@ class TestProducts:
         stock_res = self.admin_client.post(stock_url, {'stock_quantity': 45})
         assert stock_res.status_code == status.HTTP_200_OK
         assert stock_res.data['stock_quantity'] == 45
+
+    def test_admin_cannot_delete_category_referenced_by_product(self):
+        Product.objects.create(
+            name='Anchored Product', price=Decimal('15.00'), stock_quantity=1, category=self.category
+        )
+        res = self.admin_client.delete(f'/api/products/categories/{self.category.id}/')
+        assert res.status_code == status.HTTP_409_CONFLICT
+        assert Category.objects.filter(id=self.category.id).exists()
+
+    def test_admin_delete_soft_deletes_product(self):
+        product = Product.objects.create(
+            name='Old Router', price=Decimal('80.00'), stock_quantity=3, category=self.category
+        )
+        res = self.admin_client.delete(f'/api/products/{product.id}/')
+        assert res.status_code == status.HTTP_204_NO_CONTENT
+
+        product.refresh_from_db()
+        assert product.is_active is False
+        # The row itself must still exist (soft delete, not a hard delete).
+        assert Product.objects.filter(id=product.id).exists()
+
+    def test_deleting_product_referenced_by_order_does_not_crash(self):
+        from apps.orders.services import OrderService
+
+        product = Product.objects.create(
+            name='Popular Item', price=Decimal('20.00'), stock_quantity=10, category=self.category
+        )
+        OrderService.create_order(customer=self.customer, items_data=[{'product_id': product.id, 'quantity': 1}])
+
+        res = self.admin_client.delete(f'/api/products/{product.id}/')
+        assert res.status_code == status.HTTP_204_NO_CONTENT
+        product.refresh_from_db()
+        assert product.is_active is False
 
     def test_product_list_supports_limit_offset_pagination(self):
         for i in range(15):
@@ -89,6 +128,24 @@ class TestProducts:
         assert res.status_code == status.HTTP_200_OK
         assert res.data['is_available'] is False
         assert len(res.data['messages']) == 1
+
+    def test_check_stock_hides_inactive_products_from_customers(self):
+        hidden_product = Product.objects.create(
+            name='Unreleased Gadget', price=Decimal('99.00'), stock_quantity=50,
+            category=self.category, is_active=False
+        )
+        payload = {'items': [{'product_id': hidden_product.id, 'quantity': 1}]}
+
+        res = self.customer_client.post('/api/products/check-stock/', payload, format='json')
+        assert res.status_code == status.HTTP_200_OK
+        result = res.data['results'][0]
+        assert result['is_available'] is False
+        assert result['product_name'] is None  # not leaked to the customer
+
+        # Admins, however, should still be able to see the real state.
+        admin_res = self.admin_client.post('/api/products/check-stock/', payload, format='json')
+        admin_result = admin_res.data['results'][0]
+        assert admin_result['product_name'] == 'Unreleased Gadget'
 
     def test_check_stock_bulk_endpoint(self):
         in_stock = Product.objects.create(

@@ -118,7 +118,7 @@ export const CartPage = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-[#2C2C2C] text-base">{product.name}</h3>
-                    <p className="text-slate-500 text-xs">${product.price} each</p>
+                    <p className="text-slate-500 text-xs">₹{product.price} each</p>
                     <p className="text-[11px] text-[#FB6557] font-semibold">Available Stock: {product.stock_quantity}</p>
                   </div>
                 </div>
@@ -144,7 +144,7 @@ export const CartPage = () => {
                   <div className="text-right">
                     <span className="text-xs text-slate-400 block">Subtotal</span>
                     <span className="font-bold text-[#2C2C2C] text-base">
-                      ${(parseFloat(product.price) * quantity).toFixed(2)}
+                      ₹{(parseFloat(product.price) * quantity).toFixed(2)}
                     </span>
                   </div>
 
@@ -167,7 +167,7 @@ export const CartPage = () => {
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-slate-600">
                 <span>Items Total</span>
-                <span className="font-medium text-[#2C2C2C]">${totalAmount.toFixed(2)}</span>
+                <span className="font-medium text-[#2C2C2C]">₹{totalAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Stock Integrity Check</span>
@@ -175,7 +175,7 @@ export const CartPage = () => {
               </div>
               <div className="border-t border-slate-100 pt-3 flex justify-between text-base">
                 <span className="font-bold text-[#2C2C2C]">Estimated Total</span>
-                <span className="font-black text-2xl text-[#FB6557]">${totalAmount.toFixed(2)}</span>
+                <span className="font-black text-2xl text-[#FB6557]">₹{totalAmount.toFixed(2)}</span>
               </div>
             </div>
 

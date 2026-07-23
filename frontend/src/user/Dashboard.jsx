@@ -68,7 +68,7 @@ export const Dashboard = () => {
               <span className="text-xs font-bold uppercase text-emerald-600">Total Revenue</span>
               <DollarSign className="w-6 h-6 text-emerald-600" />
             </div>
-            <p className="text-3xl font-black text-emerald-600">${adminData.revenue}</p>
+            <p className="text-3xl font-black text-emerald-600">₹{adminData.revenue}</p>
           </div>
         </div>
 
@@ -111,7 +111,7 @@ export const Dashboard = () => {
             <span className="text-xs font-bold uppercase text-emerald-600">Total Spent</span>
             <DollarSign className="w-6 h-6 text-emerald-600" />
           </div>
-          <p className="text-3xl font-black text-emerald-600">${customerData?.total_spent || '0.00'}</p>
+          <p className="text-3xl font-black text-emerald-600">₹{customerData?.total_spent || '0.00'}</p>
         </div>
       </div>
 
@@ -132,7 +132,7 @@ export const Dashboard = () => {
                 <span className="block text-xs text-slate-500">{new Date(ord.created_at).toLocaleDateString()}</span>
               </div>
               <div className="text-right">
-                <span className="font-bold text-[#2C2C2C] text-base">${ord.total_price}</span>
+                <span className="font-bold text-[#2C2C2C] text-base">₹{ord.total_price}</span>
                 <span className="block text-[11px] uppercase font-bold text-[#FB6557]">{ord.status}</span>
               </div>
             </div>

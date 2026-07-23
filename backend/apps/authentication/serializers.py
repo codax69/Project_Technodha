@@ -15,17 +15,18 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password', 'role')
-        extra_kwargs = {
-            'role': {'required': False, 'default': User.Role.CUSTOMER}
-        }
+        # `role` is intentionally read-only: public registration must always
+        # create a customer account. Admin accounts are provisioned out of
+        # band (e.g. `createsuperuser`), never via this open endpoint.
+        read_only_fields = ('id', 'role')
 
     def create(self, validated_data):
-        role = validated_data.get('role', User.Role.CUSTOMER)
+        validated_data.pop('role', None)
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            role=role
+            role=User.Role.CUSTOMER
         )
         return user
 

@@ -95,7 +95,7 @@ export const OrderHistory = () => {
                 <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                   <div className="text-right">
                     <span className="text-xs text-slate-400 block">Total Price</span>
-                    <span className="font-black text-xl text-[#FB6557]">${order.total_price}</span>
+                    <span className="font-black text-xl text-[#FB6557]">₹{order.total_price}</span>
                   </div>
 
                   {order.status === 'pending' && (
@@ -125,11 +125,11 @@ export const OrderHistory = () => {
                         <div>
                           <p className="font-medium text-sm text-[#2C2C2C]">{item.product_name}</p>
                           <p className="text-xs text-slate-500">
-                            {item.quantity} × ${item.unit_price_at_purchase}
+                            {item.quantity} × ₹{item.unit_price_at_purchase}
                           </p>
                         </div>
                       </div>
-                      <span className="font-bold text-sm text-[#2C2C2C]">${item.subtotal}</span>
+                      <span className="font-bold text-sm text-[#2C2C2C]">₹{item.subtotal}</span>
                     </div>
                   ))}
                 </div>

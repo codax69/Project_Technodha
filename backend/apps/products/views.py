@@ -1,3 +1,4 @@
+from django.db.models import ProtectedError
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -31,6 +32,15 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name']
 
+    def destroy(self, request, *args, **kwargs):
+        try:
+            return super().destroy(request, *args, **kwargs)
+        except ProtectedError:
+            return Response(
+                {"detail": "Cannot delete this category because one or more products still reference it."},
+                status=status.HTTP_409_CONFLICT
+            )
+
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [IsAdminOrReadOnly]
@@ -46,6 +56,16 @@ class ProductViewSet(viewsets.ModelViewSet):
         if not (user and user.is_authenticated and (user.role == 'admin' or user.is_staff or user.is_superuser)):
             queryset = queryset.filter(is_active=True)
         return queryset
+
+    def perform_destroy(self, instance):
+        """
+        Soft-delete only: deactivate the product instead of removing the row.
+        This preserves referential integrity for existing OrderItems (which
+        PROTECT their Product FK) and matches the API contract, which treats
+        DELETE as `is_active = False` rather than a hard delete.
+        """
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
 
     @extend_schema(
         summary="Update product stock quantity directly",
@@ -110,7 +130,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         items = serializer.validated_data['items']
         product_ids = {item['product_id'] for item in items}
-        products_map = {p.id: p for p in Product.objects.filter(id__in=product_ids)}
+        # Reuse the same visibility rules as list/retrieve so a customer can't
+        # use this bulk endpoint to enumerate inactive/hidden products.
+        products_map = {p.id: p for p in self.get_queryset().filter(id__in=product_ids)}
 
         results = []
         for item in items:

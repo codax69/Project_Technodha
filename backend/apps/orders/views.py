@@ -108,7 +108,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         else:
             customer_orders = Order.objects.filter(customer=user)
             total_orders = customer_orders.count()
-            recent_orders = OrderSerializer(customer_orders[:5], many=True).data
+            recent_orders = OrderSerializer(
+                customer_orders.prefetch_related('items__product')[:5], many=True
+            ).data
             
             spent_data = customer_orders.exclude(status=Order.Status.CANCELLED).aggregate(
                 total_spent=Sum('total_price')

@@ -11,7 +11,16 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            base_slug = slugify(self.name) or 'category'
+            slug = base_slug
+            counter = 1
+            # Guard against different names slugifying to the same value
+            # (e.g. "Cafe" and "Café"), which would otherwise raise an
+            # unhandled IntegrityError on the unique `slug` column.
+            while Category.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                counter += 1
+                slug = f"{base_slug}-{counter}"
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def __str__(self):
