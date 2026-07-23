@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: technodha_postgres_db
+    environment:
+      POSTGRES_DB: technodha_db
+      POSTGRES_USER: technodha_user
+      POSTGRES_PASSWORD: technodha_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U technodha_user -d technodha_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: technodha_django_backend
+    command: >
+      sh -c "python manage.py makemigrations authentication products orders &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=django-insecure-technodha-task1-secret-key-2026
+      - DEBUG=True
+      - DB_ENGINE=django.db.backends.postgresql
+      - POSTGRES_DB=technodha_db
+      - POSTGRES_USER=technodha_user
+      - POSTGRES_PASSWORD=technodha_pass
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: technodha_react_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
