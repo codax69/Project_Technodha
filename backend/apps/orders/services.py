@@ -101,7 +101,9 @@ class OrderService:
     @staticmethod
     def cancel_order(order: Order, requesting_user) -> Order:
         """
-        Cancels a pending order and restocks items inside an atomic transaction block.
+        Cancels an order and restocks items inside an atomic transaction block.
+        - Customers can only cancel pending orders.
+        - Admins can cancel any active non-cancelled order.
         """
         with transaction.atomic():
             # Refresh and lock order instance
@@ -110,7 +112,9 @@ class OrderService:
             if locked_order.status == Order.Status.CANCELLED:
                 raise ValidationError({"order": "Order is already cancelled."})
 
-            if locked_order.status != Order.Status.PENDING:
+            is_admin = getattr(requesting_user, 'role', '') == 'admin' or getattr(requesting_user, 'is_staff', False) or getattr(requesting_user, 'is_superuser', False)
+
+            if not is_admin and locked_order.status != Order.Status.PENDING:
                 raise ValidationError({"order": f"Cannot cancel order in '{locked_order.status}' status. Only pending orders can be cancelled."})
 
             # Fetch and lock order items' products

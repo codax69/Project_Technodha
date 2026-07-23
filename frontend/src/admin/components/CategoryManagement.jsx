@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Layers, Plus, Edit, Trash2, X, AlertCircle } from 'lucide-react';
+import { toast } from '@/components/ui/toast';
 
 export const CategoryManagement = ({ categories, categoryMutation, updateCategoryMutation, deleteCategoryMutation }) => {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -37,9 +38,20 @@ export const CategoryManagement = ({ categories, categoryMutation, updateCategor
             setIsCategoryModalOpen(false);
             setEditingCategory(null);
             setCategoryName('');
+            toast.create({
+              title: "Category Updated",
+              description: `Renamed to "${categoryName}"`,
+              type: "success",
+            });
           },
           onError: (err) => {
-            setErrorMessage(err?.response?.data?.detail || 'Failed to update category.');
+            const msg = err?.response?.data?.detail || 'Failed to update category.';
+            setErrorMessage(msg);
+            toast.create({
+              title: "Update Failed",
+              description: msg,
+              type: "error",
+            });
           },
         }
       );
@@ -48,9 +60,20 @@ export const CategoryManagement = ({ categories, categoryMutation, updateCategor
         onSuccess: () => {
           setIsCategoryModalOpen(false);
           setCategoryName('');
+          toast.create({
+            title: "Category Created",
+            description: `Added "${categoryName}"`,
+            type: "success",
+          });
         },
         onError: (err) => {
-          setErrorMessage(err?.response?.data?.detail || 'Failed to create category.');
+          const msg = err?.response?.data?.detail || 'Failed to create category.';
+          setErrorMessage(msg);
+          toast.create({
+            title: "Creation Failed",
+            description: msg,
+            type: "error",
+          });
         },
       });
     }
@@ -58,16 +81,27 @@ export const CategoryManagement = ({ categories, categoryMutation, updateCategor
 
   const handleDelete = () => {
     if (!deleteConfirmCategory) return;
-    setErrorMessage(null);
+
     deleteCategoryMutation.mutate(deleteConfirmCategory.id, {
       onSuccess: () => {
+        toast.create({
+          title: "Category Deleted",
+          description: `Deleted "${deleteConfirmCategory.name}"`,
+          type: "success",
+        });
         setDeleteConfirmCategory(null);
+        setErrorMessage(null);
       },
       onError: (err) => {
-        setErrorMessage(
-          err?.response?.data?.detail ||
-          'Cannot delete category because active products reference it.'
-        );
+        const msg = err?.response?.status === 409 || err?.response?.data?.detail
+          ? "Cannot delete category because active products are assigned to it."
+          : "Failed to delete category.";
+        setErrorMessage(msg);
+        toast.create({
+          title: "Delete Failed",
+          description: msg,
+          type: "error",
+        });
       },
     });
   };

@@ -1,8 +1,16 @@
 import os
+import cloudinary
 from datetime import timedelta
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Loads the root .env (used by docker-compose's `env_file`) so plain local
+# `manage.py runserver` picks up the same variables (DB creds, Cloudinary,
+# etc.) without requiring Docker. No-ops silently if the file is absent -
+# real deployments should set env vars directly instead of shipping a .env.
+load_dotenv(BASE_DIR.parent / '.env')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-technodha-task1-secret-key-2026')
 
@@ -146,3 +154,19 @@ SPECTACULAR_SETTINGS = {
 
 # CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Cloudinary Settings
+# Server-side signed uploads only - the API secret must never be exposed to
+# the frontend/browser. The client uploads the raw file to our own API
+# (apps.products.views.ProductViewSet.upload_image), which then performs the
+# signed upload to Cloudinary and returns the secure_url to persist.
+CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', 'dltmiswel')
+CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY', '')
+CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', '')
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
+    secure=True,
+)

@@ -4,6 +4,8 @@ import { useCart } from '../context/CartContext';
 import { apiClient } from '../api/client';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, AlertTriangle, CheckCircle2 } from 'lucide-react';
 
+import { toast } from '@/components/ui/toast';
+
 export const CartPage = () => {
   const { cart, updateQuantity, removeFromCart, clearCart, totalAmount } = useCart();
   const navigate = useNavigate();
@@ -28,15 +30,25 @@ export const CartPage = () => {
       const order = res.data;
       clearCart();
       setSuccessOrder(order.id);
+      toast.create({
+        title: "Order Placed Successfully!",
+        description: `Order #${order.id} placed for ₹${parseFloat(order.total_price).toFixed(2)}`,
+        type: "success",
+      });
     } catch (err) {
+      let msg = 'Failed to place order due to stock constraints.';
       if (err.response?.data?.stock_error) {
         const errors = err.response.data.stock_error;
-        setErrorMessage(Array.isArray(errors) ? errors.join(' ') : errors);
+        msg = Array.isArray(errors) ? errors.join(' ') : errors;
       } else if (err.response?.data?.detail) {
-        setErrorMessage(err.response.data.detail);
-      } else {
-        setErrorMessage('Failed to place order due to stock constraints.');
+        msg = err.response.data.detail;
       }
+      setErrorMessage(msg);
+      toast.create({
+        title: "Order Placement Failed",
+        description: msg,
+        type: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }

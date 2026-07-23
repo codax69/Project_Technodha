@@ -1,6 +1,7 @@
 from django.db.models import ProtectedError
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
@@ -12,6 +13,7 @@ from .serializers import (
     StockUpdateSerializer,
     ProductAvailabilityCheckSerializer,
 )
+from .services import ProductImageService
 from apps.authentication.permissions import IsAdminRole
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -80,6 +82,27 @@ class ProductViewSet(viewsets.ModelViewSet):
         product.stock_quantity = serializer.validated_data['stock_quantity']
         product.save()
         return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        summary="Upload a product image (Admin only)",
+        description=(
+            "Accepts a single image file (multipart/form-data, field name "
+            "`image`, max 1MB) and performs a signed server-side upload to "
+            "Cloudinary. Returns the resulting `url`, which should then be "
+            "submitted as `image_url` when creating/updating a product. This "
+            "endpoint does not itself create or modify any Product."
+        ),
+    )
+    @action(
+        detail=False,
+        methods=['post'],
+        permission_classes=[IsAdminRole],
+        parser_classes=[MultiPartParser],
+        url_path='upload-image',
+    )
+    def upload_image(self, request):
+        url = ProductImageService.upload(request.FILES.get('image'))
+        return Response({'url': url}, status=status.HTTP_201_CREATED)
 
     @extend_schema(
         summary="Check availability of a single product",

@@ -16,7 +16,8 @@ import {
   UploadCloud,
   CheckCircle2,
 } from 'lucide-react';
-import { uploadImageToCloudinary } from '@/utils/cloudinary';
+import { uploadProductImage } from '@/utils/imageUpload';
+import { toast } from '@/components/ui/toast';
 
 export const ProductManagement = ({ products, categories, productMutation, stockMutation, deleteProductMutation }) => {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -94,6 +95,18 @@ export const ProductManagement = ({ products, categories, productMutation, stock
       onSuccess: () => {
         setIsProductModalOpen(false);
         resetProductForm();
+        toast.create({
+          title: editingProduct ? "Product Updated" : "Product Created",
+          description: `Successfully saved "${prodName}"`,
+          type: "success",
+        });
+      },
+      onError: (err) => {
+        toast.create({
+          title: "Save Failed",
+          description: err.response?.data?.detail || "Could not save product.",
+          type: "error",
+        });
       },
     });
   };
@@ -102,6 +115,11 @@ export const ProductManagement = ({ products, categories, productMutation, stock
     if (!deleteConfirmProduct) return;
     deleteProductMutation.mutate(deleteConfirmProduct.id, {
       onSuccess: () => {
+        toast.create({
+          title: "Product Deleted",
+          description: `Deleted "${deleteConfirmProduct.name}"`,
+          type: "success",
+        });
         setDeleteConfirmProduct(null);
       },
     });
@@ -124,7 +142,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
     setUploadSuccess(false);
 
     try {
-      const url = await uploadImageToCloudinary(file);
+      const url = await uploadProductImage(file);
       setProdImageUrl(url);
       setUploadSuccess(true);
     } catch (err) {
@@ -149,7 +167,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
         <div>
           <h2 className="text-xl font-bold tracking-tight">Product Catalogue Management</h2>
           <p className="text-xs text-muted-foreground">
-            Manage items, upload Cloudinary images (max 1MB limit), and adjust stock ({filteredProducts?.length || 0} displayed)
+            Manage items, upload product images (max 1MB limit), and adjust stock ({filteredProducts?.length || 0} displayed)
           </p>
         </div>
         <Button onClick={openAddProduct} className="gap-2">
@@ -333,7 +351,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
                 </select>
               </div>
 
-              {/* Cloudinary File Upload Input (Max 1MB limit) */}
+              {/* Product Image Upload Input (Max 1MB limit) */}
               <div className="space-y-2 border-t pt-3">
                 <label className="block text-xs font-bold uppercase text-primary flex items-center gap-1.5">
                   <UploadCloud className="w-4 h-4" /> Upload Product Image (Max 1MB)
@@ -345,15 +363,15 @@ export const ProductManagement = ({ products, categories, productMutation, stock
                     accept="image/*"
                     onChange={handleFileUpload}
                     className="hidden"
-                    id="cloudinaryFileInput"
+                    id="productImageFileInput"
                     disabled={isUploadingImage}
                   />
                   <label
-                    htmlFor="cloudinaryFileInput"
+                    htmlFor="productImageFileInput"
                     className="cursor-pointer text-xs flex flex-col items-center gap-1 text-muted-foreground"
                   >
                     <UploadCloud className="w-6 h-6 text-primary" />
-                    <span>{isUploadingImage ? 'Uploading to Cloudinary...' : 'Click to select image file (Max 1MB limit)'}</span>
+                    <span>{isUploadingImage ? 'Uploading image...' : 'Click to select image file (Max 1MB limit)'}</span>
                   </label>
                 </div>
 
@@ -377,7 +395,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
                     type="url"
                     value={prodImageUrl}
                     onChange={(e) => setProdImageUrl(e.target.value)}
-                    placeholder="https://res.cloudinary.com/..."
+                    placeholder="https://example.com/image.jpg"
                     className="text-xs"
                   />
                 </div>

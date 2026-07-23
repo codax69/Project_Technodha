@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Toaster } from '@/components/ui/toast';
 import { Navbar } from './components/Navbar';
 import { UserRoutes } from './user/userRoutes';
 import { AdminRoutes } from './admin/adminRoutes';
@@ -23,19 +24,21 @@ export const App = () => {
       <AuthProvider>
         <CartProvider>
           <TooltipProvider>
-            <Router>
-              <div className="min-h-screen flex flex-col bg-[#FBFBF8] text-[#2C2C2C]">
-                <Navbar />
-                <main className="flex-1 pb-12">
-                  <Routes>
-                    {UserRoutes}
-                    {AdminRoutes}
-                    {/* Fallback Catch-all */}
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </main>
-              </div>
-            </Router>
+            <Toaster>
+              <Router>
+                <div className="min-h-screen flex flex-col bg-[#FBFBF8] text-[#2C2C2C]">
+                  <Navbar />
+                  <main className="flex-1 pb-12">
+                    <Routes>
+                      {UserRoutes}
+                      {AdminRoutes}
+                      {/* Fallback Catch-all */}
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </main>
+                </div>
+              </Router>
+            </Toaster>
           </TooltipProvider>
         </CartProvider>
       </AuthProvider>

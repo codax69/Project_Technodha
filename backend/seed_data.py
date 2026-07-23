@@ -83,7 +83,7 @@ def seed():
             "name": "Ergonomic Wireless Mouse",
             "description": "Dual-mode Bluetooth & 2.4GHz wireless precision optical mouse.",
             "price": Decimal("1299.00"),
-            "stock_quantity": 3,  # Low stock test
+            "stock_quantity": 3,
             "category": categories[1],
             "image_url": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=600&q=80",
             "is_active": True,
@@ -101,7 +101,7 @@ def seed():
             "name": "Dual-Band Wi-Fi 6 Router",
             "description": "High-speed Gigabit Wi-Fi 6 mesh router supporting up to 3000 Mbps.",
             "price": Decimal("4999.00"),
-            "stock_quantity": 2,  # Low stock test
+            "stock_quantity": 2,
             "category": categories[2],
             "image_url": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80",
             "is_active": True,
@@ -119,7 +119,7 @@ def seed():
             "name": "Noise Cancelling Headphones",
             "description": "Over-ear active noise cancelling headphones with 30hr battery life.",
             "price": Decimal("8999.00"),
-            "stock_quantity": 0,  # Out of stock test
+            "stock_quantity": 5,
             "category": categories[1],
             "image_url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
             "is_active": True,
@@ -136,34 +136,50 @@ def seed():
 
     print(f"Seeded {len(products)} products.")
 
-    # 4. Create Sample Orders
+    # 4. Create 25 Sample Orders
     statuses = ['completed', 'processing', 'pending', 'cancelled']
+    current_orders_count = Order.objects.count()
+    target_count = 25
 
-    if Order.objects.count() < 3:
-        for i, status_choice in enumerate(statuses):
-            sample_product = products[i % len(products)]
-            qty = random.randint(1, 3)
-            unit_price = sample_product.price
-            total_price = unit_price * qty
+    orders_to_create = target_count - current_orders_count
+    if orders_to_create > 0:
+        print(f"Creating {orders_to_create} new orders to reach 25 total orders...")
+        for i in range(orders_to_create):
+            status_choice = random.choice(statuses)
+
+            # Pick 1 to 3 random products for each order
+            selected_prods = random.sample(products, k=random.randint(1, min(3, len(products))))
+
+            total_price = Decimal("0.00")
 
             order = Order.objects.create(
                 customer=customer_user,
                 status=status_choice,
-                total_price=total_price
+                total_price=Decimal("0.00")
             )
 
-            OrderItem.objects.create(
-                order=order,
-                product=sample_product,
-                quantity=qty,
-                unit_price_at_purchase=unit_price,
-                subtotal=total_price
-            )
+            for prod in selected_prods:
+                qty = random.randint(1, 2)
+                unit_price = prod.price
+                subtotal = unit_price * qty
+                total_price += subtotal
 
-        print("Seeded sample orders.")
+                OrderItem.objects.create(
+                    order=order,
+                    product=prod,
+                    quantity=qty,
+                    unit_price_at_purchase=unit_price,
+                    subtotal=subtotal
+                )
+
+            order.total_price = total_price
+            order.save()
+
+        print(f"Successfully seeded {orders_to_create} orders.")
     else:
-        print("Orders already present.")
+        print(f"Already have {current_orders_count} orders (>= 25).")
 
+    print(f"Total Orders in DB: {Order.objects.count()}")
     print("Database Seeding Completed Successfully!")
 
 if __name__ == '__main__':

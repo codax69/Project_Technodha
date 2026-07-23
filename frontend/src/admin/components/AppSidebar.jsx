@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useAuth } from "../../context/AuthContext"
-import { Link } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 import { NavUser } from "@/components/nav-user"
 import {
@@ -13,14 +13,17 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import {
+  LayoutDashboardIcon,
   PackageIcon,
   LayersIcon,
   ShoppingBagIcon,
   ShieldCheckIcon,
 } from "lucide-react"
 
-export function AppSidebar({ activeTab, setActiveTab, ...props }) {
+export function AppSidebar({ ...props }) {
   const { user } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
   const [logoFailed, setLogoFailed] = React.useState(false)
 
   const userData = {
@@ -29,26 +32,34 @@ export function AppSidebar({ activeTab, setActiveTab, ...props }) {
     avatar: "/avatars/admin.jpg",
   }
 
+  const isPathActive = (path) => {
+    if (path === "/admin") return location.pathname === "/admin"
+    return location.pathname.startsWith(path)
+  }
+
   const adminNav = [
+    {
+      id: "dashboard",
+      title: "Dashboard",
+      path: "/admin",
+      icon: <LayoutDashboardIcon className="w-4 h-4" />,
+    },
     {
       id: "products",
       title: "Product Management",
-      onClick: () => setActiveTab?.('products'),
-      isActive: activeTab === 'products',
+      path: "/admin/products",
       icon: <PackageIcon className="w-4 h-4" />,
     },
     {
       id: "categories",
       title: "Category Management",
-      onClick: () => setActiveTab?.('categories'),
-      isActive: activeTab === 'categories',
+      path: "/admin/categories",
       icon: <LayersIcon className="w-4 h-4" />,
     },
     {
       id: "orders",
       title: "Manage Orders",
-      onClick: () => setActiveTab?.('orders'),
-      isActive: activeTab === 'orders',
+      path: "/admin/orders",
       icon: <ShoppingBagIcon className="w-4 h-4" />,
     },
   ]
@@ -69,10 +80,10 @@ export function AppSidebar({ activeTab, setActiveTab, ...props }) {
               <ShieldCheckIcon className="w-5 h-5" />
             </div>
           )}
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <span className="font-bold text-sm tracking-tight leading-none">TECHNODHA</span>
             <span className="text-[10px] text-muted-foreground font-semibold">Admin Operations</span>
-          </div>
+          </div> */}
         </Link>
       </SidebarHeader>
 
@@ -82,20 +93,23 @@ export function AppSidebar({ activeTab, setActiveTab, ...props }) {
             Admin Components
           </div>
           <SidebarMenu className="px-2 space-y-1">
-            {adminNav.map((item) => (
-              <SidebarMenuItem key={item.id}>
-                <SidebarMenuButton
-                  onClick={item.onClick}
-                  isActive={item.isActive}
-                  className={`w-full justify-start cursor-pointer rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                    item.isActive ? "bg-primary text-primary-foreground font-bold shadow-xs" : "hover:bg-accent"
-                  }`}
-                >
-                  {item.icon}
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {adminNav.map((item) => {
+              const isActive = isPathActive(item.path)
+              return (
+                <SidebarMenuItem key={item.id}>
+                  <SidebarMenuButton
+                    onClick={() => navigate(item.path)}
+                    isActive={isActive}
+                    className={`w-full justify-start cursor-pointer rounded-lg px-3 py-2 text-sm font-medium transition-all ${
+                      isActive ? "bg-primary text-primary-foreground font-bold shadow-xs" : "hover:bg-accent"
+                    }`}
+                  >
+                    {item.icon}
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            })}
           </SidebarMenu>
         </div>
       </SidebarContent>

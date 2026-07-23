@@ -1,5 +1,8 @@
+import io
 import pytest
 from decimal import Decimal
+from unittest.mock import patch
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APIClient
 from apps.authentication.models import User
@@ -38,6 +41,61 @@ class TestProducts:
         }
         res = self.customer_client.post(url, payload)
         assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_admin_can_upload_product_image(self):
+        fake_image = SimpleUploadedFile(
+            'test.jpg', b'\xff\xd8\xff\xe0fakejpegbytes', content_type='image/jpeg'
+        )
+        with patch('apps.products.services.cloudinary.uploader.upload') as mock_upload:
+            mock_upload.return_value = {'secure_url': 'https://res.cloudinary.com/demo/image/upload/test.jpg'}
+            res = self.admin_client.post(
+                '/api/products/upload-image/', {'image': fake_image}, format='multipart'
+            )
+        assert res.status_code == status.HTTP_201_CREATED
+        assert res.data['url'] == 'https://res.cloudinary.com/demo/image/upload/test.jpg'
+        mock_upload.assert_called_once()
+
+    def test_customer_cannot_upload_product_image(self):
+        fake_image = SimpleUploadedFile(
+            'test.jpg', b'\xff\xd8\xff\xe0fakejpegbytes', content_type='image/jpeg'
+        )
+        res = self.customer_client.post(
+            '/api/products/upload-image/', {'image': fake_image}, format='multipart'
+        )
+        assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_upload_service_closes_file_after_success(self):
+        """The uploaded file must not linger on the server after a successful upload."""
+        from apps.products.services import ProductImageService
+
+        fake_image = SimpleUploadedFile(
+            'test.jpg', b'\xff\xd8\xff\xe0fakejpegbytes', content_type='image/jpeg'
+        )
+        with patch('apps.products.services.cloudinary.uploader.upload') as mock_upload:
+            mock_upload.return_value = {'secure_url': 'https://res.cloudinary.com/demo/image/upload/test.jpg'}
+            ProductImageService.upload(fake_image)
+        assert fake_image.closed is True
+
+    def test_upload_service_closes_file_after_validation_failure(self):
+        """Even a rejected (oversized) upload must not leave a lingering file handle."""
+        from apps.products.services import ProductImageService
+        from rest_framework.exceptions import ValidationError
+
+        oversized = SimpleUploadedFile(
+            'big.jpg', b'0' * (1024 * 1024 + 1), content_type='image/jpeg'
+        )
+        with pytest.raises(ValidationError):
+            ProductImageService.upload(oversized)
+        assert oversized.closed is True
+
+    def test_upload_rejects_oversized_image(self):
+        oversized = SimpleUploadedFile(
+            'big.jpg', b'0' * (1024 * 1024 + 1), content_type='image/jpeg'
+        )
+        res = self.admin_client.post(
+            '/api/products/upload-image/', {'image': oversized}, format='multipart'
+        )
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_admin_can_create_and_update_stock(self):
         url = '/api/products/'
