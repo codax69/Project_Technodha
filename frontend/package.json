@@ -29,7 +29,7 @@
     "@tailwindcss/vite": "^4.0.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^6.0.4",
     "autoprefixer": "^10.4.19",
     "jsdom": "^24.0.0",
     "postcss": "^8.4.38",
