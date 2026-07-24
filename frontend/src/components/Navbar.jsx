@@ -28,6 +28,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { ThemeToggle } from './ThemeToggle';
+
 export const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
   const { totalItems } = useCart();
@@ -57,7 +59,7 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-cream-100/90 backdrop-blur-xl border-b border-cream-200 shadow-xs transition-all">
+    <header className="sticky top-0 z-40 bg-cream-100/90 dark:bg-neutral-900/90 backdrop-blur-xl border-b border-cream-200 dark:border-neutral-800 shadow-xs transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo & Desktop Navigation */}
         <div className="flex items-center space-x-8">
@@ -81,13 +83,13 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 bg-cream-200/50 p-1 rounded-2xl border border-cream-200">
+          <nav className="hidden md:flex items-center space-x-1 bg-cream-200/50 dark:bg-neutral-800/60 p-1 rounded-2xl border border-cream-200 dark:border-neutral-800">
             <Link
               to="/"
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
                 isActive('/') && location.pathname === '/'
-                  ? 'bg-white text-coral-500 font-bold shadow-xs border border-cream-200'
-                  : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-white/60'
+                  ? 'bg-white dark:bg-neutral-900 text-coral-500 font-bold shadow-xs border border-cream-200 dark:border-neutral-800'
+                  : 'text-charcoal-700 dark:text-neutral-300 hover:text-charcoal-900 dark:hover:text-neutral-100 hover:bg-white/60 dark:hover:bg-neutral-800/60'
               }`}
             >
               <Home className="w-3.5 h-3.5" /> Home
@@ -97,8 +99,8 @@ export const Navbar = () => {
               to="/products"
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
                 isActive('/products')
-                  ? 'bg-white text-coral-500 font-bold shadow-xs border border-cream-200'
-                  : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-white/60'
+                  ? 'bg-white dark:bg-neutral-900 text-coral-500 font-bold shadow-xs border border-cream-200 dark:border-neutral-800'
+                  : 'text-charcoal-700 dark:text-neutral-300 hover:text-charcoal-900 dark:hover:text-neutral-100 hover:bg-white/60 dark:hover:bg-neutral-800/60'
               }`}
             >
               <Package className="w-3.5 h-3.5" /> Catalogue
@@ -109,20 +111,18 @@ export const Navbar = () => {
                 to="/orders"
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
                   isActive('/orders')
-                    ? 'bg-white text-coral-500 font-bold shadow-xs border border-cream-200'
-                    : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-white/60'
+                    ? 'bg-white dark:bg-neutral-900 text-coral-500 font-bold shadow-xs border border-cream-200 dark:border-neutral-800'
+                    : 'text-charcoal-700 dark:text-neutral-300 hover:text-charcoal-900 dark:hover:text-neutral-100 hover:bg-white/60 dark:hover:bg-neutral-800/60'
                 }`}
               >
                 <ShoppingBag className="w-3.5 h-3.5" /> My Orders
               </Link>
             )}
 
-
-
             {isAdmin && (
               <Link
                 to="/admin"
-                className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-coral-50 text-coral-600 border border-coral-100 hover:bg-coral-100 transition-all flex items-center gap-1.5"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-coral-50 dark:bg-coral-950/40 text-coral-600 dark:text-coral-400 border border-coral-100 dark:border-coral-900/40 hover:bg-coral-100 dark:hover:bg-coral-900/60 transition-all flex items-center gap-1.5"
               >
                 <Shield className="w-3.5 h-3.5 text-coral-500" /> Admin Panel
               </Link>
@@ -130,14 +130,15 @@ export const Navbar = () => {
           </nav>
         </div>
 
-        {/* Right Actions: Cart & User Account Menu */}
+        {/* Right Actions: Theme Toggle, Cart & User Account Menu */}
         <div className="flex items-center space-x-3">
+          <ThemeToggle />
           {/* Cart Button */}
           <Link to="/cart">
             <Button
               variant="outline"
               size="sm"
-              className="relative rounded-2xl gap-2 px-3.5 py-1.5 bg-white border-cream-200 hover:border-coral-500 shadow-xs hover:shadow-sm text-charcoal-900 transition-all font-bold"
+              className="relative rounded-2xl gap-2 px-3.5 py-1.5 bg-white dark:bg-neutral-900 border-cream-200 dark:border-neutral-800 hover:border-coral-500 shadow-xs hover:shadow-sm text-charcoal-900 dark:text-neutral-100 transition-all font-bold"
             >
               <ShoppingCart className="w-4 h-4 text-coral-500" />
               <span className="hidden sm:inline text-xs">Cart</span>
@@ -152,59 +153,51 @@ export const Navbar = () => {
           {/* User Account Dropdown or Sign In Actions */}
           {user ? (
             <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="rounded-2xl gap-2.5 font-semibold text-xs border border-cream-200 hover:bg-cream-200/50 px-3 py-1.5 text-charcoal-900 bg-white"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-coral-50 text-coral-500 flex items-center justify-center font-bold text-[10px]">
-                      {user.username ? user.username.substring(0, 2).toUpperCase() : <User className="w-3.5 h-3.5" />}
-                    </div>
-                    <span className="hidden sm:inline max-w-[110px] truncate">{user.username}</span>
-                  </Button>
-                }
-              />
-              <DropdownMenuContent align="end" className="w-60 rounded-2xl p-2 shadow-xl border border-cream-200 bg-white">
+              <DropdownMenuTrigger className="rounded-2xl gap-2.5 font-semibold text-xs border border-cream-200 dark:border-neutral-800 hover:bg-cream-200/50 dark:hover:bg-neutral-800 px-3 py-1.5 text-charcoal-900 dark:text-neutral-100 bg-white dark:bg-neutral-900 flex items-center shadow-xs cursor-pointer outline-none transition-colors">
+                <div className="w-6 h-6 rounded-full bg-coral-50 dark:bg-coral-950/40 text-coral-500 flex items-center justify-center font-bold text-[10px]">
+                  {user.username ? user.username.substring(0, 2).toUpperCase() : <User className="w-3.5 h-3.5" />}
+                </div>
+                <span className="hidden sm:inline max-w-[110px] truncate">{user.username}</span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-60 rounded-2xl p-2 shadow-xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-charcoal-900 dark:text-neutral-100">
                 <DropdownMenuLabel className="font-normal px-2.5 py-2">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-bold leading-none text-charcoal-900">{user.username}</p>
-                    <p className="text-xs text-charcoal-700 leading-none truncate">
+                    <p className="text-sm font-bold leading-none text-charcoal-900 dark:text-neutral-100">{user.username}</p>
+                    <p className="text-xs text-charcoal-700 dark:text-neutral-400 leading-none truncate">
                       {user.email || 'customer@technodha.com'}
                     </p>
                     <div className="pt-1.5">
-                      <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider text-coral-500 border-coral-100 bg-coral-50">
+                      <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider text-coral-500 border-coral-100 dark:border-coral-900/40 bg-coral-50 dark:bg-coral-950/40">
                         {user.role}
                       </Badge>
                     </div>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-cream-200" />
+                <DropdownMenuSeparator className="bg-cream-200 dark:bg-neutral-800" />
 
-                <DropdownMenuItem onClick={() => navigate('/products')} className="rounded-xl cursor-pointer text-charcoal-700 hover:text-coral-500 hover:bg-coral-50">
+                <DropdownMenuItem onClick={() => navigate('/products')} className="rounded-xl cursor-pointer text-charcoal-700 dark:text-neutral-300 hover:text-coral-500 dark:hover:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-950/40">
                   <Package className="w-4 h-4 mr-2 text-coral-500" /> Product Catalogue
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/orders')} className="rounded-xl cursor-pointer text-charcoal-700 hover:text-coral-500 hover:bg-coral-50">
+                <DropdownMenuItem onClick={() => navigate('/orders')} className="rounded-xl cursor-pointer text-charcoal-700 dark:text-neutral-300 hover:text-coral-500 dark:hover:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-950/40">
                   <ShoppingBag className="w-4 h-4 mr-2 text-coral-500" /> Order History
                 </DropdownMenuItem>
 
                 {isAdmin && (
                   <>
-                    <DropdownMenuSeparator className="bg-cream-200" />
+                    <DropdownMenuSeparator className="bg-cream-200 dark:bg-neutral-800" />
                     <DropdownMenuItem
                       onClick={() => navigate('/admin')}
-                      className="rounded-xl cursor-pointer font-bold text-coral-600 hover:bg-coral-50"
+                      className="rounded-xl cursor-pointer font-bold text-coral-600 dark:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-950/40"
                     >
                       <Shield className="w-4 h-4 mr-2 text-coral-500" /> Admin Operations
                     </DropdownMenuItem>
                   </>
                 )}
 
-                <DropdownMenuSeparator className="bg-cream-200" />
+                <DropdownMenuSeparator className="bg-cream-200 dark:bg-neutral-800" />
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="rounded-xl text-coral-700 hover:bg-coral-50 cursor-pointer font-medium"
+                  className="rounded-xl text-coral-700 dark:text-coral-300 hover:bg-coral-50 dark:hover:bg-coral-950/40 cursor-pointer font-medium"
                 >
                   <LogOut className="w-4 h-4 mr-2" /> Sign Out
                 </DropdownMenuItem>
@@ -215,7 +208,7 @@ export const Navbar = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="rounded-xl text-xs font-semibold text-charcoal-700 hover:bg-cream-200"
+                className="rounded-xl text-xs font-semibold text-charcoal-700 dark:text-neutral-300 hover:bg-cream-200 dark:hover:bg-neutral-800"
                 onClick={() => navigate('/login')}
               >
                 Sign In
@@ -234,7 +227,7 @@ export const Navbar = () => {
           <Button
             size="icon"
             variant="ghost"
-            className="md:hidden rounded-xl text-charcoal-700"
+            className="md:hidden rounded-xl text-charcoal-700 dark:text-neutral-300 hover:bg-cream-200 dark:hover:bg-neutral-800"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

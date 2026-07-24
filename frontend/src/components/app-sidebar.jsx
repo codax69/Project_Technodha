@@ -20,6 +20,8 @@ import {
   ShieldCheckIcon,
 } from "lucide-react"
 
+import { ThemeToggle } from "./ThemeToggle"
+
 export function AppSidebar({ side = "left", ...props }) {
   const { user } = useAuth()
   const location = useLocation()
@@ -110,7 +112,8 @@ export function AppSidebar({ side = "left", ...props }) {
         </div>
       </SidebarContent>
 
-      <SidebarFooter className="border-t">
+      <SidebarFooter className="border-t p-3 space-y-2">
+        <ThemeToggle className="w-full justify-center" />
         <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>

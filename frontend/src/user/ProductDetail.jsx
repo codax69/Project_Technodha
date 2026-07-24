@@ -130,7 +130,7 @@ export const ProductDetail = () => {
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-2 text-xs font-bold text-charcoal-700 hover:text-coral-500 transition-colors cursor-pointer"
+        className="inline-flex items-center gap-2 text-xs font-bold text-charcoal-700 dark:text-neutral-300 hover:text-coral-500 transition-colors cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" /> Back to Catalogue
       </button>
@@ -139,8 +139,8 @@ export const ProductDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         {/* Left Column: High-Res Image Showcase */}
         <div className="lg:col-span-6 space-y-4">
-          <Card className="p-4 rounded-3xl border border-cream-200 bg-white shadow-md overflow-hidden relative group">
-            <div className="relative h-80 sm:h-96 rounded-2xl bg-cream-200/50 flex items-center justify-center overflow-hidden border border-cream-200">
+          <Card className="p-4 rounded-3xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-md overflow-hidden relative group">
+            <div className="relative h-80 sm:h-96 rounded-2xl bg-cream-200/50 dark:bg-neutral-800/60 flex items-center justify-center overflow-hidden border border-cream-200 dark:border-neutral-800">
               {product.image_url ? (
                 <img
                   src={product.image_url}
@@ -149,14 +149,14 @@ export const ProductDetail = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
-                <Package className="w-24 h-24 text-charcoal-700/30" />
+                <Package className="w-24 h-24 text-charcoal-700/30 dark:text-neutral-500" />
               )}
 
               <div className="absolute top-4 right-4">
                 {isOutOfStock ? (
                   <Badge variant="destructive" className="font-bold text-xs px-3 py-1">Out of Stock</Badge>
                 ) : isLowStock ? (
-                  <Badge variant="outline" className="border-coral-500 text-coral-600 bg-coral-50 font-bold text-xs px-3 py-1">
+                  <Badge variant="outline" className="border-coral-500 text-coral-600 dark:text-coral-400 bg-coral-50 dark:bg-coral-950/40 font-bold text-xs px-3 py-1">
                     Only {product.stock_quantity} left in stock!
                   </Badge>
                 ) : (
@@ -173,7 +173,7 @@ export const ProductDetail = () => {
         <div className="lg:col-span-6 space-y-6">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px] font-black uppercase text-coral-500 border-coral-100 bg-coral-50">
+              <Badge variant="outline" className="text-[10px] font-black uppercase text-coral-500 border-coral-100 dark:border-coral-900/40 bg-coral-50 dark:bg-coral-950/40">
                 {product.category_detail?.name || 'Hardware'}
               </Badge>
               <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
@@ -181,49 +181,49 @@ export const ProductDetail = () => {
               </div>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-black text-charcoal-900 tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-4xl font-black text-charcoal-900 dark:text-neutral-100 tracking-tight leading-tight">
               {product.name}
             </h1>
 
             <div className="flex items-baseline gap-3 pt-1">
-              <span className="text-3xl font-black text-coral-500">₹{product.price}</span>
-              <span className="text-base text-charcoal-700/60 line-through">MRP ₹{getMrp(product.price)}</span>
-              <Badge className="bg-coral-50 text-coral-600 border-coral-100 font-extrabold text-xs">
+              <span className="text-3xl font-black text-coral-500 dark:text-white">₹{product.price}</span>
+              <span className="text-base text-charcoal-700/60 dark:text-neutral-500 line-through">MRP ₹{getMrp(product.price)}</span>
+              <Badge className="bg-coral-50 dark:bg-coral-950/40 text-coral-600 dark:text-coral-400 border-coral-100 dark:border-coral-900/40 font-extrabold text-xs">
                 20% OFF
               </Badge>
-              <span className="text-xs text-charcoal-700 font-medium">Inclusive of all taxes</span>
+              <span className="text-xs text-charcoal-700 dark:text-neutral-400 font-medium">Inclusive of all taxes</span>
             </div>
           </div>
 
           {/* Stock Level Progress Indicator */}
-          <div className="space-y-1.5 p-3 rounded-2xl bg-cream-200/40 border border-cream-200">
-            <div className="flex justify-between text-xs font-bold text-charcoal-900">
+          <div className="space-y-1.5 p-3 rounded-2xl bg-cream-200/40 dark:bg-neutral-800/60 border border-cream-200 dark:border-neutral-800">
+            <div className="flex justify-between text-xs font-bold text-charcoal-900 dark:text-neutral-100">
               <span>Inventory Stock Status</span>
               <span className="text-coral-500">{product.stock_quantity} units remaining</span>
             </div>
             <Progress value={Math.min(100, Math.max(10, (product.stock_quantity / 30) * 100))} className="h-2 rounded-full" />
           </div>
 
-          <div className="border-t border-b border-cream-200 py-4 space-y-2">
-            <h3 className="text-xs font-extrabold uppercase text-charcoal-900 tracking-wider">Description</h3>
-            <p className="text-charcoal-700 text-sm leading-relaxed">
+          <div className="border-t border-b border-cream-200 dark:border-neutral-800 py-4 space-y-2">
+            <h3 className="text-xs font-extrabold uppercase text-charcoal-900 dark:text-neutral-100 tracking-wider">Description</h3>
+            <p className="text-charcoal-700 dark:text-neutral-300 text-sm leading-relaxed">
               {product.description || 'Verified authentic inventory product from Technodha catalog.'}
             </p>
           </div>
 
           {/* Value Highlights */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="p-3 rounded-2xl border border-cream-200 bg-white text-center space-y-1">
+            <div className="p-3 rounded-2xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-center space-y-1">
               <Zap className="w-5 h-5 text-coral-500 mx-auto" />
-              <p className="text-[11px] font-bold text-charcoal-900">Atomic Stock Lock</p>
+              <p className="text-[11px] font-bold text-charcoal-900 dark:text-neutral-100">Atomic Stock Lock</p>
             </div>
-            <div className="p-3 rounded-2xl border border-cream-200 bg-white text-center space-y-1">
+            <div className="p-3 rounded-2xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-center space-y-1">
               <ShieldCheck className="w-5 h-5 text-coral-500 mx-auto" />
-              <p className="text-[11px] font-bold text-charcoal-900">100% Genuine</p>
+              <p className="text-[11px] font-bold text-charcoal-900 dark:text-neutral-100">100% Genuine</p>
             </div>
-            <div className="p-3 rounded-2xl border border-cream-200 bg-white text-center space-y-1">
+            <div className="p-3 rounded-2xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-center space-y-1">
               <Truck className="w-5 h-5 text-coral-500 mx-auto" />
-              <p className="text-[11px] font-bold text-charcoal-900">Express Delivery</p>
+              <p className="text-[11px] font-bold text-charcoal-900 dark:text-neutral-100">Express Delivery</p>
             </div>
           </div>
 
@@ -231,22 +231,22 @@ export const ProductDetail = () => {
           {!isOutOfStock && (
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-4">
-                <span className="text-xs font-bold text-charcoal-900">Select Quantity:</span>
-                <div className="flex items-center gap-2 border border-cream-200 rounded-2xl p-1 bg-white">
+                <span className="text-xs font-bold text-charcoal-900 dark:text-neutral-100">Select Quantity:</span>
+                <div className="flex items-center gap-2 border border-cream-200 dark:border-neutral-700 rounded-2xl p-1 bg-white dark:bg-neutral-900">
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="h-8 w-8 rounded-xl text-charcoal-700 hover:bg-cream-200"
+                    className="h-8 w-8 rounded-xl text-charcoal-700 dark:text-neutral-300 hover:bg-cream-200 dark:hover:bg-neutral-800"
                     onClick={() => setQuantity((q) => Math.max(q - 1, 1))}
                     disabled={quantity <= 1}
                   >
                     <Minus className="w-4 h-4" />
                   </Button>
-                  <span className="w-10 text-center text-base font-black text-charcoal-900">{quantity}</span>
+                  <span className="w-10 text-center text-base font-black text-charcoal-900 dark:text-neutral-100">{quantity}</span>
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="h-8 w-8 rounded-xl text-charcoal-700 hover:bg-cream-200"
+                    className="h-8 w-8 rounded-xl text-charcoal-700 dark:text-neutral-300 hover:bg-cream-200 dark:hover:bg-neutral-800"
                     onClick={() => setQuantity((q) => Math.min(q + 1, product.stock_quantity))}
                     disabled={quantity >= product.stock_quantity}
                   >
@@ -271,7 +271,7 @@ export const ProductDetail = () => {
                   onClick={handleBuyNow}
                   size="lg"
                   variant="outline"
-                  className="rounded-2xl font-bold border-cream-200 text-charcoal-900 bg-white hover:bg-cream-200/50 shadow-xs"
+                  className="rounded-2xl font-bold border-cream-200 dark:border-neutral-700 text-charcoal-900 dark:text-neutral-100 bg-white dark:bg-neutral-900 hover:bg-cream-200/50 dark:hover:bg-neutral-800 shadow-xs"
                 >
                   Buy Now Instant
                 </Button>
@@ -280,13 +280,13 @@ export const ProductDetail = () => {
           )}
 
           {/* Shadcn Accordion for Hardware Specs & Support Info */}
-          <div className="pt-4 border-t border-cream-200">
+          <div className="pt-4 border-t border-cream-200 dark:border-neutral-800">
             <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="specs" className="border-cream-200">
-                <AccordionTrigger className="text-xs font-bold text-charcoal-900 py-3">
+              <AccordionItem value="specs" className="border-cream-200 dark:border-neutral-800">
+                <AccordionTrigger className="text-xs font-bold text-charcoal-900 dark:text-neutral-100 py-3">
                   Technical Specifications & Overview
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-charcoal-700 space-y-1.5">
+                <AccordionContent className="text-xs text-charcoal-700 dark:text-neutral-400 space-y-1.5">
                   <p>• Category: {product.category_detail?.name || 'Hardware'}</p>
                   <p>• Model ID: TH-{product.id}-TECH</p>
                   <p>• Condition: Brand New Factory Sealed</p>
@@ -294,11 +294,11 @@ export const ProductDetail = () => {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="shipping" className="border-cream-200">
-                <AccordionTrigger className="text-xs font-bold text-charcoal-900 py-3">
+              <AccordionItem value="shipping" className="border-cream-200 dark:border-neutral-800">
+                <AccordionTrigger className="text-xs font-bold text-charcoal-900 dark:text-neutral-100 py-3">
                   Shipping & Return Policy
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-charcoal-700 space-y-1.5">
+                <AccordionContent className="text-xs text-charcoal-700 dark:text-neutral-400 space-y-1.5">
                   <p>• Same-day dispatch for orders placed before 2 PM.</p>
                   <p>• Atomic database locks guarantee immediate stock assignment.</p>
                   <p>• 7-Day hassle-free replacement policy.</p>
@@ -311,13 +311,13 @@ export const ProductDetail = () => {
 
       {/* Related Products Section */}
       {relatedProducts && relatedProducts.length > 0 && (
-        <section className="space-y-6 border-t border-cream-200 pt-10">
+        <section className="space-y-6 border-t border-cream-200 dark:border-neutral-800 pt-10">
           <div className="flex justify-between items-end">
             <div>
-              <Badge variant="outline" className="text-[10px] font-black uppercase text-coral-500 border-coral-100 bg-coral-50 mb-1">
+              <Badge variant="outline" className="text-[10px] font-black uppercase text-coral-500 border-coral-100 dark:border-coral-900/40 bg-coral-50 dark:bg-coral-950/40 mb-1">
                 More Like This
               </Badge>
-              <h2 className="text-2xl font-black text-charcoal-900">Related Products</h2>
+              <h2 className="text-2xl font-black text-charcoal-900 dark:text-neutral-100">Related Products</h2>
             </div>
             <Link to="/products" className="text-xs font-bold text-coral-500 hover:underline flex items-center gap-1">
               Explore All <ChevronRight className="w-4 h-4" />
@@ -329,25 +329,25 @@ export const ProductDetail = () => {
               <Card
                 key={rel.id}
                 onClick={() => navigate(`/products/${rel.id}`)}
-                className="p-4 rounded-2xl border border-cream-200 bg-white hover:border-coral-500 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+                className="p-4 rounded-2xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-coral-500 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between space-y-3"
               >
                 <div>
-                  <div className="h-40 rounded-xl bg-cream-200/50 flex items-center justify-center border border-cream-200 overflow-hidden">
+                  <div className="h-40 rounded-xl bg-cream-200/50 dark:bg-neutral-800/60 flex items-center justify-center border border-cream-200 dark:border-neutral-800 overflow-hidden">
                     {rel.image_url ? (
                       <img src={rel.image_url} alt={rel.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
-                      <Package className="w-12 h-12 text-charcoal-700/40" />
+                      <Package className="w-12 h-12 text-charcoal-700/40 dark:text-neutral-500" />
                     )}
                   </div>
                   <div className="pt-3 space-y-1">
-                    <h3 className="font-bold text-sm text-charcoal-900 group-hover:text-coral-500 transition-colors line-clamp-1">
+                    <h3 className="font-bold text-sm text-charcoal-900 dark:text-neutral-100 group-hover:text-coral-500 transition-colors line-clamp-1">
                       {rel.name}
                     </h3>
-                    <p className="text-xs text-charcoal-700 line-clamp-1">{rel.description}</p>
+                    <p className="text-xs text-charcoal-700 dark:text-neutral-400 line-clamp-1">{rel.description}</p>
                   </div>
                 </div>
-                <div className="flex justify-between items-center border-t border-cream-200 pt-2">
-                  <span className="font-black text-charcoal-900 text-sm">₹{rel.price}</span>
+                <div className="flex justify-between items-center border-t border-cream-200 dark:border-neutral-800 pt-2">
+                  <span className="font-black text-charcoal-900 dark:text-neutral-100 text-sm">₹{rel.price}</span>
                   <span className="text-xs font-bold text-coral-500">View Details →</span>
                 </div>
               </Card>

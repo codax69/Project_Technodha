@@ -9,7 +9,7 @@ class TestAuthentication:
         self.client = APIClient()
 
     def test_user_registration(self):
-        url = '/api/auth/register/'
+        url = '/api/v1/auth/register/'
         payload = {
             'username': 'newuser',
             'email': 'newuser@example.com',
@@ -23,7 +23,7 @@ class TestAuthentication:
 
     def test_registration_ignores_client_supplied_admin_role(self):
         """Public registration must never allow privilege escalation to admin."""
-        url = '/api/auth/register/'
+        url = '/api/v1/auth/register/'
         payload = {
             'username': 'sneaky',
             'email': 'sneaky@example.com',
@@ -43,7 +43,7 @@ class TestAuthentication:
         user = User.objects.create_user(
             username='testuser', email='test@example.com', password='Password123!', role='admin'
         )
-        url = '/api/auth/login/'
+        url = '/api/v1/auth/login/'
         payload = {'username': 'testuser', 'password': 'Password123!'}
         res = self.client.post(url, payload)
         assert res.status_code == status.HTTP_200_OK

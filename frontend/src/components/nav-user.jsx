@@ -47,21 +47,20 @@ export function NavUser({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />
-            }>
-            <Avatar className="size-8 rounded-lg">
-              <AvatarImage src={user?.avatar} alt={user?.name} />
-              <AvatarFallback className="rounded-lg bg-primary text-primary-foreground font-bold text-xs">{initials}</AvatarFallback>
-            </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user?.name}</span>
-              <span className="truncate text-xs text-muted-foreground">
-                {user?.email}
-              </span>
-            </div>
-            <EllipsisVerticalIcon className="ml-auto size-4" />
+          <DropdownMenuTrigger className="w-full text-left outline-none border-none bg-transparent p-0">
+            <SidebarMenuButton size="lg" className="aria-expanded:bg-muted w-full flex items-center justify-between">
+              <Avatar className="size-8 rounded-lg">
+                <AvatarImage src={user?.avatar} alt={user?.name} />
+                <AvatarFallback className="rounded-lg bg-primary text-primary-foreground font-bold text-xs">{initials}</AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">{user?.name}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {user?.email}
+                </span>
+              </div>
+              <EllipsisVerticalIcon className="ml-auto size-4" />
+            </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="min-w-56"

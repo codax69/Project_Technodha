@@ -33,7 +33,7 @@ class Product(models.Model):
     stock_quantity = models.PositiveIntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='products')
     image_url = models.URLField(max_length=500, blank=True, null=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     low_stock_threshold = models.PositiveIntegerField(
         default=5,
         help_text="Stock level at or below which this product is flagged as low stock."

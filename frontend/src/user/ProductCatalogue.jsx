@@ -108,16 +108,16 @@ export const ProductCatalogue = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Header Banner (Theme Palette) */}
-      <div className="relative p-8 rounded-3xl overflow-hidden border border-cream-200 bg-gradient-to-r from-coral-50 via-cream-200/40 to-cream-100 text-charcoal-900 shadow-xs">
-        <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-coral-100/50 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative p-8 rounded-3xl overflow-hidden border border-cream-200 dark:border-neutral-800 bg-gradient-to-r from-coral-50 via-cream-200/40 to-cream-100 dark:from-neutral-900 dark:via-neutral-900/80 dark:to-neutral-900 text-charcoal-900 dark:text-neutral-100 shadow-xs transition-colors">
+        <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-coral-100/50 dark:bg-coral-900/20 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white text-coral-500 border border-coral-100 shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white dark:bg-neutral-800 text-coral-500 border border-coral-100 dark:border-neutral-700 shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-coral-500" /> Official Inventory Catalogue
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-charcoal-900">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-charcoal-900 dark:text-neutral-100">
             Explore Technodha Products
           </h1>
-          <p className="text-charcoal-700 text-sm max-w-2xl">
+          <p className="text-charcoal-700 dark:text-neutral-300 text-sm max-w-2xl">
             Live stock integration, verified pricing in ₹ INR, and instant transactional order execution.
           </p>
         </div>
@@ -133,7 +133,7 @@ export const ProductCatalogue = () => {
           className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer ${
             selectedCategory === ''
               ? 'bg-coral-500 text-cream-100 shadow-md'
-              : 'bg-white border border-cream-200 text-charcoal-700 hover:text-charcoal-900 hover:border-coral-500'
+              : 'bg-white dark:bg-neutral-900 border border-cream-200 dark:border-neutral-800 text-charcoal-700 dark:text-neutral-300 hover:text-charcoal-900 hover:border-coral-500'
           }`}
         >
           <Package className="w-3.5 h-3.5" /> All Categories
@@ -148,7 +148,7 @@ export const ProductCatalogue = () => {
             className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer ${
               selectedCategory === cat.slug
                 ? 'bg-coral-500 text-cream-100 shadow-md'
-                : 'bg-white border border-cream-200 text-charcoal-700 hover:text-charcoal-900 hover:border-coral-500'
+                : 'bg-white dark:bg-neutral-900 border border-cream-200 dark:border-neutral-800 text-charcoal-700 dark:text-neutral-300 hover:text-charcoal-900 hover:border-coral-500'
             }`}
           >
             {cat.name}
@@ -157,7 +157,7 @@ export const ProductCatalogue = () => {
       </div>
 
       {/* Search & Sort Control Bar */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-4 rounded-2xl border border-cream-200 shadow-xs">
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-neutral-900 p-4 rounded-2xl border border-cream-200 dark:border-neutral-800 shadow-xs transition-colors">
         <div className="relative w-full md:w-96">
           <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-coral-500" />
           <input
@@ -168,19 +168,19 @@ export const ProductCatalogue = () => {
               setPage(1);
             }}
             placeholder="Search products by name or description..."
-            className="w-full bg-cream-100 border border-cream-200 focus:ring-1 focus:ring-coral-500 rounded-xl pl-10 pr-4 py-2 text-charcoal-900 placeholder:text-charcoal-700/60 text-sm outline-none transition-all"
+            className="w-full bg-cream-100 dark:bg-neutral-800 border border-cream-200 dark:border-neutral-700 focus:ring-1 focus:ring-coral-500 rounded-xl pl-10 pr-4 py-2 text-charcoal-900 dark:text-neutral-100 placeholder:text-charcoal-700/60 dark:placeholder:text-neutral-400 text-sm outline-none transition-all"
           />
         </div>
 
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-charcoal-700" />
-            <span className="text-xs font-bold text-charcoal-700">Sort:</span>
+            <SlidersHorizontal className="w-4 h-4 text-charcoal-700 dark:text-neutral-300" />
+            <span className="text-xs font-bold text-charcoal-700 dark:text-neutral-300">Sort:</span>
           </div>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-cream-100 border border-cream-200 rounded-xl px-3 py-2 text-charcoal-900 text-sm outline-none cursor-pointer font-semibold"
+            className="bg-cream-100 dark:bg-neutral-800 border border-cream-200 dark:border-neutral-700 rounded-xl px-3 py-2 text-charcoal-900 dark:text-neutral-100 text-sm outline-none cursor-pointer font-semibold"
           >
             <option value="newest">Newest First</option>
             <option value="price-low">Price: Low to High</option>
@@ -223,11 +223,11 @@ export const ProductCatalogue = () => {
               <Card
                 key={product.id}
                 onClick={() => navigate(`/products/${product.id}`)}
-                className="rounded-2xl border border-cream-200 bg-white hover:border-coral-500 transition-all flex flex-col justify-between group shadow-xs hover:shadow-xl overflow-hidden relative cursor-pointer"
+                className="rounded-2xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-coral-500 transition-all flex flex-col justify-between group shadow-xs hover:shadow-xl overflow-hidden relative cursor-pointer"
               >
                 <div>
                   {/* Image Container */}
-                  <div className="relative h-48 bg-cream-200/50 flex items-center justify-center overflow-hidden border-b border-cream-200">
+                  <div className="relative h-48 bg-cream-200/50 dark:bg-neutral-800/60 flex items-center justify-center overflow-hidden border-b border-cream-200 dark:border-neutral-800">
                     {product.image_url ? (
                       <img
                         src={product.image_url}
@@ -236,7 +236,7 @@ export const ProductCatalogue = () => {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
-                      <Package className="w-14 h-14 text-charcoal-700/40 group-hover:scale-110 transition-transform" />
+                      <Package className="w-14 h-14 text-charcoal-700/40 dark:text-neutral-500 group-hover:scale-110 transition-transform" />
                     )}
 
                     {/* Stock Status Badge */}
@@ -244,7 +244,7 @@ export const ProductCatalogue = () => {
                       {isOutOfStock ? (
                         <Badge variant="destructive" className="font-bold text-[10px]">Out of Stock</Badge>
                       ) : isLowStock ? (
-                        <Badge variant="outline" className="border-coral-500 text-coral-600 bg-coral-50 font-bold text-[10px]">
+                        <Badge variant="outline" className="border-coral-500 text-coral-600 dark:text-coral-400 bg-coral-50 dark:bg-coral-950/40 font-bold text-[10px]">
                           Low Stock ({product.stock_quantity})
                         </Badge>
                       ) : (
@@ -261,7 +261,7 @@ export const ProductCatalogue = () => {
                         setQuickViewProduct(product);
                         setModalQty(1);
                       }}
-                      className="absolute bottom-3 right-3 px-3 py-1.5 bg-white/95 hover:bg-white text-charcoal-900 rounded-xl shadow-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 text-xs font-bold backdrop-blur-md border border-cream-200"
+                      className="absolute bottom-3 right-3 px-3 py-1.5 bg-white/95 dark:bg-neutral-900/95 hover:bg-white text-charcoal-900 dark:text-neutral-100 rounded-xl shadow-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 text-xs font-bold backdrop-blur-md border border-cream-200 dark:border-neutral-700"
                     >
                       <Eye className="w-3.5 h-3.5 text-coral-500" /> Quick View
                     </button>
@@ -272,23 +272,23 @@ export const ProductCatalogue = () => {
                     <span className="text-[10px] font-extrabold text-coral-500 uppercase tracking-wider">
                       {product.category_detail?.name || 'Uncategorized'}
                     </span>
-                    <h3 className="font-bold text-base text-charcoal-900 group-hover:text-coral-500 transition-colors line-clamp-1">
+                    <h3 className="font-bold text-base text-charcoal-900 dark:text-neutral-100 group-hover:text-coral-500 transition-colors line-clamp-1">
                       {product.name}
                     </h3>
-                    <p className="text-charcoal-700 text-xs line-clamp-2 min-h-[32px]">
+                    <p className="text-charcoal-700 dark:text-neutral-400 text-xs line-clamp-2 min-h-[32px]">
                       {product.description || 'No description provided.'}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Footer Actions */}
-                <div className="p-5 pt-0 flex items-center justify-between border-t border-cream-200 mt-2 pt-4">
+                <div className="p-5 pt-0 flex items-center justify-between border-t border-cream-200 dark:border-neutral-800 mt-2 pt-4">
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-charcoal-700/60 line-through">MRP ₹{getMrp(product.price)}</span>
-                      <span className="text-[9px] font-bold text-coral-500 bg-coral-50 px-1 py-0.2 rounded">20% OFF</span>
+                      <span className="text-[10px] text-charcoal-700/60 dark:text-neutral-400 line-through">MRP ₹{getMrp(product.price)}</span>
+                      <span className="text-[9px] font-bold text-coral-500 bg-coral-50 dark:bg-coral-950/40 px-1 py-0.2 rounded">20% OFF</span>
                     </div>
-                    <span className="text-xl font-black text-charcoal-900">₹{product.price}</span>
+                    <span className="text-xl font-black text-charcoal-900 dark:text-white">₹{product.price}</span>
                   </div>
 
                   <Button
@@ -325,14 +325,14 @@ export const ProductCatalogue = () => {
       {/* Full Shadcn Pagination Bar */}
       {totalPages > 1 && (
         <Pagination className="pt-6">
-          <PaginationContent className="bg-white border border-cream-200 p-1.5 rounded-2xl shadow-xs flex items-center gap-1">
+          <PaginationContent className="bg-white dark:bg-neutral-900 border border-cream-200 dark:border-neutral-800 p-1.5 rounded-2xl shadow-xs flex items-center gap-1 transition-colors">
             <PaginationItem>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setPage((p) => Math.max(p - 1, 1))}
                 disabled={page === 1}
-                className="rounded-xl text-xs font-bold text-charcoal-700 hover:text-coral-500 hover:bg-cream-100 gap-1 px-3"
+                className="rounded-xl text-xs font-bold text-charcoal-700 dark:text-neutral-300 hover:text-coral-500 hover:bg-cream-100 dark:hover:bg-neutral-800 gap-1 px-3"
               >
                 <ChevronLeft className="w-4 h-4 text-coral-500" /> Prev
               </Button>
@@ -347,7 +347,7 @@ export const ProductCatalogue = () => {
                   className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${
                     page === pageNum
                       ? 'bg-coral-500 hover:bg-coral-600 text-cream-100 shadow-xs'
-                      : 'text-charcoal-700 hover:bg-cream-200/60'
+                      : 'text-charcoal-700 dark:text-neutral-300 hover:bg-cream-200/60 dark:hover:bg-neutral-800'
                   }`}
                 >
                   {pageNum}
@@ -361,7 +361,7 @@ export const ProductCatalogue = () => {
                 size="sm"
                 onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                 disabled={page === totalPages}
-                className="rounded-xl text-xs font-bold text-charcoal-700 hover:text-coral-500 hover:bg-cream-100 gap-1 px-3"
+                className="rounded-xl text-xs font-bold text-charcoal-700 dark:text-neutral-300 hover:text-coral-500 hover:bg-cream-100 dark:hover:bg-neutral-800 gap-1 px-3"
               >
                 Next <ChevronRight className="w-4 h-4 text-coral-500" />
               </Button>
@@ -398,8 +398,8 @@ export const ProductCatalogue = () => {
               <div className="space-y-4">
                 <div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-black text-coral-500">₹{quickViewProduct.price}</span>
-                    <span className="text-xs text-charcoal-700/60 line-through">MRP ₹{getMrp(quickViewProduct.price)}</span>
+                    <span className="text-2xl font-black text-coral-500 dark:text-white">₹{quickViewProduct.price}</span>
+                    <span className="text-xs text-charcoal-700/60 dark:text-neutral-400 line-through">MRP ₹{getMrp(quickViewProduct.price)}</span>
                   </div>
                   <p className="text-xs text-charcoal-700 mt-2 leading-relaxed">
                     {quickViewProduct.description || 'High quality inventory product.'}

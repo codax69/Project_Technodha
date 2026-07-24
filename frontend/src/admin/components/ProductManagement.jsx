@@ -17,6 +17,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { uploadProductImage } from '@/utils/imageUpload';
+import { getErrorMessage } from '@/utils/errorHandler';
 import { toast } from '@/components/ui/toast';
 
 export const ProductManagement = ({ products, categories, productMutation, stockMutation, deleteProductMutation }) => {
@@ -104,7 +105,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
       onError: (err) => {
         toast.create({
           title: "Save Failed",
-          description: err.response?.data?.detail || "Could not save product.",
+          description: getErrorMessage(err, "Could not save product."),
           type: "error",
         });
       },
