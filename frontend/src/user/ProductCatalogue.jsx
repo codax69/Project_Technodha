@@ -69,6 +69,8 @@ export const ProductCatalogue = () => {
     return '-created_at';
   };
 
+  const ITEMS_PER_PAGE = 10;
+
   const { data: productsData, isLoading, isError } = useQuery({
     queryKey: ['products', search, selectedCategory, page, sortBy],
     queryFn: async () => {
@@ -76,6 +78,9 @@ export const ProductCatalogue = () => {
       if (search) params.append('search', search);
       if (selectedCategory) params.append('category__slug', selectedCategory);
       if (sortBy) params.append('ordering', getOrderingParam(sortBy));
+      const offset = (page - 1) * ITEMS_PER_PAGE;
+      params.append('limit', ITEMS_PER_PAGE.toString());
+      params.append('offset', offset.toString());
       params.append('page', page.toString());
       const res = await apiClient.get(`/products/?${params.toString()}`);
       return res.data;
@@ -98,7 +103,7 @@ export const ProductCatalogue = () => {
 
   const products = productsData?.results || [];
 
-  const totalPages = productsData ? Math.ceil(productsData.count / 10) : 1;
+  const totalPages = productsData?.count ? Math.ceil(productsData.count / ITEMS_PER_PAGE) : 1;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
