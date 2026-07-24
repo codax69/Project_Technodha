@@ -122,7 +122,7 @@ export const ManageOrders = ({ orderStatusMutation }) => {
             <Card key={ord.id} className="p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
               <div className="space-y-1">
                 <div className="flex items-center gap-3">
-                  <span className="font-bold text-base">Order #{ord.id}</span>
+                  <span className="font-bold text-base">{ord.order_number || `Order #${ord.id}`}</span>
                   {getStatusBadge(ord.status)}
                 </div>
                 <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -201,7 +201,7 @@ export const ManageOrders = ({ orderStatusMutation }) => {
           <div className="max-w-lg w-full p-6 rounded-2xl border bg-background space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b pb-3">
               <div>
-                <h3 className="text-lg font-bold">Order #{selectedOrderDetails.id} Details</h3>
+                <h3 className="text-lg font-bold">{selectedOrderDetails.order_number || `Order #${selectedOrderDetails.id}`} Details</h3>
                 <span className="text-xs text-muted-foreground">
                   Customer: <strong className="text-primary">{selectedOrderDetails.customer_username}</strong>
                 </span>

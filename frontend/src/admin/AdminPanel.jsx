@@ -5,6 +5,9 @@ import { apiClient } from '../api/client';
 import { AdminPageLayout } from './components/AdminPageLayout';
 import { Card, CardHeader, CardDescription, CardContent } from '@/components/ui/card';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive';
+import { ChartOrderStatus } from '@/components/chart-order-status';
+import { ChartCategoryStock } from '@/components/chart-category-stock';
+import { ChartRevenueTrend } from '@/components/chart-revenue-trend';
 import {
   Shield,
   Package,
@@ -124,8 +127,13 @@ export const AdminPanel = () => {
         </Card>
       </div>
 
-      {/* Interactive Analytics Chart */}
-      <ChartAreaInteractive />
+      {/* Multi-Chart Analytics Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ChartAreaInteractive />
+        <ChartOrderStatus orders={orders} />
+        <ChartCategoryStock products={products} categories={categories} />
+        <ChartRevenueTrend orders={orders} />
+      </div>
 
       {/* Shortcuts to dedicated management pages */}
       <div>

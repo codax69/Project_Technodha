@@ -179,13 +179,6 @@ export const ProductManagement = ({ products, categories, productMutation, stock
 
   const totalPages = Math.ceil(filteredProducts.length / pageSize) || 1;
   const currentPage = Math.min(Math.max(1, page), totalPages);
-
-  useEffect(() => {
-    if (page > totalPages) {
-      setPage(totalPages);
-    }
-  }, [page, totalPages]);
-
   const paginatedProducts = filteredProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const lowStockTotal = products?.filter((p) => (p.stock_quantity > 0 && p.stock_quantity < 5) || p.is_low_stock).length || 0;
@@ -382,8 +375,8 @@ export const ProductManagement = ({ products, categories, productMutation, stock
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                disabled={page === 1}
+                onClick={() => setPage(Math.max(currentPage - 1, 1))}
+                disabled={currentPage === 1}
                 className="rounded-xl text-xs font-bold gap-1 px-3"
               >
                 <ChevronLeft className="w-4 h-4 text-primary" /> Prev
@@ -393,7 +386,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
               <PaginationItem key={pageNum}>
                 <Button
-                  variant={page === pageNum ? 'default' : 'ghost'}
+                  variant={currentPage === pageNum ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setPage(pageNum)}
                   className="w-9 h-9 rounded-xl text-xs font-bold transition-all"
@@ -407,8 +400,8 @@ export const ProductManagement = ({ products, categories, productMutation, stock
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-                disabled={page === totalPages}
+                onClick={() => setPage(Math.min(currentPage + 1, totalPages))}
+                disabled={currentPage === totalPages}
                 className="rounded-xl text-xs font-bold gap-1 px-3"
               >
                 Next <ChevronRight className="w-4 h-4 text-primary" />

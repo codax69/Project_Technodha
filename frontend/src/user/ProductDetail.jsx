@@ -154,7 +154,7 @@ export const ProductDetail = () => {
 
               <div className="absolute top-4 right-4">
                 {isOutOfStock ? (
-                  <Badge variant="destructive" className="font-bold text-xs px-3 py-1">Out of Stock</Badge>
+                  <Badge variant="destructive" className="font-bold text-xs px-3 py-1">Sold Out</Badge>
                 ) : isLowStock ? (
                   <Badge variant="outline" className="border-coral-500 text-coral-600 dark:text-coral-400 bg-coral-50 dark:bg-coral-950/40 font-bold text-xs px-3 py-1">
                     Only {product.stock_quantity} left in stock!
@@ -228,7 +228,13 @@ export const ProductDetail = () => {
           </div>
 
           {/* Quantity Stepper & Actions */}
-          {!isOutOfStock && (
+          {isOutOfStock ? (
+            <div className="pt-2">
+              <Button disabled size="lg" className="w-full rounded-2xl font-bold bg-neutral-200 dark:bg-neutral-800 text-neutral-500 cursor-not-allowed">
+                Sold Out
+              </Button>
+            </div>
+          ) : (
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-4">
                 <span className="text-xs font-bold text-charcoal-900 dark:text-neutral-100">Select Quantity:</span>

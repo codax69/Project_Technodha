@@ -242,7 +242,7 @@ export const ProductCatalogue = () => {
                     {/* Stock Status Badge */}
                     <div className="absolute top-3 right-3 flex flex-col gap-1 items-end">
                       {isOutOfStock ? (
-                        <Badge variant="destructive" className="font-bold text-[10px]">Out of Stock</Badge>
+                        <Badge variant="destructive" className="font-bold text-[10px]">Sold Out</Badge>
                       ) : isLowStock ? (
                         <Badge variant="outline" className="border-coral-500 text-coral-600 dark:text-coral-400 bg-coral-50 dark:bg-coral-950/40 font-bold text-[10px]">
                           Low Stock ({product.stock_quantity})
@@ -311,7 +311,7 @@ export const ProductCatalogue = () => {
                     ) : (
                       <>
                         <ShoppingCart className="w-4 h-4" />
-                        {isOutOfStock ? 'Unavailable' : 'Add'}
+                        {isOutOfStock ? 'Sold Out' : 'Add'}
                       </>
                     )}
                   </Button>
@@ -409,7 +409,7 @@ export const ProductCatalogue = () => {
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-charcoal-700">Stock Status:</span>
                   {quickViewProduct.stock_quantity === 0 ? (
-                    <Badge variant="destructive" className="font-bold text-[10px]">Out of Stock</Badge>
+                    <Badge variant="destructive" className="font-bold text-[10px]">Sold Out</Badge>
                   ) : (
                     <Badge className="bg-coral-500 text-cream-100 font-bold text-[10px]">
                       In Stock ({quickViewProduct.stock_quantity} available)
@@ -417,7 +417,13 @@ export const ProductCatalogue = () => {
                   )}
                 </div>
 
-                {quickViewProduct.stock_quantity > 0 && (
+                {quickViewProduct.stock_quantity === 0 ? (
+                  <div className="pt-3 border-t border-cream-200">
+                    <Button disabled className="w-full py-2.5 font-bold gap-2 rounded-xl bg-neutral-200 text-neutral-500 cursor-not-allowed">
+                      Sold Out
+                    </Button>
+                  </div>
+                ) : (
                   <div className="space-y-3 pt-3 border-t border-cream-200">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-charcoal-700">Quantity:</span>

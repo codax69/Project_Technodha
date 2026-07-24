@@ -281,7 +281,7 @@ export const Home = () => {
 
                         <div className="absolute top-2.5 right-2.5">
                           {isOutOfStock ? (
-                            <Badge variant="destructive" className="font-bold text-[10px]">Out of Stock</Badge>
+                            <Badge variant="destructive" className="font-bold text-[10px]">Sold Out</Badge>
                           ) : (
                             <Badge className="bg-coral-500 text-cream-100 font-bold text-[10px]">
                               In Stock ({product.stock_quantity})
@@ -338,6 +338,8 @@ export const Home = () => {
                           <>
                             <Check className="w-4 h-4" /> Added
                           </>
+                        ) : isOutOfStock ? (
+                          'Sold Out'
                         ) : (
                           <>
                             <ShoppingCart className="w-4 h-4" /> Buy Now
@@ -406,6 +408,11 @@ export const Home = () => {
                               Recommended
                             </Badge>
                           </div>
+                          {isOutOfStock && (
+                            <div className="absolute top-2.5 right-2.5">
+                              <Badge variant="destructive" className="font-bold text-[10px]">Sold Out</Badge>
+                            </div>
+                          )}
                         </div>
 
                         <div className="pt-3 space-y-1">
@@ -434,7 +441,7 @@ export const Home = () => {
                           disabled={isOutOfStock}
                           className="gap-1.5 rounded-xl font-bold bg-coral-500 hover:bg-coral-600 text-cream-100"
                         >
-                          <ShoppingCart className="w-4 h-4" /> Add
+                          {isOutOfStock ? 'Sold Out' : <><ShoppingCart className="w-4 h-4" /> Add</>}
                         </Button>
                       </div>
                     </Card>

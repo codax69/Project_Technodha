@@ -123,7 +123,7 @@ export const OrderHistory = () => {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-cream-200 dark:border-neutral-800">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
-                    <span className="font-black text-lg text-charcoal-900 dark:text-neutral-100">Order #{order.id}</span>
+                    <span className="font-black text-lg text-charcoal-900 dark:text-neutral-100">{order.order_number || `Order #${order.id}`}</span>
                     {getStatusBadge(order.status)}
                   </div>
                   <span className="text-xs text-charcoal-700 dark:text-neutral-400 flex items-center gap-1 font-medium">

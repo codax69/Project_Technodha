@@ -2,6 +2,8 @@ import os
 import django
 import random
 from decimal import Decimal
+from datetime import timedelta
+from django.utils import timezone
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
@@ -129,41 +131,54 @@ def seed():
 
     print(f"Successfully seeded {len(seeded_products)} products into database!")
 
-    # 4. Create Sample Orders
+    # 4. Create Random & Unique Sample Orders
+    from django.conf import settings
+    allow_reset = getattr(settings, 'DEBUG', True) or os.getenv('ALLOW_SEED_DATA_RESET', 'false').lower() == 'true'
+    if allow_reset:
+        Order.objects.all().delete()
+    else:
+        print("Skipping Order.objects.all().delete() safety guard active for production environment.")
+
+    print("Generating 30 unique, randomized sample orders...")
     statuses = ['completed', 'processing', 'pending', 'cancelled']
-    current_orders_count = Order.objects.count()
-    target_count = 25
+    users_list = [customer_user, admin_user]
+    now = timezone.now()
 
-    orders_to_create = target_count - current_orders_count
-    if orders_to_create > 0:
-        print(f"Creating {orders_to_create} sample orders...")
-        for i in range(orders_to_create):
-            status_choice = random.choice(statuses)
-            selected_prods = random.sample(seeded_products, k=random.randint(1, min(3, len(seeded_products))))
-            total_price = Decimal("0.00")
+    for i in range(30):
+        status_choice = random.choice(statuses)
+        customer = random.choice(users_list)
+        selected_prods = random.sample(seeded_products, k=random.randint(1, min(4, len(seeded_products))))
+        
+        # Unique past timestamp
+        random_days = random.randint(0, 25)
+        random_hours = random.randint(0, 23)
+        random_mins = random.randint(0, 59)
+        created_dt = now - timedelta(days=random_days, hours=random_hours, minutes=random_mins)
 
-            order = Order.objects.create(
-                customer=customer_user,
-                status=status_choice,
-                total_price=Decimal("0.00")
+        order = Order.objects.create(
+            customer=customer,
+            status=status_choice,
+            total_price=Decimal("0.00")
+        )
+        Order.objects.filter(id=order.id).update(created_at=created_dt, updated_at=created_dt)
+
+        total_price = Decimal("0.00")
+        for prod in selected_prods:
+            qty = random.randint(1, 3)
+            unit_price = prod.price
+            subtotal = unit_price * qty
+            total_price += subtotal
+
+            OrderItem.objects.create(
+                order=order,
+                product=prod,
+                quantity=qty,
+                unit_price_at_purchase=unit_price,
+                subtotal=subtotal
             )
 
-            for prod in selected_prods:
-                qty = random.randint(1, 2)
-                unit_price = prod.price
-                subtotal = unit_price * qty
-                total_price += subtotal
-
-                OrderItem.objects.create(
-                    order=order,
-                    product=prod,
-                    quantity=qty,
-                    unit_price_at_purchase=unit_price,
-                    subtotal=subtotal
-                )
-
-            order.total_price = total_price
-            order.save()
+        order.total_price = total_price
+        order.save(update_fields=['total_price'])
 
     print(f"Total Products in DB: {Product.objects.count()}")
     print(f"Total Orders in DB: {Order.objects.count()}")

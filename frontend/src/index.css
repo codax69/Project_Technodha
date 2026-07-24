@@ -1,7 +1,6 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -39,8 +38,9 @@
     font-family: 'Poppins', sans-serif;
     @apply bg-background text-foreground;
   }
-  * {
-    @apply border-border outline-ring/50;
+  *, ::before, ::after {
+    border-color: var(--border);
+    @apply outline-ring/50;
   }
   html {
     @apply font-sans;
