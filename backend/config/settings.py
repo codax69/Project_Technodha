@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # `manage.py runserver` picks up the same variables (DB creds, Cloudinary,
 # etc.) without requiring Docker. No-ops silently if the file is absent -
 # real deployments should set env vars directly instead of shipping a .env.
-load_dotenv(BASE_DIR.parent / '.env', override=True)
+load_dotenv(BASE_DIR.parent / '.env')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-technodha-task1-secret-key-2026')
 
