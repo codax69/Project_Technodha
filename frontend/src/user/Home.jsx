@@ -52,10 +52,11 @@ export const Home = () => {
     },
   });
 
-  // Split Products into Top Selling & Suggestions
-  const topSellingProducts = allProducts?.slice(0, 4) || [];
-  const suggestedProducts = allProducts?.slice(4, 8) || allProducts?.slice(0, 4) || [];
-  const heroFeaturedProduct = allProducts?.[0] || null;
+  // Split Active Products into Top Selling & Suggestions
+  const activeProducts = (allProducts || []).filter((p) => p.is_active !== false);
+  const topSellingProducts = activeProducts.slice(0, 4);
+  const suggestedProducts = activeProducts.slice(4, 8).length > 0 ? activeProducts.slice(4, 8) : activeProducts.slice(0, 4);
+  const heroFeaturedProduct = activeProducts[0] || null;
 
   const getMrp = (price) => {
     const num = parseFloat(price);
@@ -253,7 +254,7 @@ export const Home = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {topSellingProducts.map((product, idx) => {
-                const isOutOfStock = product.stock_quantity === 0 || !product.is_orderable;
+                const isOutOfStock = product.stock_quantity === 0;
 
                 return (
                   <Card
@@ -383,7 +384,7 @@ export const Home = () => {
             <TabsContent value="all" className="outline-none">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {suggestedProducts.map((product) => {
-                  const isOutOfStock = product.stock_quantity === 0 || !product.is_orderable;
+                  const isOutOfStock = product.stock_quantity === 0;
 
                   return (
                     <Card

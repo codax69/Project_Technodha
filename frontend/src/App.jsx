@@ -7,6 +7,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/toast';
 import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
 import { UserRoutes } from './user/userRoutes';
 import { AdminRoutes } from './admin/adminRoutes';
 import { NotFound } from './components/NotFound';
@@ -65,6 +66,7 @@ const AppLayout = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+      {!isAdmin && <Footer />}
     </div>
   );
 };

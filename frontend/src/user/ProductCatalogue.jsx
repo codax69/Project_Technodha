@@ -101,7 +101,7 @@ export const ProductCatalogue = () => {
     }, 1800);
   };
 
-  const products = productsData?.results || [];
+  const products = (productsData?.results || []).filter((p) => p.is_active !== false);
 
   const totalPages = productsData?.count ? Math.ceil(productsData.count / ITEMS_PER_PAGE) : 1;
 
@@ -216,7 +216,7 @@ export const ProductCatalogue = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => {
-            const isOutOfStock = product.stock_quantity === 0 || !product.is_orderable;
+            const isOutOfStock = product.stock_quantity === 0;
             const isLowStock = product.stock_quantity > 0 && product.stock_quantity < 5;
 
             return (

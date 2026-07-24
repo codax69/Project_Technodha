@@ -60,7 +60,7 @@ export const ProductDetail = () => {
     queryFn: async () => {
       const res = await apiClient.get('/products/?page=1');
       const list = res.data?.results || [];
-      return list.filter((p) => p.id !== parseInt(id, 10)).slice(0, 4);
+      return list.filter((p) => p.is_active !== false && p.id !== parseInt(id, 10)).slice(0, 4);
     },
     enabled: !!product,
   });
@@ -109,7 +109,7 @@ export const ProductDetail = () => {
     );
   }
 
-  if (isError || !product) {
+  if (isError || !product || product.is_active === false) {
     return (
       <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-6">
         <div className="w-16 h-16 bg-coral-50 text-coral-600 rounded-3xl flex items-center justify-center mx-auto border border-coral-100">
@@ -128,7 +128,7 @@ export const ProductDetail = () => {
     );
   }
 
-  const isOutOfStock = product.stock_quantity === 0 || !product.is_orderable;
+  const isOutOfStock = product.stock_quantity === 0;
   const isLowStock = product.stock_quantity > 0 && product.stock_quantity < 5;
 
   return (
