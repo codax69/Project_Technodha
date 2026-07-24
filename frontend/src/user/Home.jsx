@@ -144,6 +144,7 @@ export const Home = () => {
                 <img
                   src={heroFeaturedProduct.image_url}
                   alt={heroFeaturedProduct.name || "Hero Product"}
+                  loading="lazy"
                   className="w-full h-32 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
@@ -267,6 +268,7 @@ export const Home = () => {
                           <img
                             src={product.image_url}
                             alt={product.name}
+                            loading="lazy"
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
@@ -393,6 +395,7 @@ export const Home = () => {
                             <img
                               src={product.image_url}
                               alt={product.name}
+                              loading="lazy"
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           ) : (
@@ -446,7 +449,7 @@ export const Home = () => {
                   <Card key={product.id} className="p-4 flex flex-col justify-between space-y-3 rounded-2xl border border-cream-200 bg-white shadow-xs">
                     <div className="relative h-44 rounded-xl bg-cream-200/50 flex items-center justify-center overflow-hidden">
                       {product.image_url ? (
-                        <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                        <img src={product.image_url} alt={product.name} loading="lazy" className="w-full h-full object-cover" />
                       ) : (
                         <Package className="w-12 h-12 text-charcoal-700/40" />
                       )}
@@ -458,7 +461,7 @@ export const Home = () => {
                       <h3 className="font-bold text-base text-charcoal-900 line-clamp-1">{product.name}</h3>
                       <div className="text-lg font-black text-coral-500">₹{product.price}</div>
                     </div>
-                    <Button onClick={() => handleAddToCart(product)} className="w-full rounded-xl bg-coral-500 text-cream-100 font-bold">
+                    <Button onClick={(e) => handleAddToCart(e, product)} className="w-full rounded-xl bg-coral-500 text-cream-100 font-bold">
                       Claim Deal
                     </Button>
                   </Card>
@@ -472,7 +475,7 @@ export const Home = () => {
                   <Card key={product.id} className="p-4 flex flex-col justify-between space-y-3 rounded-2xl border border-cream-200 bg-white shadow-xs">
                     <div className="relative h-44 rounded-xl bg-cream-200/50 flex items-center justify-center overflow-hidden">
                       {product.image_url ? (
-                        <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                        <img src={product.image_url} alt={product.name} loading="lazy" className="w-full h-full object-cover" />
                       ) : (
                         <Package className="w-12 h-12 text-charcoal-700/40" />
                       )}
@@ -484,7 +487,7 @@ export const Home = () => {
                       <h3 className="font-bold text-base text-charcoal-900 line-clamp-1">{product.name}</h3>
                       <div className="text-lg font-black text-coral-500">₹{product.price}</div>
                     </div>
-                    <Button onClick={() => handleAddToCart(product)} className="w-full rounded-xl bg-coral-500 text-cream-100 font-bold">
+                    <Button onClick={(e) => handleAddToCart(e, product)} className="w-full rounded-xl bg-coral-500 text-cream-100 font-bold">
                       Add to Cart
                     </Button>
                   </Card>

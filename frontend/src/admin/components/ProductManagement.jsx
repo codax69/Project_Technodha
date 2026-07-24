@@ -226,7 +226,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
                   <TableCell className="font-medium flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-muted border flex items-center justify-center flex-shrink-0">
                       {p.image_url ? (
-                        <img src={p.image_url} alt={p.name} className="w-full h-full object-cover rounded-lg" />
+                        <img src={p.image_url} alt={p.name} loading="lazy" className="w-full h-full object-cover rounded-lg" />
                       ) : (
                         <Package className="w-5 h-5 text-muted-foreground" />
                       )}

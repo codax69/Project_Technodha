@@ -61,11 +61,12 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo & Desktop Navigation */}
         <div className="flex items-center space-x-8">
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to="/" className="flex flex-col items-end justify-center group">
             {!logoFailed ? (
               <img
                 src="/technodha_logo.webp"
                 alt="TECHNODHA Logo"
+                loading="lazy"
                 onError={() => setLogoFailed(true)}
                 className="h-6 sm:h-7 w-auto object-contain rounded-md group-hover:scale-105 transition-transform"
               />
@@ -74,14 +75,9 @@ export const Navbar = () => {
                 <Package className="w-4 h-4" />
               </div>
             )}
-            <div className="flex flex-col">
-              <span className="font-black tracking-tight text-sm leading-none text-charcoal-900">
-                TECHNODHA
-              </span>
-              <span className="text-[9px] font-bold tracking-wider text-coral-500 uppercase">
-                Inventory & Store
-              </span>
-            </div>
+            <span className="text-[8px] sm:text-[9px] font-extrabold tracking-wider text-coral-500 uppercase mt-0.5 leading-none">
+              Inventory & Store
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -121,18 +117,7 @@ export const Navbar = () => {
               </Link>
             )}
 
-            {user && (
-              <Link
-                to="/dashboard"
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                  isActive('/dashboard')
-                    ? 'bg-white text-coral-500 font-bold shadow-xs border border-cream-200'
-                    : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-white/60'
-                }`}
-              >
-                <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
-              </Link>
-            )}
+
 
             {isAdmin && (
               <Link
@@ -202,9 +187,6 @@ export const Navbar = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate('/orders')} className="rounded-xl cursor-pointer text-charcoal-700 hover:text-coral-500 hover:bg-coral-50">
                   <ShoppingBag className="w-4 h-4 mr-2 text-coral-500" /> Order History
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/dashboard')} className="rounded-xl cursor-pointer text-charcoal-700 hover:text-coral-500 hover:bg-coral-50">
-                  <LayoutDashboard className="w-4 h-4 mr-2 text-coral-500" /> Account Dashboard
                 </DropdownMenuItem>
 
                 {isAdmin && (
@@ -304,20 +286,7 @@ export const Navbar = () => {
             </Link>
           )}
 
-          {user && (
-            <Link
-              to="/dashboard"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between ${
-                isActive('/dashboard') ? 'bg-coral-50 text-coral-500 font-bold' : 'hover:bg-cream-200 text-charcoal-700'
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                <LayoutDashboard className="w-4 h-4" /> Dashboard
-              </span>
-              <ChevronRight className="w-4 h-4 opacity-50" />
-            </Link>
-          )}
+
 
           {isAdmin && (
             <Link

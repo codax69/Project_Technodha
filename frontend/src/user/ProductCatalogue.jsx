@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../api/client';
 import { useCart } from '../context/CartContext';
@@ -22,6 +23,11 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/toast';
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from '@/components/ui/pagination';
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -30,6 +36,7 @@ import {
 } from '@/components/ui/dialog';
 
 export const ProductCatalogue = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortBy, setSortBy] = useState('newest');
@@ -55,12 +62,20 @@ export const ProductCatalogue = () => {
     },
   });
 
+  const getOrderingParam = (sort) => {
+    if (sort === 'price-low') return 'price';
+    if (sort === 'price-high') return '-price';
+    if (sort === 'name') return 'name';
+    return '-created_at';
+  };
+
   const { data: productsData, isLoading, isError } = useQuery({
-    queryKey: ['products', search, selectedCategory, page],
+    queryKey: ['products', search, selectedCategory, page, sortBy],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
       if (selectedCategory) params.append('category__slug', selectedCategory);
+      if (sortBy) params.append('ordering', getOrderingParam(sortBy));
       params.append('page', page.toString());
       const res = await apiClient.get(`/products/?${params.toString()}`);
       return res.data;
@@ -81,13 +96,7 @@ export const ProductCatalogue = () => {
     }, 1800);
   };
 
-  const rawProducts = productsData?.results || [];
-  const sortedProducts = [...rawProducts].sort((a, b) => {
-    if (sortBy === 'price-low') return parseFloat(a.price) - parseFloat(b.price);
-    if (sortBy === 'price-high') return parseFloat(b.price) - parseFloat(a.price);
-    if (sortBy === 'name') return a.name.localeCompare(b.name);
-    return 0;
-  });
+  const products = productsData?.results || [];
 
   const totalPages = productsData ? Math.ceil(productsData.count / 10) : 1;
 
@@ -193,7 +202,7 @@ export const ProductCatalogue = () => {
           <AlertCircle className="w-10 h-10 text-coral-600 mx-auto" />
           <p className="text-coral-700 font-semibold">Failed to load product catalogue.</p>
         </div>
-      ) : sortedProducts.length === 0 ? (
+      ) : products.length === 0 ? (
         <Card className="p-12 text-center rounded-3xl space-y-4 border border-cream-200 bg-white shadow-xs">
           <Package className="w-12 h-12 text-charcoal-700/40 mx-auto" />
           <h3 className="text-lg font-bold text-charcoal-900">No products found</h3>
@@ -201,7 +210,7 @@ export const ProductCatalogue = () => {
         </Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {sortedProducts.map((product) => {
+          {products.map((product) => {
             const isOutOfStock = product.stock_quantity === 0 || !product.is_orderable;
             const isLowStock = product.stock_quantity > 0 && product.stock_quantity < 5;
 
@@ -218,6 +227,7 @@ export const ProductCatalogue = () => {
                       <img
                         src={product.image_url}
                         alt={product.name}
+                        loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
@@ -307,32 +317,52 @@ export const ProductCatalogue = () => {
         </div>
       )}
 
-      {/* Pagination */}
+      {/* Full Shadcn Pagination Bar */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-4 pt-6">
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            disabled={page === 1}
-            className="rounded-xl border-cream-200 text-charcoal-700 bg-white"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
-          <span className="text-xs font-semibold text-charcoal-700">
-            Page <span className="text-charcoal-900 font-bold">{page}</span> of{' '}
-            <span className="text-charcoal-900 font-bold">{totalPages}</span>
-          </span>
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-            disabled={page === totalPages}
-            className="rounded-xl border-cream-200 text-charcoal-700 bg-white"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
+        <Pagination className="pt-6">
+          <PaginationContent className="bg-white border border-cream-200 p-1.5 rounded-2xl shadow-xs flex items-center gap-1">
+            <PaginationItem>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                disabled={page === 1}
+                className="rounded-xl text-xs font-bold text-charcoal-700 hover:text-coral-500 hover:bg-cream-100 gap-1 px-3"
+              >
+                <ChevronLeft className="w-4 h-4 text-coral-500" /> Prev
+              </Button>
+            </PaginationItem>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+              <PaginationItem key={pageNum}>
+                <Button
+                  variant={page === pageNum ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setPage(pageNum)}
+                  className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${
+                    page === pageNum
+                      ? 'bg-coral-500 hover:bg-coral-600 text-cream-100 shadow-xs'
+                      : 'text-charcoal-700 hover:bg-cream-200/60'
+                  }`}
+                >
+                  {pageNum}
+                </Button>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                disabled={page === totalPages}
+                className="rounded-xl text-xs font-bold text-charcoal-700 hover:text-coral-500 hover:bg-cream-100 gap-1 px-3"
+              >
+                Next <ChevronRight className="w-4 h-4 text-coral-500" />
+              </Button>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
 
       {/* Shadcn Dialog Quick View Modal */}
@@ -352,6 +382,7 @@ export const ProductCatalogue = () => {
                   <img
                     src={quickViewProduct.image_url}
                     alt={quickViewProduct.name}
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -416,6 +447,18 @@ export const ProductCatalogue = () => {
                       className="w-full py-2.5 font-bold gap-2 rounded-xl bg-coral-500 hover:bg-coral-600 text-cream-100"
                     >
                       <ShoppingCart className="w-4 h-4" /> Add {modalQty} to Cart (₹{(parseFloat(quickViewProduct.price) * modalQty).toFixed(2)})
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        const pid = quickViewProduct.id;
+                        setQuickViewProduct(null);
+                        navigate(`/products/${pid}`);
+                      }}
+                      className="w-full py-2 font-bold gap-2 rounded-xl border-cream-200 text-charcoal-900 bg-white hover:bg-cream-200/50"
+                    >
+                      View Full Details Page →
                     </Button>
                   </div>
                 )}

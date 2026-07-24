@@ -8,6 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Progress } from '@/components/ui/progress';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
 import {
   Package,
   ShoppingCart,
@@ -138,6 +145,7 @@ export const ProductDetail = () => {
                 <img
                   src={product.image_url}
                   alt={product.name}
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
@@ -185,6 +193,15 @@ export const ProductDetail = () => {
               </Badge>
               <span className="text-xs text-charcoal-700 font-medium">Inclusive of all taxes</span>
             </div>
+          </div>
+
+          {/* Stock Level Progress Indicator */}
+          <div className="space-y-1.5 p-3 rounded-2xl bg-cream-200/40 border border-cream-200">
+            <div className="flex justify-between text-xs font-bold text-charcoal-900">
+              <span>Inventory Stock Status</span>
+              <span className="text-coral-500">{product.stock_quantity} units remaining</span>
+            </div>
+            <Progress value={Math.min(100, Math.max(10, (product.stock_quantity / 30) * 100))} className="h-2 rounded-full" />
           </div>
 
           <div className="border-t border-b border-cream-200 py-4 space-y-2">
@@ -261,6 +278,34 @@ export const ProductDetail = () => {
               </div>
             </div>
           )}
+
+          {/* Shadcn Accordion for Hardware Specs & Support Info */}
+          <div className="pt-4 border-t border-cream-200">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="specs" className="border-cream-200">
+                <AccordionTrigger className="text-xs font-bold text-charcoal-900 py-3">
+                  Technical Specifications & Overview
+                </AccordionTrigger>
+                <AccordionContent className="text-xs text-charcoal-700 space-y-1.5">
+                  <p>• Category: {product.category_detail?.name || 'Hardware'}</p>
+                  <p>• Model ID: TH-{product.id}-TECH</p>
+                  <p>• Condition: Brand New Factory Sealed</p>
+                  <p>• Warranty: 1-Year Official Manufacturer Warranty</p>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="shipping" className="border-cream-200">
+                <AccordionTrigger className="text-xs font-bold text-charcoal-900 py-3">
+                  Shipping & Return Policy
+                </AccordionTrigger>
+                <AccordionContent className="text-xs text-charcoal-700 space-y-1.5">
+                  <p>• Same-day dispatch for orders placed before 2 PM.</p>
+                  <p>• Atomic database locks guarantee immediate stock assignment.</p>
+                  <p>• 7-Day hassle-free replacement policy.</p>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
         </div>
       </div>
 
@@ -289,7 +334,7 @@ export const ProductDetail = () => {
                 <div>
                   <div className="h-40 rounded-xl bg-cream-200/50 flex items-center justify-center border border-cream-200 overflow-hidden">
                     {rel.image_url ? (
-                      <img src={rel.image_url} alt={rel.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <img src={rel.image_url} alt={rel.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
                       <Package className="w-12 h-12 text-charcoal-700/40" />
                     )}

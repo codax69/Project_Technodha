@@ -8,7 +8,6 @@ import { ProductCatalogue } from './ProductCatalogue';
 import { ProductDetail } from './ProductDetail';
 import { CartPage } from './CartPage';
 import { OrderHistory } from './OrderHistory';
-import { Dashboard } from './Dashboard';
 
 export const UserRoutes = (
   <>
@@ -23,7 +22,6 @@ export const UserRoutes = (
     <Route element={<ProtectedRoute />}>
       <Route path="/cart" element={<CartPage />} />
       <Route path="/orders" element={<OrderHistory />} />
-      <Route path="/dashboard" element={<Dashboard />} />
     </Route>
   </>
 );

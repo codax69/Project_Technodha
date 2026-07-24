@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/toast';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   ShoppingBag,
   Trash2,
@@ -119,13 +121,13 @@ export const CartPage = () => {
       </div>
 
       {errorMessage && (
-        <div className="p-4 rounded-2xl bg-coral-50 border border-coral-100 text-coral-700 text-sm flex items-start gap-3 animate-in fade-in-50">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5 text-coral-600" />
+        <Alert variant="destructive" className="rounded-2xl border border-coral-100 bg-coral-50 text-coral-700">
+          <AlertTriangle className="w-5 h-5 text-coral-600" />
           <div>
-            <strong className="font-semibold block mb-1">Stock Constraint / Transaction Error</strong>
-            <span>{errorMessage}</span>
+            <AlertTitle className="font-bold text-sm">Stock Constraint / Transaction Error</AlertTitle>
+            <AlertDescription className="text-xs">{errorMessage}</AlertDescription>
           </div>
-        </div>
+        </Alert>
       )}
 
       {cart.length === 0 ? (
@@ -148,7 +150,7 @@ export const CartPage = () => {
                 <div className="flex items-center space-x-4 w-full sm:w-auto">
                   <div className="w-16 h-16 bg-cream-200/50 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0 border border-cream-200">
                     {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                      <img src={product.image_url} alt={product.name} loading="lazy" className="w-full h-full object-cover" />
                     ) : (
                       <Package className="w-8 h-8 text-charcoal-700/40" />
                     )}
@@ -170,6 +172,7 @@ export const CartPage = () => {
                       variant="ghost"
                       className="h-7 w-7 rounded-lg text-charcoal-700 hover:bg-cream-200"
                       onClick={() => updateQuantity(product.id, quantity - 1)}
+                      disabled={quantity <= 1}
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </Button>
