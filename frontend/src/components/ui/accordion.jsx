@@ -5,6 +5,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 function Accordion({
   className,
+  collapsible,
   ...props
 }) {
   return (

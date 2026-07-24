@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export const Logo = ({ className = "h-8", showSubtitle = true }) => {
   return (
-    <Link to="/" className={`inline-flex flex-col items-start justify-center group outline-none ${className}`}>
+    <Link to="/" className={`inline-flex flex-col items-start justify-center group focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2 rounded-xl outline-none ${className}`}>
       <div className="flex items-center gap-2.5">
         {/* Modern Vector SVG Emblem */}
         <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-coral-500 to-coral-600 p-0.5 shadow-md shadow-coral-500/20 group-hover:scale-105 transition-transform">

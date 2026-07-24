@@ -12,7 +12,7 @@ export const NotFound = () => {
 
         <div className="space-y-6">
           {/* 404 Icon */}
-          <div className="w-20 h-20 bg-coral-50 dark:bg-coral-950/40 text-coral-500 rounded-3xl flex items-center justify-center mx-auto border border-coral-100 dark:border-coral-900/40">
+          <div className="w-20 h-20 bg-coral-50 dark:bg-coral-700/20 text-coral-500 rounded-3xl flex items-center justify-center mx-auto border border-coral-100 dark:border-coral-700/40">
             <AlertCircle className="w-10 h-10" />
           </div>
 

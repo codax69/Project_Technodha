@@ -20,6 +20,7 @@ import {
   ShieldCheckIcon,
 } from "lucide-react"
 import { Logo } from "./Logo"
+import { ThemeToggle } from "./ThemeToggle"
 
 export function AppSidebar({ side = "left", ...props }) {
   const { user } = useAuth()

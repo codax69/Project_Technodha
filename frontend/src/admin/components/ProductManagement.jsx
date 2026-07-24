@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Pagination, PaginationContent, PaginationItem } from '@/components/ui/pagination';
 import {
   Package,
   Plus,
@@ -15,6 +16,10 @@ import {
   AlertCircle,
   UploadCloud,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  AlertTriangle,
+  Filter,
 } from 'lucide-react';
 import { uploadProductImage } from '@/utils/imageUpload';
 import { getErrorMessage } from '@/utils/errorHandler';
@@ -29,6 +34,9 @@ export const ProductManagement = ({ products, categories, productMutation, stock
   const [deleteConfirmProduct, setDeleteConfirmProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [stockFilter, setStockFilter] = useState('all');
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   // Upload Status States
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -158,8 +166,30 @@ export const ProductManagement = ({ products, categories, productMutation, stock
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = !categoryFilter || p.category === Number(categoryFilter);
-    return matchesSearch && matchesCategory;
-  });
+    const matchesStock =
+      stockFilter === 'all'
+        ? true
+        : stockFilter === 'low_stock'
+        ? (p.stock_quantity > 0 && p.stock_quantity < 5) || p.is_low_stock
+        : stockFilter === 'out_of_stock'
+        ? p.stock_quantity === 0 || p.is_out_of_stock
+        : true;
+    return matchesSearch && matchesCategory && matchesStock;
+  }) || [];
+
+  const totalPages = Math.ceil(filteredProducts.length / pageSize) || 1;
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
+
+  const paginatedProducts = filteredProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const lowStockTotal = products?.filter((p) => (p.stock_quantity > 0 && p.stock_quantity < 5) || p.is_low_stock).length || 0;
+  const outOfStockTotal = products?.filter((p) => p.stock_quantity === 0 || p.is_out_of_stock).length || 0;
 
   return (
     <div className="space-y-4">
@@ -168,7 +198,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
         <div>
           <h2 className="text-xl font-bold tracking-tight">Product Catalogue Management</h2>
           <p className="text-xs text-muted-foreground">
-            Manage items, upload product images (max 1MB limit), and adjust stock ({filteredProducts?.length || 0} displayed)
+            Manage items, upload product images (max 1MB limit), and adjust stock ({filteredProducts.length} matching items)
           </p>
         </div>
         <Button onClick={openAddProduct} className="gap-2">
@@ -176,29 +206,89 @@ export const ProductManagement = ({ products, categories, productMutation, stock
         </Button>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search products by name or description..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 text-sm"
-          />
+      {/* Filter, Stock Chips and Search Bar */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search products by name or description..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
+              className="pl-9 text-sm"
+            />
+          </div>
+          <select
+            value={categoryFilter}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              setPage(1);
+            }}
+            className="bg-background border text-xs font-semibold rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer w-full sm:w-48"
+          >
+            <option value="">All Categories</option>
+            {categories?.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="bg-background border text-xs font-semibold rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer w-full sm:w-48"
-        >
-          <option value="">All Categories</option>
-          {categories?.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+
+        {/* Stock Filter Chips */}
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <span className="text-xs font-bold text-muted-foreground flex items-center gap-1 mr-1">
+            <Filter className="w-3.5 h-3.5 text-primary" /> Stock Filter:
+          </span>
+          <Button
+            size="sm"
+            variant={stockFilter === 'all' ? 'default' : 'outline'}
+            onClick={() => {
+              setStockFilter('all');
+              setPage(1);
+            }}
+            className="h-8 rounded-xl text-xs font-bold gap-1.5"
+          >
+            All Products ({products?.length || 0})
+          </Button>
+
+          <Button
+            size="sm"
+            variant={stockFilter === 'low_stock' ? 'default' : 'outline'}
+            onClick={() => {
+              setStockFilter('low_stock');
+              setPage(1);
+            }}
+            className={`h-8 rounded-xl text-xs font-bold gap-1.5 ${
+              stockFilter === 'low_stock'
+                ? 'bg-amber-600 hover:bg-amber-700 text-white'
+                : 'border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10'
+            }`}
+          >
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+            Low Stock Only ({lowStockTotal})
+          </Button>
+
+          <Button
+            size="sm"
+            variant={stockFilter === 'out_of_stock' ? 'default' : 'outline'}
+            onClick={() => {
+              setStockFilter('out_of_stock');
+              setPage(1);
+            }}
+            className={`h-8 rounded-xl text-xs font-bold gap-1.5 ${
+              stockFilter === 'out_of_stock'
+                ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                : 'border-rose-500/40 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10'
+            }`}
+          >
+            <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
+            Out of Stock Only ({outOfStockTotal})
+          </Button>
+        </div>
       </div>
 
       {/* Products Table */}
@@ -215,14 +305,14 @@ export const ProductManagement = ({ products, categories, productMutation, stock
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredProducts?.length === 0 ? (
+            {paginatedProducts.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  No products found matching filters.
+                  No products found matching active filters.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredProducts?.map((p) => (
+              paginatedProducts.map((p) => (
                 <TableRow key={p.id}>
                   <TableCell className="font-medium flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-muted border flex items-center justify-center flex-shrink-0">
@@ -233,7 +323,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
                       )}
                     </div>
                     <div>
-                      <div className="font-semibold">{p.name}</div>
+                      <div className="font-semibold text-foreground">{p.name}</div>
                       <div className="text-xs text-muted-foreground line-clamp-1">{p.description}</div>
                     </div>
                   </TableCell>
@@ -242,7 +332,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
                   <TableCell>
                     <Badge
                       variant={p.stock_quantity === 0 ? 'destructive' : p.stock_quantity < 5 ? 'outline' : 'secondary'}
-                      className={p.stock_quantity < 5 && p.stock_quantity > 0 ? 'border-amber-500 text-amber-600' : ''}
+                      className={p.stock_quantity < 5 && p.stock_quantity > 0 ? 'border-amber-500 text-amber-600 dark:text-amber-400' : ''}
                     >
                       {p.stock_quantity}
                     </Badge>
@@ -283,6 +373,50 @@ export const ProductManagement = ({ products, categories, productMutation, stock
           </TableBody>
         </Table>
       </Card>
+
+      {/* Interactive Pagination Bar */}
+      {totalPages > 1 && (
+        <Pagination className="pt-2">
+          <PaginationContent className="bg-card border p-1.5 rounded-2xl shadow-xs flex items-center justify-center gap-1 transition-colors">
+            <PaginationItem>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                disabled={page === 1}
+                className="rounded-xl text-xs font-bold gap-1 px-3"
+              >
+                <ChevronLeft className="w-4 h-4 text-primary" /> Prev
+              </Button>
+            </PaginationItem>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+              <PaginationItem key={pageNum}>
+                <Button
+                  variant={page === pageNum ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setPage(pageNum)}
+                  className="w-9 h-9 rounded-xl text-xs font-bold transition-all"
+                >
+                  {pageNum}
+                </Button>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                disabled={page === totalPages}
+                className="rounded-xl text-xs font-bold gap-1 px-3"
+              >
+                Next <ChevronRight className="w-4 h-4 text-primary" />
+              </Button>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       {/* Product Add/Edit Modal */}
       {isProductModalOpen && (
