@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { Logo } from './Logo';
 import { toast } from '@/components/ui/toast';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -63,24 +64,7 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo & Desktop Navigation */}
         <div className="flex items-center space-x-8">
-          <Link to="/" className="flex flex-col items-end justify-center group">
-            {!logoFailed ? (
-              <img
-                src="/technodha_logo.webp"
-                alt="TECHNODHA Logo"
-                loading="lazy"
-                onError={() => setLogoFailed(true)}
-                className="h-6 sm:h-7 w-auto object-contain rounded-md group-hover:scale-105 transition-transform"
-              />
-            ) : (
-              <div className="w-7 h-7 rounded-lg bg-coral-500 flex items-center justify-center shadow-xs text-cream-100 font-black">
-                <Package className="w-4 h-4" />
-              </div>
-            )}
-            <span className="text-[8px] sm:text-[9px] font-extrabold tracking-wider text-coral-500 uppercase mt-0.5 leading-none">
-              Inventory & Store
-            </span>
-          </Link>
+          <Logo />
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center space-x-1 bg-cream-200/50 dark:bg-neutral-800/60 p-1 rounded-2xl border border-cream-200 dark:border-neutral-800">

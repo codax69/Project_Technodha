@@ -102,7 +102,7 @@ def seed():
         {"name": "Smart Thermostat Temperature Sensor", "price": "2999.00", "stock": 15, "cat": 3, "img": "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=600&q=80", "desc": "Programmable climate control thermostat with energy consumption tracking."},
 
         # Office Supplies (4)
-        {"name": "Ergonomic Mesh Office Chair", "price": "11999.00", "stock": 10, "cat": 4, "img": "https://images.unsplash.com/photo-1580481072645-022f9a6d83d0?w=600&q=80", "desc": "High back breathable mesh chair with adjustable lumbar support and 3D armrests."},
+        {"name": "Ergonomic Mesh Office Chair", "price": "11999.00", "stock": 10, "cat": 4, "img": "/products/ergonomic_mesh_office_chair.png", "desc": "High back breathable mesh chair with adjustable lumbar support and 3D armrests."},
         {"name": "Motorized Electric Standing Desk", "price": "21999.00", "stock": 5, "cat": 4, "img": "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=600&q=80", "desc": "Dual motor height-adjustable sit-stand desk frame with memory height presets."},
         {"name": "Cross-Cut High Security Paper Shredder", "price": "3499.00", "stock": 14, "cat": 4, "img": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80", "desc": "Heavy duty 12-sheet capacity paper and credit card shredder with bin window."},
         {"name": "All-in-One Wireless Laser Printer", "price": "14499.00", "stock": 8, "cat": 4, "img": "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=600&q=80", "desc": "Monochrome duplex printing, scanning, and copying machine with mobile cloud print."},

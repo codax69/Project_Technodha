@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60" fill="none">
+  <rect x="4" y="10" width="40" height="40" rx="12" fill="url(#coral-grad)" />
+  <path d="M24 18L12 24L24 30L36 24L24 18Z" fill="#FFFFFF" fill-opacity="0.3" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 34L24 40L36 34" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 29L24 35L36 29" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="56" y="36" font-family="Inter, sans-serif" font-weight="900" font-size="20" fill="#1E1E1E" letter-spacing="-0.5">TECHNODHA</text>
+  <circle cx="218" cy="32" r="3" fill="#FB6557" />
+  <text x="56" y="47" font-family="Inter, sans-serif" font-weight="800" font-size="8" fill="#FB6557" letter-spacing="1.5">INVENTORY &amp; STORE</text>
+  <defs>
+    <linearGradient id="coral-grad" x1="4" y1="10" x2="44" y2="50" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FB6557" />
+      <stop offset="1" stop-color="#E05345" />
+    </linearGradient>
+  </defs>
+</svg>
