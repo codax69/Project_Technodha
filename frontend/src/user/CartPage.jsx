@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { apiClient } from '../api/client';
-import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, AlertTriangle, CheckCircle2 } from 'lucide-react';
-
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/toast';
+import {
+  ShoppingBag,
+  Trash2,
+  Plus,
+  Minus,
+  ArrowRight,
+  AlertTriangle,
+  CheckCircle2,
+  Package,
+  Sparkles,
+  ShieldCheck,
+} from 'lucide-react';
 
 export const CartPage = () => {
   const { cart, updateQuantity, removeFromCart, clearCart, totalAmount } = useCart();
@@ -32,7 +45,7 @@ export const CartPage = () => {
       setSuccessOrder(order.id);
       toast.create({
         title: "Order Placed Successfully!",
-        description: `Order #${order.id} placed for ₹${parseFloat(order.total_price).toFixed(2)}`,
+        description: `Order #${order.id} confirmed for ₹${parseFloat(order.total_price).toFixed(2)}`,
         type: "success",
       });
     } catch (err) {
@@ -54,156 +67,177 @@ export const CartPage = () => {
     }
   };
 
+  const handleRemove = (product) => {
+    removeFromCart(product.id);
+    toast.create({
+      title: "Item Removed",
+      description: `Removed "${product.name}" from cart`,
+      type: "info",
+    });
+  };
+
   if (successOrder) {
     return (
       <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-6">
-        <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto border border-emerald-300">
+        <div className="w-20 h-20 bg-coral-50 text-coral-500 rounded-3xl flex items-center justify-center mx-auto border border-coral-100 shadow-md animate-in zoom-in-50">
           <CheckCircle2 className="w-10 h-10" />
         </div>
-        <h2 className="text-3xl font-extrabold text-[#2C2C2C]">Order Placed Successfully!</h2>
-        <p className="text-slate-600">
-          Order <span className="text-[#FB6557] font-bold">#{successOrder}</span> has been confirmed and stock locked in database transaction.
-        </p>
-        <div className="flex justify-center gap-4 pt-4">
-          <Link
-            to="/orders"
-            className="px-6 py-3 bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] font-medium rounded-xl shadow-md transition-all"
-          >
-            View Order History
-          </Link>
-          <Link
-            to="/products"
-            className="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-[#2C2C2C] font-medium rounded-xl transition-all"
-          >
+        <div className="space-y-2">
+          <h2 className="text-3xl font-black tracking-tight text-charcoal-900">Order Placed Successfully!</h2>
+          <p className="text-charcoal-700 text-sm leading-relaxed">
+            Order <span className="text-coral-500 font-bold">#{successOrder}</span> has been confirmed and inventory locked via atomic database transaction.
+          </p>
+        </div>
+        <div className="flex justify-center gap-3 pt-4">
+          <Button onClick={() => navigate('/orders')} className="rounded-2xl px-6 gap-2 font-bold shadow-md bg-coral-500 hover:bg-coral-600 text-cream-100">
+            View Order History <ArrowRight className="w-4 h-4" />
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/products')} className="rounded-2xl px-6 font-bold border-cream-200 text-charcoal-700 bg-white">
             Continue Shopping
-          </Link>
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      <h1 className="text-3xl font-extrabold text-[#2C2C2C] tracking-tight flex items-center gap-3">
-        <ShoppingBag className="w-8 h-8 text-[#FB6557]" />
-        Your Shopping Cart
-      </h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cream-200 pb-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-charcoal-900 flex items-center gap-3">
+            <ShoppingBag className="w-8 h-8 text-coral-500" />
+            Shopping Cart
+          </h1>
+          <p className="text-xs text-charcoal-700 mt-1">Review selected inventory items before completing order</p>
+        </div>
+        {cart.length > 0 && (
+          <Button variant="outline" size="sm" onClick={() => navigate('/products')} className="gap-1.5 text-xs rounded-xl font-bold border-cream-200 text-charcoal-700 bg-white">
+            Add More Items
+          </Button>
+        )}
+      </div>
 
       {errorMessage && (
-        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5" />
+        <div className="p-4 rounded-2xl bg-coral-50 border border-coral-100 text-coral-700 text-sm flex items-start gap-3 animate-in fade-in-50">
+          <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5 text-coral-600" />
           <div>
-            <strong className="font-semibold block mb-1">Transaction Conflict / Stock Error</strong>
+            <strong className="font-semibold block mb-1">Stock Constraint / Transaction Error</strong>
             <span>{errorMessage}</span>
           </div>
         </div>
       )}
 
       {cart.length === 0 ? (
-        <div className="glass-card p-12 text-center rounded-3xl space-y-4 border border-slate-200 bg-white">
-          <ShoppingBag className="w-16 h-16 text-slate-300 mx-auto" />
-          <h2 className="text-xl font-bold text-[#2C2C2C]">Your cart is empty</h2>
-          <p className="text-slate-500 text-sm">Browse our catalogue and select items to build your order.</p>
-          <Link
-            to="/products"
-            className="inline-block mt-4 px-6 py-3 bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] font-medium rounded-xl shadow-md transition-all"
-          >
-            Browse Catalogue
-          </Link>
-        </div>
+        <Card className="p-12 text-center rounded-3xl space-y-4 border border-cream-200 bg-white shadow-xs">
+          <ShoppingBag className="w-16 h-16 text-charcoal-700/40 mx-auto" />
+          <div className="space-y-1">
+            <h2 className="text-xl font-bold text-charcoal-900">Your cart is empty</h2>
+            <p className="text-charcoal-700 text-xs">Browse our catalogue and select items to place an order.</p>
+          </div>
+          <Button onClick={() => navigate('/products')} className="rounded-2xl px-6 gap-2 font-bold shadow-md bg-coral-500 hover:bg-coral-600 text-cream-100">
+            Explore Product Catalogue <ArrowRight className="w-4 h-4" />
+          </Button>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items List */}
           <div className="lg:col-span-2 space-y-4">
             {cart.map(({ product, quantity }) => (
-              <div
-                key={product.id}
-                className="glass-card p-5 rounded-2xl border border-slate-200 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm"
-              >
+              <Card key={product.id} className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs hover:shadow-md transition-all rounded-2xl border border-cream-200 bg-white">
                 <div className="flex items-center space-x-4 w-full sm:w-auto">
-                  <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0 border border-slate-200">
+                  <div className="w-16 h-16 bg-cream-200/50 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0 border border-cream-200">
                     {product.image_url ? (
                       <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                     ) : (
-                      <ShoppingBag className="w-8 h-8 text-slate-300" />
+                      <Package className="w-8 h-8 text-charcoal-700/40" />
                     )}
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[#2C2C2C] text-base">{product.name}</h3>
-                    <p className="text-slate-500 text-xs">₹{product.price} each</p>
-                    <p className="text-[11px] text-[#FB6557] font-semibold">Available Stock: {product.stock_quantity}</p>
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-charcoal-900 text-base line-clamp-1">{product.name}</h3>
+                    <p className="text-charcoal-700 text-xs font-medium">₹{product.price} each</p>
+                    <Badge variant="outline" className="text-[10px] font-bold text-charcoal-700 border-cream-200">
+                      Available Stock: {product.stock_quantity}
+                    </Badge>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-6 w-full sm:w-auto justify-between sm:justify-end">
-                  <div className="flex items-center space-x-2 bg-slate-100 border border-slate-300 rounded-xl p-1">
-                    <button
+                <div className="flex items-center space-x-6 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-cream-200">
+                  {/* Stepper */}
+                  <div className="flex items-center space-x-2 border border-cream-200 rounded-xl p-1 bg-cream-100">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7 rounded-lg text-charcoal-700 hover:bg-cream-200"
                       onClick={() => updateQuantity(product.id, quantity - 1)}
-                      className="p-1 text-slate-600 hover:text-[#2C2C2C] rounded-lg hover:bg-slate-200 transition-colors"
                     >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="w-8 text-center text-sm font-bold text-[#2C2C2C]">{quantity}</span>
-                    <button
+                      <Minus className="w-3.5 h-3.5" />
+                    </Button>
+                    <span className="w-8 text-center text-sm font-bold text-charcoal-900">{quantity}</span>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7 rounded-lg text-charcoal-700 hover:bg-cream-200"
                       onClick={() => updateQuantity(product.id, quantity + 1)}
                       disabled={quantity >= product.stock_quantity}
-                      className="p-1 text-slate-600 hover:text-[#2C2C2C] rounded-lg hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     >
-                      <Plus className="w-4 h-4" />
-                    </button>
+                      <Plus className="w-3.5 h-3.5" />
+                    </Button>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-xs text-slate-400 block">Subtotal</span>
-                    <span className="font-bold text-[#2C2C2C] text-base">
+                  <div className="text-right min-w-[80px]">
+                    <span className="text-[10px] text-charcoal-700 block font-medium">Subtotal</span>
+                    <span className="font-black text-charcoal-900 text-base">
                       ₹{(parseFloat(product.price) * quantity).toFixed(2)}
                     </span>
                   </div>
 
-                  <button
-                    onClick={() => removeFromCart(product.id)}
-                    className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => handleRemove(product)}
+                    className="text-charcoal-700 hover:text-coral-600 rounded-xl hover:bg-coral-50"
                     title="Remove item"
                   >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
 
-          {/* Order Summary Box */}
-          <div className="glass-card p-6 rounded-3xl border border-slate-200 bg-white h-fit space-y-6 shadow-sm">
-            <h2 className="text-xl font-bold text-[#2C2C2C] border-b border-slate-100 pb-4">Order Summary</h2>
+          {/* Order Summary Sidebar */}
+          <Card className="p-6 rounded-3xl border border-cream-200 bg-white h-fit space-y-6 shadow-md">
+            <h2 className="text-xl font-bold border-b border-cream-200 pb-4 flex items-center gap-2 text-charcoal-900">
+              <Sparkles className="w-5 h-5 text-coral-500" /> Order Summary
+            </h2>
 
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between text-slate-600">
-                <span>Items Total</span>
-                <span className="font-medium text-[#2C2C2C]">₹{totalAmount.toFixed(2)}</span>
+            <div className="space-y-3.5 text-sm">
+              <div className="flex justify-between text-charcoal-700">
+                <span>Subtotal ({cart.reduce((a, c) => a + c.quantity, 0)} items)</span>
+                <span className="font-bold text-charcoal-900">₹{totalAmount.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Stock Integrity Check</span>
-                <span className="text-emerald-600 font-semibold">Active (Atomic)</span>
+              <div className="flex justify-between text-charcoal-700 items-center">
+                <span className="flex items-center gap-1.5 text-xs">
+                  <ShieldCheck className="w-4 h-4 text-coral-500" /> Atomic Stock Lock
+                </span>
+                <span className="text-coral-500 font-bold text-xs">Enabled</span>
               </div>
-              <div className="border-t border-slate-100 pt-3 flex justify-between text-base">
-                <span className="font-bold text-[#2C2C2C]">Estimated Total</span>
-                <span className="font-black text-2xl text-[#FB6557]">₹{totalAmount.toFixed(2)}</span>
+              <div className="border-t border-cream-200 pt-3 flex justify-between items-baseline">
+                <span className="font-bold text-base text-charcoal-900">Grand Total</span>
+                <span className="font-black text-2xl text-coral-500">₹{totalAmount.toFixed(2)}</span>
               </div>
             </div>
 
-            <p className="text-[11px] text-slate-500 italic bg-slate-50 p-3 rounded-xl border border-slate-200">
-              * Final totals and unit prices are calculated strictly on the backend during transaction execution.
-            </p>
-
-            <button
+            <Button
               onClick={handleCheckout}
               disabled={isSubmitting || cart.length === 0}
-              className="w-full py-4 bg-[#FB6557] hover:bg-[#e05345] text-[#FBFBF8] font-bold rounded-2xl shadow-lg shadow-[#FB6557]/25 flex items-center justify-center space-x-2 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+              className="w-full py-6 text-base font-bold gap-2 rounded-2xl shadow-lg bg-coral-500 hover:bg-coral-600 text-cream-100 shadow-coral-500/20 hover:scale-[1.01] transition-all"
             >
               <span>{isSubmitting ? 'Processing Transaction...' : 'Place Order Now'}</span>
               <ArrowRight className="w-5 h-5" />
-            </button>
-          </div>
+            </Button>
+          </Card>
         </div>
       )}
     </div>

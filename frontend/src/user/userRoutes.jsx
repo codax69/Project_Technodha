@@ -1,9 +1,11 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { ProtectedRoute } from '../components/ProtectedRoute';
+import { Home } from './Home';
 import { Login } from './Login';
 import { Register } from './Register';
 import { ProductCatalogue } from './ProductCatalogue';
+import { ProductDetail } from './ProductDetail';
 import { CartPage } from './CartPage';
 import { OrderHistory } from './OrderHistory';
 import { Dashboard } from './Dashboard';
@@ -11,8 +13,9 @@ import { Dashboard } from './Dashboard';
 export const UserRoutes = (
   <>
     {/* Public Routes */}
-    <Route path="/" element={<ProductCatalogue />} />
+    <Route path="/" element={<Home />} />
     <Route path="/products" element={<ProductCatalogue />} />
+    <Route path="/products/:id" element={<ProductDetail />} />
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
 
@@ -24,3 +27,4 @@ export const UserRoutes = (
     </Route>
   </>
 );
+
