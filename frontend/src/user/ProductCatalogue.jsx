@@ -75,6 +75,7 @@ export const ProductCatalogue = () => {
     queryKey: ['products', search, selectedCategory, page, sortBy],
     queryFn: async () => {
       const params = new URLSearchParams();
+      params.append('is_active', 'true');
       if (search) params.append('search', search);
       if (selectedCategory) params.append('category__slug', selectedCategory);
       if (sortBy) params.append('ordering', getOrderingParam(sortBy));
@@ -88,6 +89,7 @@ export const ProductCatalogue = () => {
   });
 
   const handleAddToCart = (product, qty = 1) => {
+    if (!product || product.stock_quantity === 0 || product.is_orderable === false) return;
     addToCart(product, qty);
     setAddedIds((prev) => ({ ...prev, [product.id]: true }));
     toast.create({
@@ -216,7 +218,7 @@ export const ProductCatalogue = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => {
-            const isOutOfStock = product.stock_quantity === 0;
+            const isOutOfStock = product.stock_quantity === 0 || product.is_orderable === false;
             const isLowStock = product.stock_quantity > 0 && product.stock_quantity < 5;
 
             return (

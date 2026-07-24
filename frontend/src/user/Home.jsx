@@ -47,7 +47,7 @@ export const Home = () => {
   const { data: allProducts, isLoading: isProdLoading } = useQuery({
     queryKey: ['home-products'],
     queryFn: async () => {
-      const res = await apiClient.get('/products/?page=1');
+      const res = await apiClient.get('/products/?is_active=true&page=1');
       return res.data?.results || [];
     },
   });
@@ -66,6 +66,7 @@ export const Home = () => {
 
   const handleAddToCart = (e, product) => {
     if (e && e.stopPropagation) e.stopPropagation();
+    if (!product || product.stock_quantity === 0 || product.is_orderable === false) return;
     addToCart(product, 1);
     setAddedIds((prev) => ({ ...prev, [product.id]: true }));
     toast.create({
@@ -254,7 +255,7 @@ export const Home = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {topSellingProducts.map((product, idx) => {
-                const isOutOfStock = product.stock_quantity === 0;
+                const isOutOfStock = product.stock_quantity === 0 || product.is_orderable === false;
 
                 return (
                   <Card
@@ -384,7 +385,7 @@ export const Home = () => {
             <TabsContent value="all" className="outline-none">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {suggestedProducts.map((product) => {
-                  const isOutOfStock = product.stock_quantity === 0;
+                  const isOutOfStock = product.stock_quantity === 0 || product.is_orderable === false;
 
                   return (
                     <Card
