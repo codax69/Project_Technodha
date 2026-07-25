@@ -336,31 +336,31 @@ export const ProductDetail = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {relatedProducts.map((rel) => (
               <Card
                 key={rel.id}
                 onClick={() => navigate(`/products/${rel.id}`)}
-                className="p-4 rounded-2xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-coral-500 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+                className="p-3 sm:p-4 rounded-2xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-coral-500 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between space-y-2 sm:space-y-3"
               >
                 <div>
-                  <div className="h-40 rounded-xl bg-cream-200/50 dark:bg-neutral-800/60 flex items-center justify-center border border-cream-200 dark:border-neutral-800 overflow-hidden">
+                  <div className="h-32 sm:h-40 rounded-xl bg-cream-200/50 dark:bg-neutral-800/60 flex items-center justify-center border border-cream-200 dark:border-neutral-800 overflow-hidden">
                     {rel.image_url ? (
                       <img src={rel.image_url} alt={rel.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
-                      <Package className="w-12 h-12 text-charcoal-700/40 dark:text-neutral-500" />
+                      <Package className="w-9 h-9 sm:w-12 sm:h-12 text-charcoal-700/40 dark:text-neutral-500" />
                     )}
                   </div>
-                  <div className="pt-3 space-y-1">
-                    <h3 className="font-bold text-sm text-charcoal-900 dark:text-neutral-100 group-hover:text-coral-500 transition-colors line-clamp-1">
+                  <div className="pt-2 sm:pt-3 space-y-1">
+                    <h3 className="font-bold text-xs sm:text-sm text-charcoal-900 dark:text-neutral-100 group-hover:text-coral-500 transition-colors line-clamp-1">
                       {rel.name}
                     </h3>
-                    <p className="text-xs text-charcoal-700 dark:text-neutral-400 line-clamp-1">{rel.description}</p>
+                    <p className="text-[11px] sm:text-xs text-charcoal-700 dark:text-neutral-400 line-clamp-1">{rel.description}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center border-t border-cream-200 dark:border-neutral-800 pt-2">
-                  <span className="font-black text-charcoal-900 dark:text-neutral-100 text-sm">₹{rel.price}</span>
-                  <span className="text-xs font-bold text-coral-500">View Details →</span>
+                  <span className="font-black text-charcoal-900 dark:text-neutral-100 text-xs sm:text-sm">₹{rel.price}</span>
+                  <span className="text-[11px] sm:text-xs font-bold text-coral-500">View →</span>
                 </div>
               </Card>
             ))}
