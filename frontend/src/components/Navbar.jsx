@@ -64,7 +64,7 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo & Desktop Navigation */}
         <div className="flex items-center space-x-8">
-          <Logo />
+          <Logo subname="Store"/>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center space-x-1 bg-cream-200/50 dark:bg-neutral-800/60 p-1 rounded-2xl border border-cream-200 dark:border-neutral-800">

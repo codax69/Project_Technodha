@@ -75,7 +75,7 @@ export function AppSidebar({ side = "left", ...props }) {
       <SidebarContent className="space-y-4 pt-2">
         <div>
           <div className="px-4 py-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-            Admin Components
+            Admin controls
           </div>
           <SidebarMenu className="px-2 space-y-1">
             {adminNav.map((item) => {

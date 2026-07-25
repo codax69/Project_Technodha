@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export const Logo = ({ className = "h-8", showSubtitle = true }) => {
+export const Logo = ({ subname="Inventory & Store",className = "h-8", showSubtitle = true }) => {
   return (
     <Link to="/" className={`inline-flex flex-col items-start justify-center group focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2 rounded-xl outline-none ${className}`}>
       <div className="flex items-center gap-2.5">
@@ -49,7 +49,7 @@ export const Logo = ({ className = "h-8", showSubtitle = true }) => {
           </span>
           {showSubtitle && (
             <span className="text-[8px] font-extrabold tracking-widest text-coral-500 uppercase mt-1 leading-none">
-              Inventory & Store
+              {subname}
             </span>
           )}
         </div>
