@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { useAuth } from '../context/AuthContext';
 import { apiClient } from '../api/client';
 import { Lock, User as UserIcon, AlertCircle, ArrowRight, Shield } from 'lucide-react';
+import { Logo } from '../components/Logo';
 
 import { getErrorMessage } from '../utils/errorHandler';
 
@@ -50,11 +51,11 @@ export const AdminLogin = () => {
       <div className="max-w-md w-full glass-card p-8 rounded-3xl shadow-xl border border-cream-200 dark:border-neutral-800 space-y-6 relative overflow-hidden bg-white dark:bg-neutral-900 transition-colors">
         <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <Shield className="w-6 h-6" />
+        <div className="text-center space-y-3">
+          <div className="flex justify-center mb-1">
+            <Logo subname="Admin Portal" showSubtitle={true} />
           </div>
-          <h2 className="text-3xl font-bold text-charcoal-900 dark:text-neutral-100 tracking-tight">Admin Portal Login</h2>
+          <h2 className="text-2xl font-bold text-charcoal-900 dark:text-neutral-100 tracking-tight">Admin Portal Login</h2>
           <p className="text-charcoal-700 dark:text-neutral-400 text-sm">Secure sign in for inventory and order management</p>
         </div>
 
