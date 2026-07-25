@@ -21,6 +21,110 @@ A production-grade, full-stack Product Inventory and Order Management System bui
 - **Admin Management Panel**: Real-time CRUD for Products & Categories, direct stock updates, and order status transitions.
 - **Role Dashboards**: Admin metrics (products count, low-stock count, total revenue, status breakdown) and Customer metrics (total spent, recent orders).
 
+---
+
+## 🗄️ Database Model Schema
+
+The system uses a PostgreSQL relational database managed by Django ORM, enforcing strict Foreign Keys, database check constraints, and index optimizations.
+
+```
+                      +-------------------+
+                      |      Category     |
+                      +-------------------+
+                      | id (PK)           |
+                      | name (Unique)     |
+                      | slug (Unique)     |
+                      +---------+---------+
+                                | 1
+                                |
+                                | N
+                      +---------v---------+
+                      |      Product      |
+                      +-------------------+
+                      | id (PK)           |
+                      | category_id (FK)  |
+                      | name (Indexed)    |
+                      | price             |
+                      | stock_quantity    |
+                      | image_url         |
+                      | is_active         |
+                      +---------+---------+
+                                | 1
+                                |
+                                | N
++-------------------+ +---------v---------+
+|        User       | |     OrderItem     |
++-------------------+ +-------------------+
+| id (PK)           | | id (PK)           |
+| username (Unique) | | order_id (FK)     |
+| email (Unique)    | | product_id (FK)   |
+| role              | | quantity          |
++---------+---------+ | unit_price        |
+          | 1         | subtotal          |
+          |           +---------^---------+
+          | N                   | N
++---------v---------+           |
+|       Order       |           | 1
++-------------------+           |
+| id (PK)           |           |
+| order_number (UQ) |-----------+
+| customer_id (FK)  |
+| status            |
+| total_price       |
++-------------------+
+```
+
+### Model Specifications
+
+#### 1. User (`apps.authentication.User`)
+Custom user model extending `AbstractUser` with role-based permissions.
+- `id` (BigAutoField, Primary Key)
+- `username` (CharField, Unique)
+- `email` (EmailField, Unique)
+- `role` (CharField, Choices: `admin`, `customer`, Default: `customer`)
+- Standard Django fields (`password`, `first_name`, `last_name`, `is_staff`, `is_superuser`, `is_active`, `date_joined`)
+
+#### 2. Category (`apps.products.Category`)
+Organizes products into logical categories.
+- `id` (BigAutoField, Primary Key)
+- `name` (CharField, max_length=100, Unique)
+- `slug` (SlugField, max_length=120, Unique, Auto-slugified)
+
+#### 3. Product (`apps.products.Product`)
+Inventory hardware items with real-time stock tracking and constraints.
+- `id` (BigAutoField, Primary Key)
+- `category` (ForeignKey → `Category`, `on_delete=PROTECT`, `related_name='products'`)
+- `name` (CharField, max_length=200, db_index=True)
+- `description` (TextField, blank=True)
+- `price` (DecimalField, max_digits=10, decimal_places=2)
+- `stock_quantity` (PositiveIntegerField, default=0)
+- `image_url` (URLField, max_length=500, null=True, blank=True)
+- `is_active` (BooleanField, default=True, db_index=True)
+- `low_stock_threshold` (PositiveIntegerField, default=5)
+- `created_at` (DateTimeField, auto_now_add=True)
+- `updated_at` (DateTimeField, auto_now=True)
+- **Constraints**: `CheckConstraint(price >= 0)`, `CheckConstraint(stock_quantity >= 0)`
+
+#### 4. Order (`apps.orders.Order`)
+Customer order header with atomic status management.
+- `id` (BigAutoField, Primary Key)
+- `order_number` (CharField, max_length=32, Unique, db_index=True, Auto-generated code e.g. `TH-ORD-20260725-A8F2`)
+- `customer` (ForeignKey → `User`, `on_delete=PROTECT`, `related_name='orders'`)
+- `status` (CharField, Choices: `pending`, `processing`, `completed`, `cancelled`, Default: `pending`, db_index=True)
+- `total_price` (DecimalField, max_digits=10, decimal_places=2, default=0.00)
+- `created_at` (DateTimeField, auto_now_add=True)
+- `updated_at` (DateTimeField, auto_now=True)
+
+#### 5. OrderItem (`apps.orders.OrderItem`)
+Individual line items attached to an order.
+- `id` (BigAutoField, Primary Key)
+- `order` (ForeignKey → `Order`, `on_delete=CASCADE`, `related_name='items'`)
+- `product` (ForeignKey → `Product`, `on_delete=PROTECT`, `related_name='order_items'`)
+- `quantity` (PositiveIntegerField)
+- `unit_price_at_purchase` (DecimalField, max_digits=10, decimal_places=2)
+- `subtotal` (DecimalField, max_digits=10, decimal_places=2)
+- **Constraints**: `CheckConstraint(quantity > 0)`
+
 ## 🔑 Default Test Credentials
 
 The database is pre-seeded (`python seed_data.py`) with default login credentials:
