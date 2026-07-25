@@ -250,7 +250,7 @@ export const ProductCatalogue = () => {
                           Low Stock ({product.stock_quantity})
                         </Badge>
                       ) : (
-                        <Badge className="bg-coral-500 text-cream-100 font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5">
+                        <Badge className="hidden sm:inline-flex bg-coral-500 text-cream-100 font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5">
                           In Stock ({product.stock_quantity})
                         </Badge>
                       )}

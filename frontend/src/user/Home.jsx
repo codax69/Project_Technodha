@@ -285,7 +285,7 @@ export const Home = () => {
                           {isOutOfStock ? (
                             <Badge variant="destructive" className="font-bold text-[10px]">Sold Out</Badge>
                           ) : (
-                            <Badge className="bg-coral-500 text-cream-100 font-bold text-[10px]">
+                            <Badge className="hidden sm:inline-flex bg-coral-500 text-cream-100 font-bold text-[10px]">
                               In Stock ({product.stock_quantity})
                             </Badge>
                           )}
@@ -313,8 +313,8 @@ export const Home = () => {
                       </div>
                     </div>
 
-                    {/* Price & Add to Cart */}
-                    <div className="flex items-center justify-between border-t border-cream-200 dark:border-neutral-800 pt-3 mt-2">
+                    {/* Price & Add to Cart (Button below price on mobile) */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 border-t border-cream-200 dark:border-neutral-800 pt-3 mt-2">
                       <div>
                         <div className="flex items-center gap-1.5">
                           <span className="text-[10px] text-charcoal-700/60 dark:text-neutral-500 line-through">
@@ -330,7 +330,7 @@ export const Home = () => {
                         size="sm"
                         onClick={(e) => handleAddToCart(e, product)}
                         disabled={isOutOfStock}
-                        className={`gap-1.5 rounded-xl font-bold ${
+                        className={`w-full sm:w-auto gap-1.5 rounded-xl font-bold ${
                           addedIds[product.id]
                             ? 'bg-coral-600 text-cream-100'
                             : 'bg-coral-500 hover:bg-coral-600 text-cream-100'
