@@ -48,9 +48,10 @@ export const CartPage = () => {
       setSuccessOrder(order.id);
       toast.create({
         title: "Order Placed Successfully!",
-        description: `Order #${order.id} confirmed for ₹${parseFloat(order.total_price).toFixed(2)}`,
+        description: `Order confirmed for ₹${parseFloat(order.total_price).toFixed(2)}`,
         type: "success",
       });
+    } catch (err) {
       let msg = getErrorMessage(err, 'Failed to place order due to stock constraints.');
       setErrorMessage(msg);
       toast.create({
@@ -81,7 +82,7 @@ export const CartPage = () => {
         <div className="space-y-2">
           <h2 className="text-3xl font-black tracking-tight text-charcoal-900">Order Placed Successfully!</h2>
           <p className="text-charcoal-700 text-sm leading-relaxed">
-            Order <span className="text-coral-500 font-bold">#{successOrder}</span> has been confirmed and inventory locked via atomic database transaction.
+            Your order has been confirmed and inventory locked via atomic database transaction.
           </p>
         </div>
         <div className="flex justify-center gap-3 pt-4">

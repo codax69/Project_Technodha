@@ -16,7 +16,10 @@ This document provides a comprehensive technical overview, architecture specific
 - **Atomic Restocking on Cancellation**: Cancelling a pending/processing order automatically restocks item quantities inside an atomic database block.
 - **Global Error Format**: Centralized DRF exception handler (`config.exceptions.custom_exception_handler`) delivering uniform `{ "error": "...", "detail": ..., "status_code": ... }` responses.
 - **Health Check Probe**: Live endpoint `/api/health/` returning DB status (`{"status": "healthy", "database": "connected"}`).
-- **Security & Rate Throttling**: CORS origin whitelist (`http://localhost:3000`, `http://localhost:5173`) and `ScopedRateThrottle` (`10/minute`) on sensitive auth endpoints.
+- **Security & Rate Throttling**: CORS origin whitelist (`https://techstore.pritesh.site`, `https://api.techstore.pritesh.site`, `http://localhost:5173`) and `ScopedRateThrottle` (`10/minute`) on sensitive auth endpoints.
+- **Cookie Token Storage**: JWT access (30-min expiry) and refresh tokens (10-day expiry) stored securely in client-side cookies (`SameSite=Lax`).
+- **Dual Domain Reverse Proxy**: Dedicated Nginx server blocks for `techstore.pritesh.site` (Frontend React SPA) and `api.techstore.pritesh.site` (Backend Django REST API).
+- **Automated CI/CD VPS Deployment**: GitHub Actions pipeline (`.github/workflows/ci.yml`) running backend Pytest, frontend Vitest, Vite production build, and automated SSH deployment over `appleboy/ssh-action`.
 
 ---
 
@@ -25,13 +28,17 @@ This document provides a comprehensive technical overview, architecture specific
 | Layer | Component | Technologies / Libraries |
 | :--- | :--- | :--- |
 | **Backend** | Framework & Runtime | Python 3.14, Django 5.x, Django REST Framework (DRF) |
-| | Authentication | `djangorestframework-simplejwt`, SimpleJWT Blacklist |
-| | Database | PostgreSQL 15+ (`technodha_db` on port `5432`) |
+| | Authentication | `djangorestframework-simplejwt` (30m access, 10d refresh), SimpleJWT Blacklist |
+| | Database | PostgreSQL 15+ (`technodha_db`) |
 | | Image Storage | Cloudinary Python SDK (signed server-side uploads) |
 | | Documentation & Testing | `drf-spectacular` (OpenAPI/Swagger), `pytest` & `pytest-django` |
 | **Frontend** | Framework & Build Tool | React 18, Vite 8, React Router v6 |
 | | UI Components & Styling | TailwindCSS v4, Shadcn UI (`base-ui`), `lucide-react` icons |
-| | Data Fetching & Caching | `@tanstack/react-query` v5, `axios` (with auth interceptors) |
+| | State & Token Management | `@tanstack/react-query` v5, Cookie-based token storage (`src/utils/cookies.js`), AuthContext |
+| | Automated Testing | Vitest, React Testing Library |
+| **DevOps & Infra** | Containerization | Docker, Docker Compose |
+| | Reverse Proxy & SSL | Nginx, Let's Encrypt (Certbot SAN SSL) |
+| | CI/CD | GitHub Actions, SSH deployment via `appleboy/ssh-action` |
 
 ---
 
@@ -39,9 +46,12 @@ This document provides a comprehensive technical overview, architecture specific
 
 ```
 Project_Technodha/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                # CI/CD pipeline: Pytest, Vitest, Vite build, SSH VPS deployment
 ├── backend/
 │   ├── config/
-│   │   ├── settings.py           # Core Django settings, load_dotenv, CORS, Throttling
+│   │   ├── settings.py           # Django settings, SimpleJWT (30m/10d), CORS, Throttling
 │   │   ├── urls.py               # Root API routing (/api/auth/, /api/products/, /api/orders/, /api/health/)
 │   │   ├── exceptions.py         # Global custom DRF exception handler
 │   │   └── pagination.py         # StandardResultsSetPagination (LimitOffset + page fallback)
@@ -50,14 +60,19 @@ Project_Technodha/
 │       ├── products/             # Category, Product models (indexed), CRUD, Cloudinary service
 │       └── orders/               # Order, OrderItem models (indexed), OrderService transaction logic
 ├── frontend/
+│   ├── nginx.conf                # Dual-domain Nginx config (techstore.pritesh.site & api.techstore.pritesh.site)
 │   └── src/
-│       ├── api/client.js         # Axios instance, Bearer auth interceptor & refresh handling
-│       ├── context/              # AuthContext (user, tokens), CartContext (shopping cart)
-│       ├── user/                 # User domain (Home, Catalogue, ProductDetail, CartPage, OrderHistory)
+│       ├── api/client.js         # Axios instance with cookie Bearer auth & refresh interceptor
+│       ├── utils/cookies.js      # Cookie helper module (setCookie, getCookie, removeCookie)
+│       ├── context/              # AuthContext (cookie tokens, user state), CartContext
+│       ├── user/                 # User domain (Home, Catalogue, ProductDetail, CartPage, OrderHistory, Login)
 │       └── admin/                # Admin domain (AdminPanel, ProductManagement, CategoryManagement, ManageOrders)
+├── scripts/
+│   └── init-ssl.sh               # Let's Encrypt SAN SSL certificate bootstrapper
 ├── .env                          # Local environment variables
 ├── .env.example                  # Sanitized environment template for deployments
 ├── docker-compose.yml            # Docker orchestration configuration
+├── AGENTS.md                     # Workspace & coding guidelines
 └── README.md                     # Quickstart documentation
 ```
 
@@ -127,7 +142,7 @@ erDiagram
 | :--- | :--- | :--- | :--- | :--- |
 | `/api/v1/health/` | GET | None | Public | Health probe returning DB connection status |
 | `/api/v1/auth/register/` | POST | 10/min | Public | Creates `customer` user (`role` escalation blocked) |
-| `/api/v1/auth/login/` | POST | 10/min | Public | Returns access + refresh JWTs, username, email & role |
+| `/api/v1/auth/login/` | POST | 10/min | Public | Returns access (30m) + refresh (10d) JWTs, username, email & role |
 | `/api/v1/auth/refresh/` | POST | 100/day | Public | Rotates access token given valid refresh token |
 | `/api/v1/products/` | GET | 200/day | Public | Filterable via `search`, `category__slug`, `ordering`, `is_active` |
 | `/api/v1/products/` | POST/PUT/DELETE | 2000/day | Admin | Full CRUD (DELETE executes soft-delete `is_active=False`) |
@@ -141,14 +156,15 @@ erDiagram
 
 ---
 
-## 6. Pagination System
+## 6. Token & Cookie Management
 
-API uses `StandardResultsSetPagination` (`config/pagination.py`):
-- **Pagination Strategy**: `LimitOffsetPagination`
-- **Default Limit**: `10`
-- **Max Limit**: `100`
-- **Parameters**: `?limit=<n>&offset=<n>` (e.g. `?limit=10&offset=20`).
-- **Page Fallback**: Supports `?page=<n>` by computing `offset = (page - 1) * limit`.
+- **Access Token Expiry**: 30 Minutes (`timedelta(minutes=30)`)
+- **Refresh Token Expiry**: 10 Days (`timedelta(days=10)`)
+- **Cookie Attributes**: `SameSite=Lax`, `path=/`
+- **Login Flow Redirects**:
+  - Customer login redirects directly to Home page (`/`).
+  - Admin login redirects to Admin Operations Panel (`/admin`).
+  - Authenticated users navigating to `/login` are automatically redirected to `/`.
 
 ---
 
@@ -191,15 +207,29 @@ cd frontend
 # Run development server
 npm run dev
 
+# Run Vitest unit test suite
+npx vitest run
+
 # Verify production build
 npm run build
+```
+
+### Production Docker & SSL Commands
+```bash
+# Bootstrap dual domain SSL (techstore.pritesh.site & api.techstore.pritesh.site)
+./scripts/init-ssl.sh
+
+# Run containers with Docker Compose
+docker compose up -d --build
 ```
 
 ---
 
 ## 9. Verified Health Status
 
-- **Database**: Local PostgreSQL (`technodha_db`) on `localhost:5432`.
+- **Database**: PostgreSQL (`technodha_db`) with atomic concurrency locks.
 - **Health Check Probe**: `/api/health/` returning `{"status": "healthy", "database": "connected"}`.
-- **Backend Test Suite**: 26/26 Pytest tests passing.
+- **Backend Test Suite**: 26/26 Pytest tests passing cleanly.
+- **Frontend Test Suite**: Vitest suite passing cleanly (`1 passed`).
 - **Frontend Production Build**: Vite build succeeds cleanly with zero errors.
+- **CI/CD Pipeline**: GitHub Actions automated build, test & VPS SSH deployment.

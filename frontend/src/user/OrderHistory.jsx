@@ -46,7 +46,7 @@ export const OrderHistory = () => {
       setCancellingId(null);
       toast.create({
         title: "Order Cancelled",
-        description: `Order #${variables} cancelled and stock restocked to inventory.`,
+        description: `Order cancelled and stock restocked to inventory.`,
         type: "info",
       });
     },
