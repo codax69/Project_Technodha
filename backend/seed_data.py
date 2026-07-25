@@ -25,9 +25,12 @@ def seed():
             'is_superuser': True,
         }
     )
+    admin_user.role = 'admin'
+    admin_user.is_staff = True
+    admin_user.is_superuser = True
     if not admin_user.check_password('admin123'):
         admin_user.set_password('admin123')
-        admin_user.save()
+    admin_user.save()
 
     customer_user, _ = User.objects.get_or_create(
         username='customer1',
