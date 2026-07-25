@@ -13,49 +13,61 @@ if [ ! -e "$DATA_PATH/conf/options-ssl-nginx.conf" ] || [ ! -e "$DATA_PATH/conf/
   curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "$DATA_PATH/conf/ssl-dhparams.pem"
 fi
 
-echo ">>> Creating dummy certificate for $DOMAINS to allow Nginx startup..."
-path="/etc/letsencrypt/live/$DOMAINS"
-mkdir -p "$DATA_PATH/conf/live/$DOMAINS"
-docker compose run --rm --entrypoint "\
-  openssl req -x509 -nodes -newkey rsa:2048 -days 1\
-    -keyout '$path/privkey.pem' \
-    -out '$path/fullchain.pem' \
-    -subj '/CN=localhost'" certbot
+# Detect whether a valid SSL certificate already exists
+HAS_EXISTING_CERT=0
+if [ -f "$DATA_PATH/conf/live/$DOMAINS/fullchain.pem" ]; then
+  HAS_EXISTING_CERT=1
+fi
 
-echo ">>> Starting Nginx..."
-docker compose up --force-recreate -d frontend
+if [ $HAS_EXISTING_CERT -eq 0 ]; then
+  echo ">>> Creating dummy certificate for $DOMAINS to allow initial Nginx startup..."
+  path="/etc/letsencrypt/live/$DOMAINS"
+  mkdir -p "$DATA_PATH/conf/live/$DOMAINS"
+  docker compose run --rm --entrypoint "\
+    openssl req -x509 -nodes -newkey rsa:2048 -days 1\
+      -keyout '$path/privkey.pem' \
+      -out '$path/fullchain.pem' \
+      -subj '/CN=localhost'" certbot
 
-echo ">>> Deleting dummy certificate for $DOMAINS..."
-docker compose run --rm --entrypoint "\
-  rm -Rf /etc/letsencrypt/live/$DOMAINS && \
-  rm -Rf /etc/letsencrypt/archive/$DOMAINS && \
-  rm -Rf /etc/letsencrypt/renewal/$DOMAINS.conf" certbot
+  echo ">>> Starting Nginx..."
+  docker compose up --force-recreate -d frontend
 
-echo ">>> Requesting Let's Encrypt SSL certificate for $DOMAINS..."
-domain_args=""
-for domain in $DOMAINS; do
-  domain_args="$domain_args -d $domain"
-done
+  echo ">>> Deleting dummy certificate for $DOMAINS..."
+  docker compose run --rm --entrypoint "\
+    rm -Rf /etc/letsencrypt/live/$DOMAINS && \
+    rm -Rf /etc/letsencrypt/archive/$DOMAINS && \
+    rm -Rf /etc/letsencrypt/renewal/$DOMAINS.conf" certbot
 
-# Select email arg
-case "$EMAIL" in
-  "") email_arg="--register-unsafely-without-email" ;;
-  *) email_arg="--email $EMAIL" ;;
-esac
+  echo ">>> Requesting Let's Encrypt SSL certificate for $DOMAINS..."
+  domain_args=""
+  for domain in $DOMAINS; do
+    domain_args="$domain_args -d $domain"
+  done
 
-# Enable staging if requested
-if [ $STAGING -ne 0 ]; then staging_arg="--staging"; fi
+  # Select email arg
+  case "$EMAIL" in
+    "") email_arg="--register-unsafely-without-email" ;;
+    *) email_arg="--email $EMAIL" ;;
+  esac
 
-docker compose run --rm --entrypoint "\
-  certbot certonly --webroot -w /var/www/certbot \
-    $staging_arg \
-    $email_arg \
-    $domain_args \
-    --rsa-key-size 4096 \
-    --agree-tos \
-    --force-renewal" certbot
+  # Enable staging if requested
+  if [ $STAGING -ne 0 ]; then staging_arg="--staging"; fi
 
-echo ">>> Reloading Nginx..."
-docker compose exec frontend nginx -s reload
+  docker compose run --rm --entrypoint "\
+    certbot certonly --webroot -w /var/www/certbot \
+      $staging_arg \
+      $email_arg \
+      $domain_args \
+      --rsa-key-size 4096 \
+      --agree-tos" certbot
 
-echo "✅ SSL Certificate setup complete for $DOMAINS!"
+  echo ">>> Reloading Nginx..."
+  docker compose exec frontend nginx -s reload
+
+  echo "✅ SSL Certificate setup complete for $DOMAINS!"
+else
+  echo ">>> Real certificate found for $DOMAINS. Starting Nginx with existing certificate..."
+  docker compose up -d frontend
+  docker compose exec frontend nginx -s reload
+  echo "✅ Nginx started with existing SSL certificate for $DOMAINS!"
+fi
