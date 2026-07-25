@@ -221,12 +221,12 @@ export const Navbar = () => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-cream-200 bg-cream-100 px-4 py-4 space-y-2 animate-in slide-in-from-top-3 shadow-xl">
+        <div className="md:hidden border-t border-cream-200 dark:border-neutral-800 bg-cream-100 dark:bg-neutral-900 px-4 py-4 space-y-2 animate-in slide-in-from-top-3 shadow-xl">
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
             className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between ${
-              isActive('/') && location.pathname === '/' ? 'bg-coral-50 text-coral-500 font-bold' : 'hover:bg-cream-200 text-charcoal-700'
+              isActive('/') && location.pathname === '/' ? 'bg-coral-50 dark:bg-coral-950/40 text-coral-500 font-bold' : 'hover:bg-cream-200 dark:hover:bg-neutral-800 text-charcoal-700 dark:text-neutral-200'
             }`}
           >
             <span className="flex items-center gap-2">

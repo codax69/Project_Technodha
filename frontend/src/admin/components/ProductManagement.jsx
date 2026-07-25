@@ -285,7 +285,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
       </div>
 
       {/* Products Table */}
-      <Card>
+      <Card className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

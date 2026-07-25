@@ -41,6 +41,25 @@ The database is pre-seeded (`python seed_data.py`) with default login credential
 
 ---
 
+## 📸 Application Screenshots
+
+### 🛒 Storefront & Product Catalogue
+![Storefront Catalogue](frontend/public/Project_screenshort/Screenshot%20From%202026-07-25%2017-47-19.png)
+
+### 🛍️ Customer Shopping Cart & Atomic Checkout
+![Shopping Cart](frontend/public/Project_screenshort/Screenshot%20From%202026-07-25%2017-47-24.png)
+
+### 📦 Customer Order History & Restocking
+![Order History](frontend/public/Project_screenshort/Screenshot%20From%202026-07-25%2017-47-58.png)
+
+### ⚡ Admin Operations Panel & Product CRUD
+![Admin Operations Panel](frontend/public/Project_screenshort/Screenshot%20From%202026-07-25%2017-48-24.png)
+
+### 📊 Admin Order Fulfillment & Status Management
+![Admin Order Fulfillment](frontend/public/Project_screenshort/Screenshot%20From%202026-07-25%2017-48-30.png)
+
+---
+
 ## 🚀 Quick Start with Docker (Recommended)
 
 Run the entire system (Postgres DB, Django Backend, React Frontend) in **one command**:
