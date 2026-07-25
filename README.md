@@ -21,6 +21,24 @@ A production-grade, full-stack Product Inventory and Order Management System bui
 - **Admin Management Panel**: Real-time CRUD for Products & Categories, direct stock updates, and order status transitions.
 - **Role Dashboards**: Admin metrics (products count, low-stock count, total revenue, status breakdown) and Customer metrics (total spent, recent orders).
 
+## 🔑 Default Test Credentials
+
+The database is pre-seeded (`python seed_data.py`) with default login credentials:
+
+| Role | Username | Password | Email | Access / Scope |
+| :--- | :--- | :--- | :--- | :--- |
+| **Admin** | `admin` | `admin123` | `admin@technodha.com` | Full Admin Operations Panel (`/admin`), Product & Category CRUD, Order Status |
+| **Customer** | `customer1` | `customer123` | `customer1@example.com` | Customer Storefront (`/`), Cart (`/cart`), Checkout & Order History (`/orders`) |
+
+---
+
+## 🌐 Live Production Links
+
+- **Storefront Web App**: [https://techstore.pritesh.site](https://techstore.pritesh.site)
+- **Backend REST API**: [https://api.techstore.pritesh.site/api/v1/](https://api.techstore.pritesh.site/api/v1/)
+- **Swagger Interactive API Docs**: [https://api.techstore.pritesh.site/api/docs/](https://api.techstore.pritesh.site/api/docs/)
+- **Health Check Probe**: [https://api.techstore.pritesh.site/api/v1/health/](https://api.techstore.pritesh.site/api/v1/health/)
+
 ---
 
 ## 🚀 Quick Start with Docker (Recommended)
