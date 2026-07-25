@@ -8,8 +8,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-technodha_db}
       POSTGRES_USER: ${POSTGRES_USER:-technodha_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-technodha_pass}
-    expose:
-      - "5432"
+    ports:
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -29,8 +29,8 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     env_file:
       - .env
     environment:
