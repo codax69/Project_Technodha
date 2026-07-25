@@ -242,7 +242,7 @@ export const Home = () => {
           </div>
 
           {isProdLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {[...Array(4)].map((_, i) => (
                 <Card key={i} className="p-4 space-y-3 rounded-2xl bg-white dark:bg-neutral-900 border border-cream-200 dark:border-neutral-800">
                   <Skeleton className="h-44 rounded-xl bg-cream-200 dark:bg-neutral-800" />
@@ -253,7 +253,7 @@ export const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {topSellingProducts.map((product, idx) => {
                 const isOutOfStock = product.stock_quantity === 0 || product.is_orderable === false;
 
@@ -383,7 +383,7 @@ export const Home = () => {
             </TabsList>
 
             <TabsContent value="all" className="outline-none">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                 {suggestedProducts.map((product) => {
                   const isOutOfStock = product.stock_quantity === 0 || product.is_orderable === false;
 
@@ -453,7 +453,7 @@ export const Home = () => {
             </TabsContent>
 
             <TabsContent value="deals" className="outline-none">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                 {suggestedProducts.slice(0, 2).map((product) => (
                   <Card key={product.id} className="p-4 flex flex-col justify-between space-y-3 rounded-2xl border border-cream-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-xs">
                     <div className="relative h-44 rounded-xl bg-cream-200/50 dark:bg-neutral-800/60 flex items-center justify-center overflow-hidden">

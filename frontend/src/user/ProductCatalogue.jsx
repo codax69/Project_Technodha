@@ -194,12 +194,12 @@ export const ProductCatalogue = () => {
 
       {/* Products Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {[...Array(8)].map((_, i) => (
-            <Card key={i} className="p-4 space-y-4 rounded-2xl bg-white border border-cream-200">
-              <Skeleton className="h-44 rounded-xl bg-cream-200" />
-              <Skeleton className="h-5 w-3/4 bg-cream-200" />
-              <Skeleton className="h-4 w-1/2 bg-cream-200" />
+            <Card key={i} className="p-3 sm:p-4 space-y-3 rounded-2xl bg-white border border-cream-200">
+              <Skeleton className="h-36 sm:h-44 rounded-xl bg-cream-200" />
+              <Skeleton className="h-4 sm:h-5 w-3/4 bg-cream-200" />
+              <Skeleton className="h-3 sm:h-4 w-1/2 bg-cream-200" />
               <Skeleton className="h-8 w-full bg-cream-200" />
             </Card>
           ))}
@@ -216,7 +216,7 @@ export const ProductCatalogue = () => {
           <p className="text-charcoal-700 text-xs">Try broadening your search query or selecting a different category.</p>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {products.map((product) => {
             const isOutOfStock = product.stock_quantity === 0 || product.is_orderable === false;
             const isLowStock = product.stock_quantity > 0 && product.stock_quantity < 5;
@@ -229,7 +229,7 @@ export const ProductCatalogue = () => {
               >
                 <div>
                   {/* Image Container */}
-                  <div className="relative h-48 bg-cream-200/50 dark:bg-neutral-800/60 flex items-center justify-center overflow-hidden border-b border-cream-200 dark:border-neutral-800">
+                  <div className="relative h-36 sm:h-48 bg-cream-200/50 dark:bg-neutral-800/60 flex items-center justify-center overflow-hidden border-b border-cream-200 dark:border-neutral-800">
                     {product.image_url ? (
                       <img
                         src={product.image_url}
@@ -238,19 +238,19 @@ export const ProductCatalogue = () => {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
-                      <Package className="w-14 h-14 text-charcoal-700/40 dark:text-neutral-500 group-hover:scale-110 transition-transform" />
+                      <Package className="w-10 h-10 sm:w-14 sm:h-14 text-charcoal-700/40 dark:text-neutral-500 group-hover:scale-110 transition-transform" />
                     )}
 
                     {/* Stock Status Badge */}
-                    <div className="absolute top-3 right-3 flex flex-col gap-1 items-end">
+                    <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex flex-col gap-1 items-end">
                       {isOutOfStock ? (
-                        <Badge variant="destructive" className="font-bold text-[10px]">Sold Out</Badge>
+                        <Badge variant="destructive" className="font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5">Sold Out</Badge>
                       ) : isLowStock ? (
-                        <Badge variant="outline" className="border-coral-500 text-coral-600 dark:text-coral-400 bg-coral-50 dark:bg-coral-950/40 font-bold text-[10px]">
+                        <Badge variant="outline" className="border-coral-500 text-coral-600 dark:text-coral-400 bg-coral-50 dark:bg-coral-950/40 font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5">
                           Low Stock ({product.stock_quantity})
                         </Badge>
                       ) : (
-                        <Badge className="bg-coral-500 text-cream-100 font-bold text-[10px]">
+                        <Badge className="bg-coral-500 text-cream-100 font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5">
                           In Stock ({product.stock_quantity})
                         </Badge>
                       )}
@@ -263,34 +263,34 @@ export const ProductCatalogue = () => {
                         setQuickViewProduct(product);
                         setModalQty(1);
                       }}
-                      className="absolute bottom-3 right-3 px-3 py-1.5 bg-white/95 dark:bg-neutral-900/95 hover:bg-white text-charcoal-900 dark:text-neutral-100 rounded-xl shadow-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 text-xs font-bold backdrop-blur-md border border-cream-200 dark:border-neutral-700"
+                      className="hidden sm:flex absolute bottom-3 right-3 px-3 py-1.5 bg-white/95 dark:bg-neutral-900/95 hover:bg-white text-charcoal-900 dark:text-neutral-100 rounded-xl shadow-md opacity-0 group-hover:opacity-100 transition-opacity items-center gap-1.5 text-xs font-bold backdrop-blur-md border border-cream-200 dark:border-neutral-700"
                     >
                       <Eye className="w-3.5 h-3.5 text-coral-500" /> Quick View
                     </button>
                   </div>
 
                   {/* Card Info */}
-                  <div className="p-5 space-y-1.5">
-                    <span className="text-[10px] font-extrabold text-coral-500 uppercase tracking-wider">
+                  <div className="p-3 sm:p-5 space-y-1 sm:space-y-1.5">
+                    <span className="text-[9px] sm:text-[10px] font-extrabold text-coral-500 uppercase tracking-wider block">
                       {product.category_detail?.name || 'Uncategorized'}
                     </span>
-                    <h3 className="font-bold text-base text-charcoal-900 dark:text-neutral-100 group-hover:text-coral-500 transition-colors line-clamp-1">
+                    <h3 className="font-bold text-sm sm:text-base text-charcoal-900 dark:text-neutral-100 group-hover:text-coral-500 transition-colors line-clamp-1">
                       {product.name}
                     </h3>
-                    <p className="text-charcoal-700 dark:text-neutral-400 text-xs line-clamp-2 min-h-[32px]">
+                    <p className="text-charcoal-700 dark:text-neutral-400 text-[11px] sm:text-xs line-clamp-2 min-h-[28px] sm:min-h-[32px]">
                       {product.description || 'No description provided.'}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Footer Actions */}
-                <div className="p-5 pt-0 flex items-center justify-between border-t border-cream-200 dark:border-neutral-800 mt-2 pt-4">
+                <div className="p-3 sm:p-5 pt-0 border-t border-cream-200 dark:border-neutral-800 mt-1 sm:mt-2 pt-3 sm:pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
                   <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-charcoal-700/60 dark:text-neutral-400 line-through">MRP ₹{getMrp(product.price)}</span>
-                      <span className="text-[9px] font-bold text-coral-500 bg-coral-50 dark:bg-coral-950/40 px-1 py-0.2 rounded">20% OFF</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[9px] sm:text-[10px] text-charcoal-700/60 dark:text-neutral-400 line-through">MRP ₹{getMrp(product.price)}</span>
+                      <span className="text-[8px] sm:text-[9px] font-bold text-coral-500 bg-coral-50 dark:bg-coral-950/40 px-1 py-0.2 rounded">20% OFF</span>
                     </div>
-                    <span className="text-xl font-black text-charcoal-900 dark:text-white">₹{product.price}</span>
+                    <span className="text-base sm:text-xl font-black text-charcoal-900 dark:text-white">₹{product.price}</span>
                   </div>
 
                   <Button
@@ -300,7 +300,7 @@ export const ProductCatalogue = () => {
                     }}
                     disabled={isOutOfStock}
                     size="sm"
-                    className={`gap-1.5 rounded-xl font-bold shadow-xs ${
+                    className={`w-full sm:w-auto px-2 sm:px-3 text-xs gap-1 sm:gap-1.5 rounded-xl font-bold shadow-xs ${
                       addedIds[product.id]
                         ? 'bg-coral-600 text-cream-100'
                         : 'bg-coral-500 hover:bg-coral-600 text-cream-100'
@@ -308,11 +308,11 @@ export const ProductCatalogue = () => {
                   >
                     {addedIds[product.id] ? (
                       <>
-                        <Check className="w-4 h-4" /> Added
+                        <Check className="w-3.5 h-3.5" /> Added
                       </>
                     ) : (
                       <>
-                        <ShoppingCart className="w-4 h-4" />
+                        <ShoppingCart className="w-3.5 h-3.5" />
                         {isOutOfStock ? 'Sold Out' : 'Add'}
                       </>
                     )}
