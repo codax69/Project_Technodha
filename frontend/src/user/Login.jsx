@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,9 +16,19 @@ const loginSchema = z.object({
 });
 
 export const Login = () => {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    }
+  }, [user, navigate]);
 
   const {
     register,
@@ -32,12 +42,12 @@ export const Login = () => {
     setError(null);
     try {
       const res = await apiClient.post('/auth/login/', data);
-      const { access, refresh, user } = res.data;
-      login(access, refresh, user);
-      if (user.role === 'admin') {
+      const { access, refresh, user: loggedUser } = res.data;
+      login(access, refresh, loggedUser);
+      if (loggedUser.role === 'admin') {
         navigate('/admin');
       } else {
-        navigate('/products');
+        navigate('/');
       }
     } catch (err) {
       setError(getErrorMessage(err, 'Invalid username or password.'));
