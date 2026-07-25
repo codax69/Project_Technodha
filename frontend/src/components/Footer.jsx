@@ -65,9 +65,9 @@ export const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Brand Info */}
         <div className="md:col-span-4 space-y-4">
-          <Link to="/" className="inline-block">
+          <div className="inline-block">
             <Logo size="md" />
-          </Link>
+          </div>
           <p className="text-xs text-charcoal-700 dark:text-neutral-400 leading-relaxed max-w-sm">
             Technodha is an advanced inventory, order execution, and hardware retail storefront built with precision real-time stock tracking.
           </p>
