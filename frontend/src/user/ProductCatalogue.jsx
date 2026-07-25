@@ -375,16 +375,16 @@ export const ProductCatalogue = () => {
       {/* Shadcn Dialog Quick View Modal */}
       <Dialog open={!!quickViewProduct} onOpenChange={(open) => !open && setQuickViewProduct(null)}>
         {quickViewProduct && (
-          <DialogContent className="sm:max-w-xl rounded-3xl p-6 bg-white border border-cream-200 text-charcoal-900">
+          <DialogContent className="w-[92vw] sm:max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 bg-white dark:bg-neutral-900 border border-cream-200 dark:border-neutral-800 text-charcoal-900 dark:text-neutral-100">
             <DialogHeader>
-              <DialogTitle className="text-xl font-black text-charcoal-900">{quickViewProduct.name}</DialogTitle>
-              <DialogDescription className="text-xs text-charcoal-700">
-                Category: <span className="font-bold text-charcoal-900">{quickViewProduct.category_detail?.name || 'Uncategorized'}</span>
+              <DialogTitle className="text-xl font-black text-charcoal-900 dark:text-neutral-100">{quickViewProduct.name}</DialogTitle>
+              <DialogDescription className="text-xs text-charcoal-700 dark:text-neutral-400">
+                Category: <span className="font-bold text-charcoal-900 dark:text-neutral-200">{quickViewProduct.category_detail?.name || 'Uncategorized'}</span>
               </DialogDescription>
             </DialogHeader>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center pt-2">
-              <div className="h-56 bg-cream-200/50 rounded-2xl flex items-center justify-center overflow-hidden border border-cream-200">
+              <div className="h-56 bg-cream-200/50 dark:bg-neutral-800/60 rounded-2xl flex items-center justify-center overflow-hidden border border-cream-200 dark:border-neutral-800">
                 {quickViewProduct.image_url ? (
                   <img
                     src={quickViewProduct.image_url}
@@ -393,23 +393,23 @@ export const ProductCatalogue = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <Package className="w-16 h-16 text-charcoal-700/40" />
+                  <Package className="w-16 h-16 text-charcoal-700/40 dark:text-neutral-500" />
                 )}
               </div>
 
               <div className="space-y-4">
                 <div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-black text-coral-500 dark:text-white">₹{quickViewProduct.price}</span>
+                    <span className="text-2xl font-black text-coral-500 dark:text-coral-400">₹{quickViewProduct.price}</span>
                     <span className="text-xs text-charcoal-700/60 dark:text-neutral-400 line-through">MRP ₹{getMrp(quickViewProduct.price)}</span>
                   </div>
-                  <p className="text-xs text-charcoal-700 mt-2 leading-relaxed">
+                  <p className="text-xs text-charcoal-700 dark:text-neutral-300 mt-2 leading-relaxed">
                     {quickViewProduct.description || 'High quality inventory product.'}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-charcoal-700">Stock Status:</span>
+                  <span className="text-xs font-semibold text-charcoal-700 dark:text-neutral-300">Stock Status:</span>
                   {quickViewProduct.stock_quantity === 0 ? (
                     <Badge variant="destructive" className="font-bold text-[10px]">Sold Out</Badge>
                   ) : (
@@ -420,30 +420,30 @@ export const ProductCatalogue = () => {
                 </div>
 
                 {quickViewProduct.stock_quantity === 0 ? (
-                  <div className="pt-3 border-t border-cream-200">
-                    <Button disabled className="w-full py-2.5 font-bold gap-2 rounded-xl bg-neutral-200 text-neutral-500 cursor-not-allowed">
+                  <div className="pt-3 border-t border-cream-200 dark:border-neutral-800">
+                    <Button disabled className="w-full py-2.5 font-bold gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 text-neutral-500 cursor-not-allowed">
                       Sold Out
                     </Button>
                   </div>
                 ) : (
-                  <div className="space-y-3 pt-3 border-t border-cream-200">
+                  <div className="space-y-3 pt-3 border-t border-cream-200 dark:border-neutral-800">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-charcoal-700">Quantity:</span>
-                      <div className="flex items-center gap-2 border border-cream-200 rounded-xl p-1 bg-cream-100">
+                      <span className="text-xs font-bold text-charcoal-700 dark:text-neutral-300">Quantity:</span>
+                      <div className="flex items-center gap-2 border border-cream-200 dark:border-neutral-700 rounded-xl p-1 bg-cream-100 dark:bg-neutral-800">
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-7 w-7 rounded-lg text-charcoal-700 hover:bg-cream-200"
+                          className="h-7 w-7 rounded-lg text-charcoal-700 dark:text-neutral-300 hover:bg-cream-200 dark:hover:bg-neutral-700"
                           onClick={() => setModalQty((q) => Math.max(q - 1, 1))}
                           disabled={modalQty <= 1}
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </Button>
-                        <span className="w-8 text-center text-sm font-bold text-charcoal-900">{modalQty}</span>
+                        <span className="w-8 text-center text-sm font-bold text-charcoal-900 dark:text-neutral-100">{modalQty}</span>
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-7 w-7 rounded-lg text-charcoal-700 hover:bg-cream-200"
+                          className="h-7 w-7 rounded-lg text-charcoal-700 dark:text-neutral-300 hover:bg-cream-200 dark:hover:bg-neutral-700"
                           onClick={() => setModalQty((q) => Math.min(q + 1, quickViewProduct.stock_quantity))}
                           disabled={modalQty >= quickViewProduct.stock_quantity}
                         >
@@ -457,7 +457,7 @@ export const ProductCatalogue = () => {
                         handleAddToCart(quickViewProduct, modalQty);
                         setQuickViewProduct(null);
                       }}
-                      className="w-full py-2.5 font-bold gap-2 rounded-xl bg-coral-500 hover:bg-coral-600 text-cream-100"
+                      className="w-full py-2.5 font-bold gap-2 rounded-xl bg-coral-500 hover:bg-coral-600 text-cream-100 shadow-sm"
                     >
                       <ShoppingCart className="w-4 h-4" /> Add {modalQty} to Cart (₹{(parseFloat(quickViewProduct.price) * modalQty).toFixed(2)})
                     </Button>
@@ -469,7 +469,7 @@ export const ProductCatalogue = () => {
                         setQuickViewProduct(null);
                         navigate(`/products/${pid}`);
                       }}
-                      className="w-full py-2 font-bold gap-2 rounded-xl border-cream-200 text-charcoal-900 bg-white hover:bg-cream-200/50"
+                      className="w-full py-2 font-bold gap-2 rounded-xl border-cream-200 dark:border-neutral-700 text-charcoal-900 dark:text-neutral-100 bg-white dark:bg-neutral-900 hover:bg-cream-200/50 dark:hover:bg-neutral-800"
                     >
                       View Full Details Page →
                     </Button>

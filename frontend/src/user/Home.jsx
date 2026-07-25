@@ -89,8 +89,8 @@ export const Home = () => {
 
   return (
     <div className="space-y-10 pb-16">
-      {/* Hero Banner (Fixed 30% Height (~280px-320px) with Visual Product Images) */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-coral-50 via-cream-200/50 to-cream-100 dark:from-neutral-900 dark:via-neutral-900/80 dark:to-neutral-900 text-charcoal-900 dark:text-neutral-100 h-[290px] sm:h-[320px] rounded-3xl max-w-7xl mx-auto mt-4 border border-cream-200 dark:border-neutral-800 shadow-sm flex items-center px-6 sm:px-10 lg:px-12 transition-colors">
+      {/* Hero Banner (Fluid Height with Visual Product Images) */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-coral-50 via-cream-200/50 to-cream-100 dark:from-neutral-900 dark:via-neutral-900/80 dark:to-neutral-900 text-charcoal-900 dark:text-neutral-100 min-h-[290px] sm:h-[320px] py-6 sm:py-0 rounded-3xl max-w-7xl mx-auto mt-4 border border-cream-200 dark:border-neutral-800 shadow-sm flex items-center px-6 sm:px-10 lg:px-12 transition-colors">
         {/* Background Decorative Blurs */}
         <div className="absolute top-0 right-1/3 w-80 h-80 bg-coral-100/60 dark:bg-coral-900/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-coral-50 dark:bg-neutral-800/40 rounded-full blur-3xl pointer-events-none" />

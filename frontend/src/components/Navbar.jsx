@@ -221,12 +221,14 @@ export const Navbar = () => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-cream-200 bg-cream-100 px-4 py-4 space-y-2 animate-in slide-in-from-top-3 shadow-xl">
+        <div className="md:hidden border-t border-cream-200 dark:border-neutral-800 bg-cream-100 dark:bg-neutral-900 px-4 py-4 space-y-2 animate-in slide-in-from-top-3 shadow-xl">
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
-            className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between ${
-              isActive('/') && location.pathname === '/' ? 'bg-coral-50 text-coral-500 font-bold' : 'hover:bg-cream-200 text-charcoal-700'
+            className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between transition-colors ${
+              isActive('/') && location.pathname === '/'
+                ? 'bg-coral-50 dark:bg-coral-950/40 text-coral-500 font-bold'
+                : 'hover:bg-cream-200 dark:hover:bg-neutral-800 text-charcoal-700 dark:text-neutral-300'
             }`}
           >
             <span className="flex items-center gap-2">
@@ -238,8 +240,10 @@ export const Navbar = () => {
           <Link
             to="/products"
             onClick={() => setMobileMenuOpen(false)}
-            className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between ${
-              isActive('/products') ? 'bg-coral-50 text-coral-500 font-bold' : 'hover:bg-cream-200 text-charcoal-700'
+            className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between transition-colors ${
+              isActive('/products')
+                ? 'bg-coral-50 dark:bg-coral-950/40 text-coral-500 font-bold'
+                : 'hover:bg-cream-200 dark:hover:bg-neutral-800 text-charcoal-700 dark:text-neutral-300'
             }`}
           >
             <span className="flex items-center gap-2">
@@ -252,8 +256,10 @@ export const Navbar = () => {
             <Link
               to="/orders"
               onClick={() => setMobileMenuOpen(false)}
-              className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between ${
-                isActive('/orders') ? 'bg-coral-50 text-coral-500 font-bold' : 'hover:bg-cream-200 text-charcoal-700'
+              className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between transition-colors ${
+                isActive('/orders')
+                  ? 'bg-coral-50 dark:bg-coral-950/40 text-coral-500 font-bold'
+                  : 'hover:bg-cream-200 dark:hover:bg-neutral-800 text-charcoal-700 dark:text-neutral-300'
               }`}
             >
               <span className="flex items-center gap-2">
@@ -263,13 +269,11 @@ export const Navbar = () => {
             </Link>
           )}
 
-
-
           {isAdmin && (
             <Link
               to="/admin"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-3.5 py-2.5 rounded-xl text-sm font-bold bg-coral-50 text-coral-600 border border-coral-100 flex items-center justify-between"
+              className="px-3.5 py-2.5 rounded-xl text-sm font-bold bg-coral-50 dark:bg-coral-950/40 text-coral-600 dark:text-coral-400 border border-coral-100 dark:border-coral-900/40 hover:bg-coral-100 dark:hover:bg-coral-900/60 transition-all flex items-center justify-between"
             >
               <span className="flex items-center gap-2">
                 <Shield className="w-4 h-4 text-coral-500" /> Admin Panel

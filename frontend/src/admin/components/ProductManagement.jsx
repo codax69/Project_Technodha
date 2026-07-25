@@ -285,86 +285,88 @@ export const ProductManagement = ({ products, categories, productMutation, stock
       </div>
 
       {/* Products Table */}
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price (₹)</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedProducts.length === 0 ? (
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto w-full">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  No products found matching active filters.
-                </TableCell>
+                <TableHead className="min-w-[200px]">Product</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Price (₹)</TableHead>
+                <TableHead>Stock</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right min-w-[120px]">Actions</TableHead>
               </TableRow>
-            ) : (
-              paginatedProducts.map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell className="font-medium flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-muted border flex items-center justify-center flex-shrink-0">
-                      {p.image_url ? (
-                        <img src={p.image_url} alt={p.name} loading="lazy" className="w-full h-full object-cover rounded-lg" />
-                      ) : (
-                        <Package className="w-5 h-5 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-foreground">{p.name}</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">{p.description}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{p.category_detail?.name || 'None'}</TableCell>
-                  <TableCell className="font-bold">₹{p.price}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={p.stock_quantity === 0 ? 'destructive' : p.stock_quantity < 5 ? 'outline' : 'secondary'}
-                      className={p.stock_quantity < 5 && p.stock_quantity > 0 ? 'border-amber-500 text-amber-600 dark:text-amber-400' : ''}
-                    >
-                      {p.stock_quantity}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={p.is_active ? 'default' : 'outline'}>
-                      {p.is_active ? 'Active' : 'Inactive'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right space-x-1">
-                    <Button size="icon" variant="ghost" onClick={() => openEditProduct(p)} title="Edit product">
-                      <Edit className="w-4 h-4 text-blue-600" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => {
-                        setSelectedStockProduct(p);
-                        setNewStockVal(p.stock_quantity);
-                        setIsStockModalOpen(true);
-                      }}
-                      title="Direct stock update"
-                    >
-                      <RefreshCw className="w-4 h-4 text-amber-600" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => setDeleteConfirmProduct(p)}
-                      title="Delete product"
-                    >
-                      <Trash2 className="w-4 h-4 text-rose-600" />
-                    </Button>
+            </TableHeader>
+            <TableBody>
+              {paginatedProducts.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    No products found matching active filters.
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                paginatedProducts.map((p) => (
+                  <TableRow key={p.id}>
+                    <TableCell className="font-medium flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-muted border flex items-center justify-center flex-shrink-0">
+                        {p.image_url ? (
+                          <img src={p.image_url} alt={p.name} loading="lazy" className="w-full h-full object-cover rounded-lg" />
+                        ) : (
+                          <Package className="w-5 h-5 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-foreground">{p.name}</div>
+                        <div className="text-xs text-muted-foreground line-clamp-1">{p.description}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{p.category_detail?.name || 'None'}</TableCell>
+                    <TableCell className="font-bold">₹{p.price}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={p.stock_quantity === 0 ? 'destructive' : p.stock_quantity < 5 ? 'outline' : 'secondary'}
+                        className={p.stock_quantity < 5 && p.stock_quantity > 0 ? 'border-amber-500 text-amber-600 dark:text-amber-400' : ''}
+                      >
+                        {p.stock_quantity}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={p.is_active ? 'default' : 'outline'}>
+                        {p.is_active ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right space-x-1">
+                      <Button size="icon" variant="ghost" onClick={() => openEditProduct(p)} title="Edit product">
+                        <Edit className="w-4 h-4 text-blue-600" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => {
+                          setSelectedStockProduct(p);
+                          setNewStockVal(p.stock_quantity);
+                          setIsStockModalOpen(true);
+                        }}
+                        title="Direct stock update"
+                      >
+                        <RefreshCw className="w-4 h-4 text-amber-600" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setDeleteConfirmProduct(p)}
+                        title="Delete product"
+                      >
+                        <Trash2 className="w-4 h-4 text-rose-600" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
 
       {/* Interactive Pagination Bar */}
@@ -414,7 +416,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
       {/* Product Add/Edit Modal */}
       {isProductModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in-50">
-          <div className="max-w-lg w-full p-6 rounded-2xl border bg-background space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="w-[92vw] sm:max-w-lg p-6 rounded-2xl border bg-background space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex justify-between items-center border-b pb-3">
               <h3 className="text-lg font-bold">{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
               <Button size="icon" variant="ghost" onClick={() => setIsProductModalOpen(false)}>
@@ -437,7 +439,7 @@ export const ProductManagement = ({ products, categories, productMutation, stock
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold uppercase mb-1">Price (₹)</label>
                   <Input

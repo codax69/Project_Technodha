@@ -198,7 +198,7 @@ export const ManageOrders = ({ orderStatusMutation }) => {
       {/* Order Line Items Detail Modal */}
       {selectedOrderDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in-50">
-          <div className="max-w-lg w-full p-6 rounded-2xl border bg-background space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="w-[92vw] sm:max-w-lg p-6 rounded-2xl border bg-background space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b pb-3">
               <div>
                 <h3 className="text-lg font-bold">{selectedOrderDetails.order_number || `Order #${selectedOrderDetails.id}`} Details</h3>

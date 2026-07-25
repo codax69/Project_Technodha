@@ -165,8 +165,8 @@ export const CategoryManagement = ({ categories, categoryMutation, updateCategor
 
       {/* Add / Edit Category Modal */}
       {isCategoryModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="max-w-sm w-full p-6 rounded-2xl border bg-background space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in-50">
+          <div className="w-[92vw] sm:max-w-md p-6 rounded-2xl border bg-background space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex justify-between items-center">
               <h3 className="text-base font-bold">{editingCategory ? 'Edit Category' : 'Add Category'}</h3>
               <Button size="icon" variant="ghost" onClick={() => setIsCategoryModalOpen(false)}>
@@ -196,8 +196,8 @@ export const CategoryManagement = ({ categories, categoryMutation, updateCategor
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmCategory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="max-w-sm w-full p-6 rounded-2xl border bg-background space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in-50">
+          <div className="w-[92vw] sm:max-w-md p-6 rounded-2xl border bg-background space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center gap-3 text-rose-600">
               <AlertCircle className="w-6 h-6" />
               <h3 className="text-base font-bold">Delete Category</h3>
