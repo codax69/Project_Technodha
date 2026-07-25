@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Automated SSL Certificate Initialization Script for techstore.pritesh.site
+# Automated Dual Domain SSL Certificate Initialization Script
 
-DOMAINS="techstore.pritesh.site"
+DOMAINS="techstore.pritesh.site api.techstore.pritesh.site"
+PRIMARY_DOMAIN="techstore.pritesh.site"
 EMAIL="admin@pritesh.site"
 DATA_PATH="./certbot"
 STAGING=0 # Set to 1 if testing to avoid hitting Let's Encrypt rate limits
@@ -15,14 +16,14 @@ fi
 
 # Detect whether a valid SSL certificate already exists
 HAS_EXISTING_CERT=0
-if [ -f "$DATA_PATH/conf/live/$DOMAINS/fullchain.pem" ]; then
+if [ -f "$DATA_PATH/conf/live/$PRIMARY_DOMAIN/fullchain.pem" ]; then
   HAS_EXISTING_CERT=1
 fi
 
 if [ $HAS_EXISTING_CERT -eq 0 ]; then
   echo ">>> Creating dummy certificate for $DOMAINS to allow initial Nginx startup..."
-  path="/etc/letsencrypt/live/$DOMAINS"
-  mkdir -p "$DATA_PATH/conf/live/$DOMAINS"
+  path="/etc/letsencrypt/live/$PRIMARY_DOMAIN"
+  mkdir -p "$DATA_PATH/conf/live/$PRIMARY_DOMAIN"
   docker compose run --rm --entrypoint "\
     openssl req -x509 -nodes -newkey rsa:2048 -days 1\
       -keyout '$path/privkey.pem' \
@@ -30,13 +31,13 @@ if [ $HAS_EXISTING_CERT -eq 0 ]; then
       -subj '/CN=localhost'" certbot
 
   echo ">>> Starting Nginx..."
-  docker compose up --force-recreate -d frontend
+  docker compose up -d frontend
 
-  echo ">>> Deleting dummy certificate for $DOMAINS..."
+  echo ">>> Deleting dummy certificate for $PRIMARY_DOMAIN..."
   docker compose run --rm --entrypoint "\
-    rm -Rf /etc/letsencrypt/live/$DOMAINS && \
-    rm -Rf /etc/letsencrypt/archive/$DOMAINS && \
-    rm -Rf /etc/letsencrypt/renewal/$DOMAINS.conf" certbot
+    rm -Rf /etc/letsencrypt/live/$PRIMARY_DOMAIN && \
+    rm -Rf /etc/letsencrypt/archive/$PRIMARY_DOMAIN && \
+    rm -Rf /etc/letsencrypt/renewal/$PRIMARY_DOMAIN.conf" certbot
 
   echo ">>> Requesting Let's Encrypt SSL certificate for $DOMAINS..."
   domain_args=""
@@ -61,13 +62,13 @@ if [ $HAS_EXISTING_CERT -eq 0 ]; then
       --rsa-key-size 4096 \
       --agree-tos" certbot
 
-  echo ">>> Reloading Nginx..."
-  docker compose exec frontend nginx -s reload
+  echo ">>> Restarting Nginx with new multi-domain certificate..."
+  docker compose up -d --force-recreate frontend
 
-  echo "✅ SSL Certificate setup complete for $DOMAINS!"
+  echo "✅ Dual Domain SSL Certificate setup complete for $DOMAINS!"
 else
-  echo ">>> Real certificate found for $DOMAINS. Starting Nginx with existing certificate..."
+  echo ">>> Real certificate found for $PRIMARY_DOMAIN. Starting Nginx..."
   docker compose up -d frontend
-  docker compose exec frontend nginx -s reload
+  docker compose exec frontend nginx -s reload || docker compose up -d --force-recreate frontend
   echo "✅ Nginx started with existing SSL certificate for $DOMAINS!"
 fi
