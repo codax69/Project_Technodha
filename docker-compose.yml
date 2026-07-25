@@ -8,8 +8,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-technodha_db}
       POSTGRES_USER: ${POSTGRES_USER:-technodha_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-technodha_pass}
-    ports:
-      - "5433:5432"
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -29,8 +29,8 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     env_file:
       - .env
     environment:
@@ -56,22 +56,10 @@ services:
     container_name: technodha_react_frontend
     ports:
       - "80:80"
-      - "443:443"
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
     env_file:
       - .env
     depends_on:
       - backend
-
-  certbot:
-    image: certbot/certbot
-    container_name: technodha_certbot
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --deploy-hook \"touch /var/www/certbot/.reload-nginx\"; sleep 12h & wait $${!}; done;'"
 
 volumes:
   postgres_data:
