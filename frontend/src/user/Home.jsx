@@ -89,22 +89,22 @@ export const Home = () => {
 
   return (
     <div className="space-y-10 pb-16">
-      {/* Hero Banner (Fluid Height with Visual Product Images) */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-coral-50 via-cream-200/50 to-cream-100 dark:from-neutral-900 dark:via-neutral-900/80 dark:to-neutral-900 text-charcoal-900 dark:text-neutral-100 min-h-[290px] sm:h-[320px] py-6 sm:py-0 rounded-3xl max-w-7xl mx-auto mt-4 border border-cream-200 dark:border-neutral-800 shadow-sm flex items-center px-6 sm:px-10 lg:px-12 transition-colors">
+      {/* Hero Banner (App Theme Palette) */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-coral-500/10 via-cream-200/60 to-coral-100/60 dark:from-charcoal-950 dark:via-charcoal-900 dark:to-neutral-900 text-charcoal-900 dark:text-neutral-100 min-h-[300px] sm:h-[330px] py-6 sm:py-0 rounded-3xl max-w-7xl mx-auto mt-4 border border-coral-500/20 dark:border-charcoal-800 shadow-md flex items-center px-6 sm:px-10 lg:px-12 transition-colors">
         {/* Background Decorative Blurs */}
-        <div className="absolute top-0 right-1/3 w-80 h-80 bg-coral-100/60 dark:bg-coral-900/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-coral-50 dark:bg-neutral-800/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-coral-500/15 dark:bg-coral-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-80 h-80 bg-coral-500/10 dark:bg-coral-600/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
           {/* Left Column: Headline, Search & Actions */}
           <div className="md:col-span-7 space-y-3 sm:space-y-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold bg-white dark:bg-neutral-800 text-coral-500 border border-coral-100 dark:border-neutral-700 shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-coral-500" /> 30% OFF Mega Seasonal Tech Sale
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-extrabold bg-white dark:bg-charcoal-800 text-coral-500 border border-coral-200 dark:border-charcoal-700 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-coral-500 animate-pulse" /> 30% OFF Mega Seasonal Tech Sale
             </div>
 
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-charcoal-900 dark:text-neutral-100 leading-tight">
               Next-Gen Tech Hardware <br />
-              <span className="bg-gradient-to-r from-coral-500 via-coral-600 to-coral-700 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-coral-500 via-coral-600 to-coral-700 dark:from-coral-400 dark:via-coral-500 dark:to-coral-300 bg-clip-text text-transparent">
                 Direct to Your Door
               </span>
             </h1>
@@ -112,7 +112,7 @@ export const Home = () => {
             {/* Quick Search Bar */}
             <form
               onSubmit={handleSearchSubmit}
-              className="flex items-center gap-2 max-w-lg bg-white dark:bg-neutral-800 p-1.5 rounded-2xl border border-cream-200 dark:border-neutral-700 shadow-sm focus-within:border-coral-500 transition-all"
+              className="flex items-center gap-2 max-w-lg bg-white dark:bg-charcoal-800 p-1.5 rounded-2xl border border-cream-300 dark:border-charcoal-700 shadow-sm focus-within:border-coral-500 transition-all"
             >
               <Search className="w-4 h-4 text-coral-500 ml-2.5 flex-shrink-0" />
               <input
@@ -120,9 +120,9 @@ export const Home = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search processors, graphics cards, monitors..."
-                className="w-full bg-transparent text-charcoal-900 dark:text-neutral-100 placeholder:text-charcoal-700/50 dark:placeholder:text-neutral-400 text-xs outline-none px-2 py-1 font-medium"
+                className="w-full bg-transparent text-charcoal-900 dark:text-neutral-100 placeholder:text-charcoal-700/60 dark:placeholder:text-neutral-400 text-xs outline-none px-2 py-1 font-medium"
               />
-              <Button type="submit" size="xs" className="rounded-xl px-3.5 font-bold shadow-xs bg-coral-500 hover:bg-coral-600 text-cream-100 h-8">
+              <Button type="submit" size="xs" className="rounded-xl px-4 font-bold shadow-xs bg-coral-500 hover:bg-coral-600 text-cream-100 h-8">
                 Search
               </Button>
             </form>
@@ -130,18 +130,20 @@ export const Home = () => {
             <div className="flex items-center gap-3 pt-1">
               <Button
                 size="sm"
-                className="rounded-xl gap-1.5 font-bold bg-coral-500 hover:bg-coral-600 text-cream-100 text-xs px-4 shadow-sm"
+                className="rounded-xl gap-1.5 font-bold bg-coral-500 hover:bg-coral-600 text-cream-100 text-xs px-5 shadow-sm"
                 onClick={() => navigate('/products')}
               >
                 Browse Shop <ArrowRight className="w-3.5 h-3.5" />
               </Button>
-              <span className="text-[11px] font-semibold text-charcoal-700 dark:text-neutral-300">✓ Free Express Shipping over ₹2,000</span>
+              <span className="text-[11px] font-semibold text-charcoal-700 dark:text-neutral-300 flex items-center gap-1">
+                <span className="text-coral-500 font-bold">✓</span> Free Express Shipping over ₹2,000
+              </span>
             </div>
           </div>
 
           {/* Right Column: Hero Visual Product Banner */}
           <div className="hidden md:flex md:col-span-5 relative items-center justify-center h-full">
-            <div className="relative w-full max-w-[300px] h-[220px] rounded-2xl bg-white dark:bg-neutral-800 p-3 border border-cream-200 dark:border-neutral-700 shadow-md flex flex-col justify-between overflow-hidden group hover:shadow-xl transition-all">
+            <div className="relative w-full max-w-[300px] h-[225px] rounded-2xl bg-white dark:bg-charcoal-800 p-3 border border-cream-200 dark:border-charcoal-700 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-coral-500 transition-all duration-300">
               {heroFeaturedProduct?.image_url ? (
                 <img
                   src={heroFeaturedProduct.image_url}
@@ -150,14 +152,14 @@ export const Home = () => {
                   className="w-full h-32 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
-                <div className="w-full h-32 rounded-xl bg-cream-100 dark:bg-neutral-900 flex items-center justify-center text-coral-500">
+                <div className="w-full h-32 rounded-xl bg-cream-100 dark:bg-charcoal-900 flex items-center justify-center text-coral-500">
                   <Package className="w-12 h-12" />
                 </div>
               )}
 
               <div className="flex items-center justify-between pt-1">
                 <div>
-                  <Badge variant="outline" className="text-[9px] font-extrabold uppercase text-coral-500 border-coral-100 dark:border-coral-900/40 bg-coral-50 dark:bg-coral-950/40">
+                  <Badge variant="outline" className="text-[9px] font-extrabold uppercase text-coral-500 border-coral-200 dark:border-coral-900/40 bg-coral-50 dark:bg-coral-950/40">
                     Featured Deal
                   </Badge>
                   <p className="text-xs font-bold text-charcoal-900 dark:text-neutral-100 truncate max-w-[170px]">
@@ -170,7 +172,7 @@ export const Home = () => {
               </div>
 
               {/* Floating Discount Tag */}
-              <div className="absolute top-2 right-2 bg-coral-500 text-cream-100 text-[10px] font-black px-2 py-0.5 rounded-full shadow-md">
+              <div className="absolute top-2 right-2 bg-coral-500 text-cream-100 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-sm">
                 30% OFF
               </div>
             </div>

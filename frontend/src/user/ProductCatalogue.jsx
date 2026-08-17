@@ -109,18 +109,19 @@ export const ProductCatalogue = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Header Banner (Theme Palette) */}
-      <div className="relative p-8 rounded-3xl overflow-hidden border border-cream-200 dark:border-neutral-800 bg-gradient-to-r from-coral-50 via-cream-200/40 to-cream-100 dark:from-neutral-900 dark:via-neutral-900/80 dark:to-neutral-900 text-charcoal-900 dark:text-neutral-100 shadow-xs transition-colors">
-        <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-coral-100/50 dark:bg-coral-900/20 rounded-full blur-3xl pointer-events-none" />
+      {/* Header Banner (App Theme Palette) */}
+      <div className="relative p-8 rounded-3xl overflow-hidden border border-coral-500/20 dark:border-charcoal-800 bg-gradient-to-r from-coral-500/10 via-cream-200/60 to-coral-100/60 dark:from-charcoal-950 dark:via-charcoal-900 dark:to-neutral-900 text-charcoal-900 dark:text-neutral-100 shadow-md transition-colors">
+        <div className="absolute -right-12 -bottom-12 w-80 h-80 bg-coral-500/15 dark:bg-coral-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-10 w-64 h-64 bg-coral-500/10 dark:bg-coral-600/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white dark:bg-neutral-800 text-coral-500 border border-coral-100 dark:border-neutral-700 shadow-xs">
-            <Sparkles className="w-3.5 h-3.5 text-coral-500" /> Official Inventory Catalogue
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-extrabold bg-white dark:bg-charcoal-800 text-coral-500 border border-coral-200 dark:border-charcoal-700 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-coral-500 animate-pulse" /> Official Inventory Catalogue
           </div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-charcoal-900 dark:text-neutral-100">
             Explore Technodha Products
           </h1>
-          <p className="text-charcoal-700 dark:text-neutral-300 text-sm max-w-2xl">
-            Live stock integration, verified pricing in ₹ INR, and instant transactional order execution.
+          <p className="text-charcoal-700 dark:text-neutral-300 text-sm max-w-2xl font-medium">
+            Live stock integration, verified pricing in <span className="text-coral-500 font-bold">₹ INR</span>, and instant transactional order execution.
           </p>
         </div>
       </div>
