@@ -170,18 +170,26 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False').lower() in ('true', '1', 't')
 
 # Reverse Proxy & SSL Configuration (Nginx -> Docker Gunicorn)
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-USE_X_FORWARDED_HOST = True
+# Only trust forwarded headers when explicitly configured behind trusted proxy
+if os.environ.get('USE_X_FORWARDED_HOST', 'False').lower() in ('true', '1', 't'):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    USE_X_FORWARDED_HOST = True
 
-# CSRF Trusted Origins for reverse-proxied requests
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        'CSRF_TRUSTED_ORIGINS',
-        'https://techstore.pritesh.site,https://api.techstore.pritesh.site,http://localhost:8000,http://127.0.0.1:8000'
-    ).split(',')
-    if origin.strip()
-]
+# CSRF Trusted Origins - require explicit env value in production, localhost fallback only in DEBUG
+csrf_trusted_env = os.environ.get('CSRF_TRUSTED_ORIGINS')
+if csrf_trusted_env:
+    CSRF_TRUSTED_ORIGINS = [
+        origin.strip() for origin in csrf_trusted_env.split(',') if origin.strip()
+    ]
+elif DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+        'http://localhost:3000',
+        'http://localhost:5173',
+    ]
+else:
+    CSRF_TRUSTED_ORIGINS = []
 
 # Cloudinary Settings
 # Server-side signed uploads only - the API secret must never be exposed to
