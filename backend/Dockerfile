@@ -37,10 +37,13 @@ RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
 # Copy backend source
 COPY backend/ /app/
 
-# Create non-root system user, collect static files, and set ownership
+# Create non-root system user, collect static files using build-safe defaults, and set ownership
 RUN useradd -u 1001 -m -s /bin/bash appuser && \
     mkdir -p /app/staticfiles /app/media && \
+    SECRET_KEY=build-phase-secret-key-not-for-production \
+    DB_ENGINE=sqlite \
     python manage.py collectstatic --noinput && \
+    rm -f /app/db.sqlite3 && \
     chown -R appuser:appuser /app
 
 USER appuser

@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Cache dependencies using package-lock
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+RUN npm ci --no-audit --no-fund
 
 COPY frontend/ ./
 
