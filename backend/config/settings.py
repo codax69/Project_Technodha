@@ -169,6 +169,20 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 ).split(',')
 CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False').lower() in ('true', '1', 't')
 
+# Reverse Proxy & SSL Configuration (Nginx -> Docker Gunicorn)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
+# CSRF Trusted Origins for reverse-proxied requests
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get(
+        'CSRF_TRUSTED_ORIGINS',
+        'https://techstore.pritesh.site,https://api.techstore.pritesh.site,http://localhost:8000,http://127.0.0.1:8000'
+    ).split(',')
+    if origin.strip()
+]
+
 # Cloudinary Settings
 # Server-side signed uploads only - the API secret must never be exposed to
 # the frontend/browser. The client uploads the raw file to our own API

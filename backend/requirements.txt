@@ -10,3 +10,4 @@ cloudinary>=1.40.0
 pytest>=8.0.0
 pytest-django>=4.8.0
 pillow>=10.2.0
+gunicorn>=22.0.0
