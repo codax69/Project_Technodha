@@ -101,8 +101,24 @@ jobs:
           port: ${{ secrets.VPS_PORT || 22 }}
           script: |
             set -e
-            cd ${{ secrets.VPS_PROJECT_PATH || '/opt/technodha' }}
+            TARGET_DIR="${{ secrets.VPS_PROJECT_PATH || '/opt/technodha' }}"
+            echo "Deploy target directory: $TARGET_DIR"
+            if [ ! -d "$TARGET_DIR" ]; then
+              echo "Directory does not exist. Creating and cloning repository..."
+              mkdir -p "$TARGET_DIR"
+              git clone https://github.com/${{ github.repository }}.git "$TARGET_DIR"
+            fi
+            cd "$TARGET_DIR"
+            if [ ! -d ".git" ]; then
+              echo "Git repository missing in target directory. Cloning contents..."
+              git clone https://github.com/${{ github.repository }}.git .
+            fi
+            git fetch origin
             git pull origin main || git pull origin master
+            if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+              echo "Creating initial .env from .env.example..."
+              cp .env.example .env
+            fi
 
       - name: Download Dist Artifact
         uses: actions/download-artifact@v4
@@ -129,7 +145,8 @@ jobs:
           port: ${{ secrets.VPS_PORT || 22 }}
           script: |
             set -e
-            cd ${{ secrets.VPS_PROJECT_PATH || '/opt/technodha' }}
+            TARGET_DIR="${{ secrets.VPS_PROJECT_PATH || '/opt/technodha' }}"
+            cd "$TARGET_DIR"
             chmod +x ./setup_permissions.sh
             ./setup_permissions.sh
             # Resilient pull with 3 retries against CDN connection resets

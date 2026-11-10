@@ -25,7 +25,8 @@ chmod 644 caddy/Caddyfile traefik/traefik.yml
 # Identify Docker socket GID for non-root Traefik group_add
 DOCKER_GID=$(stat -c '%g' /var/run/docker.sock 2>/dev/null || echo "999")
 echo "==> Docker socket GID detected: ${DOCKER_GID}"
-if ! grep -q "^DOCKER_GID=" .env 2>/dev/null; then
+touch .env
+if ! grep -q "^DOCKER_GID=" .env; then
     echo "DOCKER_GID=${DOCKER_GID}" >> .env
 fi
 
