@@ -130,6 +130,13 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.VPS_PROJECT_PATH || '/opt/technodha' }}
-            docker compose up -d --build
+            chmod +x ./setup_permissions.sh
+            ./setup_permissions.sh
+            # Resilient pull with 3 retries against CDN connection resets
+            for i in 1 2 3; do
+              echo "Pulling images (attempt $i)..."
+              docker compose pull && break || sleep 5
+            done
+            docker compose up -d --build --remove-orphans
             docker image prune -f
 

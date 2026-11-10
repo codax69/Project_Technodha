@@ -1,0 +1,32 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+log:
+  level: INFO
+  format: json
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: "technodha_gateway_net"
+
+certificatesResolvers:
+  cert-resolver:
+    acme:
+      email: "admin@example.com"
+      storage: "/letsencrypt/acme.json"
+      httpChallenge:
+        entryPoint: web

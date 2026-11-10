@@ -1,36 +1,82 @@
 services:
-  db:
-    image: postgres:15-alpine
-    container_name: technodha_postgres_db
-    env_file:
-      - .env
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-technodha_db}
-      POSTGRES_USER: ${POSTGRES_USER:-technodha_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-technodha_pass}
+  # Edge API Gateway & Automated TLS Termination (Piyush Garg Architecture)
+  traefik:
+    image: traefik:v3.1
+    container_name: technodha_traefik
+    restart: unless-stopped
+    user: "1000:1000"
+    group_add:
+      - "${DOCKER_GID:-119}" # Host docker group to allow non-root socket read
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
     ports:
-      - "5433:5432"
+      - "80:80"
+      - "443:443"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-technodha_user} -d ${POSTGRES_DB:-technodha_db}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./certificates/letsencrypt:/letsencrypt
+    networks:
+      - gateway_net
 
+  # Internal Service Gateway & Reverse Proxy / Load Balancer
+  caddy:
+    image: caddy:alpine
+    container_name: technodha_caddy
+    restart: unless-stopped
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.techstore.rule=Host(`techstore.pritesh.site`) || Host(`localhost`)"
+      - "traefik.http.routers.techstore.entrypoints=websecure"
+      - "traefik.http.routers.techstore.tls=true"
+      - "traefik.http.routers.techstore.tls.certresolver=cert-resolver"
+      - "traefik.http.routers.techstore.service=caddy-svc"
+
+      - "traefik.http.routers.techstore-api.rule=Host(`api.techstore.pritesh.site`)"
+      - "traefik.http.routers.techstore-api.entrypoints=websecure"
+      - "traefik.http.routers.techstore-api.tls=true"
+      - "traefik.http.routers.techstore-api.tls.certresolver=cert-resolver"
+      - "traefik.http.routers.techstore-api.service=caddy-svc"
+
+      - "traefik.http.services.caddy-svc.loadbalancer.server.port=80"
+      - "traefik.docker.network=technodha_gateway_net"
+    networks:
+      - gateway_net
+      - internal_net
+    depends_on:
+      - backend
+
+  # Application Backend (Non-Root User UID 1001)
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
     container_name: technodha_django_backend
+    restart: unless-stopped
+    user: "1001:1001"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     command: >
       sh -c "python manage.py migrate &&
              python seed_data.py &&
              gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 2 --worker-class gthread --timeout 60 --max-requests 1000 --max-requests-jitter 100 --access-logfile - --error-logfile -"
     volumes:
       - backend_media:/app/media
-    ports:
-      - "127.0.0.1:8000:8000"
     env_file:
       - .env
     environment:
@@ -47,21 +93,67 @@ services:
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
       - USE_X_FORWARDED_HOST=${USE_X_FORWARDED_HOST:-True}
       - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS:-https://techstore.pritesh.site,https://api.techstore.pritesh.site}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/api/v1/health/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - internal_net
+      - db_net
     depends_on:
       db:
         condition: service_healthy
 
+  # Frontend Web Client
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
     container_name: technodha_react_frontend
-    ports:
-      - "8001:80"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     env_file:
       - .env
+    networks:
+      - internal_net
     depends_on:
       - backend
+
+  # Database Engine
+  db:
+    image: postgres:15-alpine
+    container_name: technodha_postgres_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-technodha_db}
+      POSTGRES_USER: ${POSTGRES_USER:-technodha_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-technodha_pass}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-technodha_user} -d ${POSTGRES_DB:-technodha_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - db_net
+
+networks:
+  gateway_net:
+    driver: bridge
+    name: technodha_gateway_net
+  internal_net:
+    driver: bridge
+    name: technodha_internal_net
+  db_net:
+    driver: bridge
+    name: technodha_db_net
+    internal: true
 
 volumes:
   postgres_data:

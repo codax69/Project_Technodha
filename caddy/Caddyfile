@@ -1,0 +1,28 @@
+{
+    admin off
+    auto_https off
+}
+
+# Frontend Storefront Domain
+http://techstore.pritesh.site, http://localhost, http://127.0.0.1 {
+    reverse_proxy frontend:80 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# Backend REST API Domain
+http://api.techstore.pritesh.site {
+    reverse_proxy backend:8000 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+
+        transport http {
+            keepalive 30s
+        }
+    }
+}
