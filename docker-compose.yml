@@ -4,7 +4,7 @@ services:
     image: traefik:v3.1
     container_name: technodha_traefik
     restart: unless-stopped
-    user: "1000:1000"
+    user: "${UID:-1000}:${GID:-1000}"
     group_add:
       - "${DOCKER_GID:-119}" # Host docker group to allow non-root socket read
     security_opt:
@@ -28,7 +28,7 @@ services:
     image: caddy:alpine
     container_name: technodha_caddy
     restart: unless-stopped
-    user: "1000:1000"
+    user: "${UID:-1000}:${GID:-1000}"
     security_opt:
       - no-new-privileges:true
     cap_drop:
