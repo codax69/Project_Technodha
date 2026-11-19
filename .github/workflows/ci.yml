@@ -91,6 +91,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Compute 12-character short commit SHA
+        id: vars
+        run: echo "sha12=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -112,8 +116,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/codax69/project_technodha-backend:${{ github.sha }}
-            ghcr.io/codax69/project_technodha-backend:latest
+            ghcr.io/codax69/technodha-be:${{ steps.vars.outputs.sha12 }}
+            ghcr.io/codax69/technodha-be:latest
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
@@ -123,8 +127,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/codax69/project_technodha-frontend:${{ github.sha }}
-            ghcr.io/codax69/project_technodha-frontend:latest
+            ghcr.io/codax69/technodha-fe:${{ steps.vars.outputs.sha12 }}
+            ghcr.io/codax69/technodha-fe:latest
 
   deploy-vps:
     name: Deploy GHCR images to VPS over SSH
@@ -169,10 +173,14 @@ jobs:
               cp .env.example .env
             fi
 
+      - name: Compute 12-character short commit SHA
+        id: vars
+        run: echo "sha12=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
       - name: Restart Services with Docker Compose
         uses: appleboy/ssh-action@v1.0.3
         env:
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ steps.vars.outputs.sha12 }}
           GHCR_USERNAME: ${{ secrets.GHCR_USERNAME || github.actor }}
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
         with:

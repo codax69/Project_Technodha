@@ -1,11 +1,11 @@
 services:
   # Application Backend (Non-Root User UID 1001)
   backend:
-    image: ghcr.io/codax69/project_technodha-backend:${IMAGE_TAG:-latest}
+    image: ghcr.io/codax69/technodha-be:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: backend/Dockerfile
-    container_name: technodha_django_backend
+    container_name: technodha-be
     restart: unless-stopped
     user: "1001:1001"
     security_opt:
@@ -49,11 +49,11 @@ services:
 
   # Frontend Web Client
   frontend:
-    image: ghcr.io/codax69/project_technodha-frontend:${IMAGE_TAG:-latest}
+    image: ghcr.io/codax69/technodha-fe:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    container_name: technodha_react_frontend
+    container_name: technodha-fe
     restart: unless-stopped
     ports:
       - "80:80"
@@ -69,7 +69,7 @@ services:
   # Database Engine
   db:
     image: postgres:15-alpine
-    container_name: technodha_postgres_db
+    container_name: technodha-db
     restart: unless-stopped
     env_file:
       - .env
