@@ -126,6 +126,9 @@ jobs:
     needs: [publish-images]
     if: (github.event_name == 'workflow_dispatch' || github.event_name == 'push') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - name: Pull Latest Code on VPS
@@ -165,8 +168,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           IMAGE_TAG: ${{ github.sha }}
-          GHCR_USERNAME: ${{ github.repository_owner }}
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME || github.actor }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
@@ -183,8 +186,12 @@ jobs:
               sudo systemctl stop nginx apache2 caddy 2>/dev/null || true
               sudo systemctl disable nginx apache2 caddy 2>/dev/null || true
             fi
-            : "${GHCR_TOKEN:?Set the GHCR_TOKEN Actions secret to a token with read:packages access}"
-            printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USERNAME" --password-stdin
+            if [ -n "$GHCR_TOKEN" ]; then
+              echo "Logging into GHCR..."
+              printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USERNAME" --password-stdin
+            else
+              echo "GHCR_TOKEN not provided, attempting pull without login..."
+            fi
             # Resilient pull with 3 retries against CDN connection resets
             for i in 1 2 3; do
               echo "Pulling images (attempt $i)..."
