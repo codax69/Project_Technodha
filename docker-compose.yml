@@ -1,7 +1,7 @@
 services:
   # Application Backend (Non-Root User UID 1001)
   backend:
-    image: ghcr.io/codax69/technodha-be:${IMAGE_TAG:-latest}
+    image: technodha-be:latest
     build:
       context: .
       dockerfile: backend/Dockerfile
@@ -18,6 +18,8 @@ services:
              gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 2 --worker-class gthread --timeout 60 --max-requests 1000 --max-requests-jitter 100 --access-logfile - --error-logfile -"
     volumes:
       - backend_media:/app/media
+    ports:
+      - "8000:8000"
     env_file:
       - .env
     environment:
@@ -49,14 +51,14 @@ services:
 
   # Frontend Web Client
   frontend:
-    image: ghcr.io/codax69/technodha-fe:${IMAGE_TAG:-latest}
+    image: technodha-fe:latest
     build:
       context: .
       dockerfile: frontend/Dockerfile
     container_name: technodha-fe
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8011:80"
     security_opt:
       - no-new-privileges:true
     env_file:
@@ -71,6 +73,8 @@ services:
     image: postgres:15-alpine
     container_name: technodha-db
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     env_file:
       - .env
     environment:
@@ -94,7 +98,6 @@ networks:
   db_net:
     driver: bridge
     name: technodha_db_net
-    internal: true
 
 volumes:
   postgres_data:
