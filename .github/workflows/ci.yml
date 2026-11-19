@@ -165,7 +165,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           IMAGE_TAG: ${{ github.sha }}
-          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GHCR_USERNAME: ${{ github.repository_owner }}
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -183,6 +183,7 @@ jobs:
               sudo systemctl stop nginx apache2 caddy 2>/dev/null || true
               sudo systemctl disable nginx apache2 caddy 2>/dev/null || true
             fi
+            : "${GHCR_TOKEN:?Set the GHCR_TOKEN Actions secret to a token with read:packages access}"
             printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USERNAME" --password-stdin
             # Resilient pull with 3 retries against CDN connection resets
             for i in 1 2 3; do
@@ -198,4 +199,3 @@ jobs:
             done
             docker compose up -d --no-build --remove-orphans
             docker image prune -f
-
