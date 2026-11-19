@@ -20,7 +20,7 @@ backend/media/
 .env
 *.env
 
-# Caddy & Traefik runtime data
+# Existing local proxy runtime state (not used by Compose)
 caddy/data/
 caddy/config/
 certificates/letsencrypt/acme.json

@@ -79,15 +79,51 @@ jobs:
           cd frontend
           npm run build
 
-      - name: Upload Dist Artifact
-        uses: actions/upload-artifact@v4
+  publish-images:
+    name: Build and publish Docker images to GHCR
+    needs: [backend-tests, frontend-tests]
+    if: (github.event_name == 'workflow_dispatch' || github.event_name == 'push') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          name: frontend-dist
-          path: frontend/dist/
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/codax69/project_technodha-backend:${{ github.sha }}
+            ghcr.io/codax69/project_technodha-backend:latest
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/codax69/project_technodha-frontend:${{ github.sha }}
+            ghcr.io/codax69/project_technodha-frontend:latest
 
   deploy-vps:
-    name: Deploy to VPS over SSH
-    needs: [backend-tests, frontend-tests]
+    name: Deploy GHCR images to VPS over SSH
+    needs: [publish-images]
     if: (github.event_name == 'workflow_dispatch' || github.event_name == 'push') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
 
@@ -125,40 +161,41 @@ jobs:
               cp .env.example .env
             fi
 
-      - name: Download Dist Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist
-
-      - name: Copy Dist to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
-          source: "frontend/dist"
-          target: ${{ secrets.VPS_PROJECT_PATH || '/opt/technodha' }}
-
       - name: Restart Services with Docker Compose
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
+          envs: IMAGE_TAG,GHCR_USERNAME,GHCR_TOKEN
           script: |
             set -e
             TARGET_DIR="${{ secrets.VPS_PROJECT_PATH || '/opt/technodha' }}"
             cd "$TARGET_DIR"
-            chmod +x ./setup_permissions.sh
-            ./setup_permissions.sh
+            # Free ports 80/443 if host web server (nginx/apache2/caddy) is active
+            if command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+              echo "Stopping conflicting host web services..."
+              sudo systemctl stop nginx apache2 caddy 2>/dev/null || true
+              sudo systemctl disable nginx apache2 caddy 2>/dev/null || true
+            fi
+            printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USERNAME" --password-stdin
             # Resilient pull with 3 retries against CDN connection resets
             for i in 1 2 3; do
               echo "Pulling images (attempt $i)..."
-              docker compose pull && break || sleep 5
+              if docker compose pull; then
+                break
+              fi
+              if [ "$i" -eq 3 ]; then
+                echo "Failed to pull GHCR images after 3 attempts."
+                exit 1
+              fi
+              sleep 5
             done
-            docker compose up -d --build --remove-orphans
+            docker compose up -d --no-build --remove-orphans
             docker image prune -f
 

@@ -166,16 +166,27 @@ The database is pre-seeded (`python seed_data.py`) with default login credential
 
 ## 🚀 Quick Start with Docker (Recommended)
 
-Run the entire system (Postgres DB, Django Backend, React Frontend) in **one command**:
+Build and run the entire system (Postgres DB, Django Backend, React Frontend) in **one command**:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 - **Frontend Application**: `http://localhost:80` (or `http://localhost:3000` in dev mode)
-- **Backend REST API**: `http://localhost:8000/api/`
-- **Swagger Interactive API Docs**: `http://localhost:8000/api/docs/`
-- **ReDoc Documentation**: `http://localhost:8000/api/redoc/`
+- **Backend REST API**: `http://localhost/api/v1/`
+- **Swagger Interactive API Docs**: `http://localhost/api/docs/`
+- **ReDoc Documentation**: `http://localhost/api/redoc/`
+
+### Deploy with GitHub Container Registry
+
+Pushes to `main` or `master` run the tests, build the backend and frontend images, publish them to GHCR with the commit SHA tag, and deploy those images to the VPS. The VPS pulls the tagged images; it does not build them.
+
+Add these GitHub Actions secrets for a private GHCR package:
+
+- `GHCR_USERNAME`: GitHub account username with access to the packages.
+- `GHCR_TOKEN`: Personal access token (classic) with `read:packages` permission.
+
+Keep the existing `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, and optional `VPS_PORT` / `VPS_PROJECT_PATH` secrets configured. The workflow creates `.env` from `.env.example` on first deploy; set production values in the VPS `.env` before deploying.
 
 ---
 
